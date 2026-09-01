@@ -23,6 +23,17 @@ body {
 }
 img { max-width: 100%; display: block; }
 a { color: inherit; }
+.impact-verify {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 .skip-link {
   position: absolute; left: 12px; top: -40px; z-index: 40;
   background: var(--navy); color: white; padding: 8px 14px; border-radius: 6px; font-weight: 800;
