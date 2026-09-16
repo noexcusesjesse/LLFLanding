@@ -1,19 +1,12 @@
-# OS files
+node_modules/
+.env
+.env.local
 .DS_Store
-Thumbs.db
-
-# Editor files
+*.db
+data/
+.git/
 .vscode/
 .idea/
-
-# Local Python server/cache
-__pycache__/
-*.pyc
-
-# Local environment files
-.env
-.env.*
-
-# Build/output folders
+.cache/
 dist/
 build/
