@@ -55,8 +55,8 @@ A **full-stack lead management system** for LoadLine Fitness with:
 In **Railway Dashboard → Variables**, add:
 
 ```
-PROTON_EMAIL=your-proton@protonmail.com
-PROTON_PASSWORD=your-proton-app-password
+SENDGRID_API_KEY=SG.abcd1234efgh5678ijkl9012
+SENDGRID_FROM_EMAIL=noreply@loadlinefitness.com
 NOTIFY_EMAIL=jesse@loadlinefitness.com
 ADMIN_TOKEN=your-secure-random-token-here
 DASHBOARD_URL=https://www.loadlinefitness.com
@@ -64,22 +64,24 @@ DASHBOARD_URL=https://www.loadlinefitness.com
 
 **Note:** `DATABASE_URL` is auto-set by PostgreSQL plugin. Do NOT manually add it.
 
-### Step 3: ProtonMail Setup (Email Notifications)
+### Step 3: SendGrid Setup (Email Notifications)
 
-1. Log into your ProtonMail account
-2. Go to **Settings → Accounts → Other mail services**
-3. Click **"Generate new password"** (for IMAP/SMTP)
-4. Copy the generated password
-5. Use that as `PROTON_PASSWORD` in Railway variables
+1. Create account at **https://sendgrid.com** (free tier: 100 emails/day)
+2. Go to **Settings → API Keys**
+3. Click **"Create API Key"**
+4. Copy the key (starts with `SG.`)
+5. Go to **Settings → Sender Authentication**
+6. Verify sender: `noreply@loadlinefitness.com`
+7. Use the API key in Railway (Step 2 above)
 
-**Important:** This is NOT your regular ProtonMail password — it's an app-specific SMTP password.
+**See SENDGRID-SETUP.md for detailed instructions.**
 
 ### Step 4: Deploy
 
 Once variables are set, Railway auto-redeploys. Your site will now:
 - ✅ Accept form submissions
 - ✅ Save leads to database
-- ✅ Send ProtonMail notifications
+- ✅ Send SendGrid notifications
 - ✅ Admin dashboard works at `/admin`
 
 ---

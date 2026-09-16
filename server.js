@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import pkg from 'pg';
-import nodemailer from 'nodemailer';
+import axios from 'axios';
 
 dotenv.config();
 
@@ -19,16 +19,33 @@ const pool = new Pool({
   ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false
 });
 
-// Email transporter (ProtonMail via SMTP)
-const transporter = nodemailer.createTransport({
-  host: 'smtp.protonmail.com',
-  port: 587,
-  secure: false, // TLS, not SSL
-  auth: {
-    user: process.env.PROTON_EMAIL,
-    pass: process.env.PROTON_PASSWORD
+// SendGrid email function
+const sendEmail = async (to, subject, html) => {
+  if (!process.env.SENDGRID_API_KEY) {
+    console.warn('⚠️ SENDGRID_API_KEY not set - emails won\'t send');
+    return false;
   }
-});
+
+  try {
+    await axios.post('https://api.sendgrid.com/v3/mail/send', {
+      personalizations: [{ to: [{ email: to }] }],
+      from: { email: process.env.SENDGRID_FROM_EMAIL || 'noreply@loadlinefitness.com' },
+      subject: subject,
+      content: [{ type: 'text/html', value: html }]
+    }, {
+      headers: {
+        'Authorization': `Bearer ${process.env.SENDGRID_API_KEY}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    console.log(`✓ Email sent to ${to}`);
+    return true;
+  } catch (error) {
+    console.error('Email error:', error.response?.data || error.message);
+    return false;
+  }
+};
 
 // Middleware
 app.use(cors());
@@ -87,11 +104,10 @@ app.post('/api/leads', async (req, res) => {
     // Send email notification (if configured)
     if (process.env.NOTIFY_EMAIL) {
       try {
-        await transporter.sendMail({
-          from: process.env.GMAIL_USER,
-          to: process.env.NOTIFY_EMAIL,
-          subject: `[LoadLine] New ${type || 'Contact'} Lead: ${name}`,
-          html: `
+        await sendEmail(
+          process.env.NOTIFY_EMAIL,
+          `[LoadLine] New ${type || 'Contact'} Lead: ${name}`,
+          `
             <h2>New Lead Received</h2>
             <p><strong>Name:</strong> ${name}</p>
             <p><strong>Email:</strong> ${email}</p>
@@ -100,9 +116,9 @@ app.post('/api/leads', async (req, res) => {
             <p><strong>Message:</strong></p>
             <p>${message.replace(/\n/g, '<br>')}</p>
             <hr>
-            <p>View in dashboard: <a href="${process.env.DASHBOARD_URL || 'https://loadlinefitness.com'}/admin/leads/${leadId}">Lead #${leadId}</a></p>
+            <p>View in dashboard: <a href="${process.env.DASHBOARD_URL || 'https://loadlinefitness.com'}/admin">Lead #${leadId}</a></p>
           `
-        });
+        );
       } catch (emailError) {
         console.error('Email send error (non-blocking):', emailError.message);
       }

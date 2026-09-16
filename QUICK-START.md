@@ -10,13 +10,19 @@
 
 ## 🚀 What You Need to Do (15 minutes)
 
-### [ ] 1. Get ProtonMail App Password (5 min)
-**Why:** Allows Railway to send you email notifications
+### [ ] 1. Create SendGrid Account (5 min)
+**Why:** Reliable, free email service (100 emails/day)
 
-1. Go to https://protonmail.com → **Settings → Accounts**
-2. Find **"Other mail services"** or **"IMAP/SMTP"**
-3. Click **"Generate new password"**
-4. **Copy the 24-character password** (you'll use this next)
+1. Go to https://sendgrid.com
+2. Click **"Sign Up"** (top right)
+3. Create account with your email
+4. Go to **Settings → API Keys**
+5. Click **"Create API Key"**
+6. Copy the key (looks like: `SG.abcd1234...`)
+7. Go to **Settings → Sender Authentication**
+8. Verify sender email: `noreply@loadlinefitness.com`
+
+**Done!** You have your SendGrid API key.
 
 ### [ ] 2. Set Up Railway PostgreSQL (3 min)
 **Why:** Stores all lead submissions
@@ -34,11 +40,11 @@
 2. Add these 5 variables:
 
 ```
-PROTON_EMAIL          → your-email@protonmail.com
-PROTON_PASSWORD       → (paste the 24-char password from step 1)
-NOTIFY_EMAIL          → jesse@loadlinefitness.com
-ADMIN_TOKEN           → (pick any secure password, e.g., "MySecure123!")
-DASHBOARD_URL         → https://www.loadlinefitness.com
+SENDGRID_API_KEY        → SG.abcd1234efgh5678ijkl9012
+SENDGRID_FROM_EMAIL     → noreply@loadlinefitness.com
+NOTIFY_EMAIL            → jesse@loadlinefitness.com
+ADMIN_TOKEN             → MySecure123!
+DASHBOARD_URL           → https://www.loadlinefitness.com
 ```
 
 3. Click **Save** (or auto-saves)

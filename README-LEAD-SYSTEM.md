@@ -233,38 +233,24 @@ Access at `/admin` (e.g., `https://www.loadlinefitness.com/admin`)
 
 ## Email Configuration
 
-### ProtonMail (Your Setup)
+### SendGrid (Recommended — Free & Easy)
 
-1. Log in to ProtonMail account
-2. Go to **Settings → Accounts → Other mail services**
-3. Click **"Generate new password"** for IMAP/SMTP access
-4. Copy the generated password
+1. Create account at **https://sendgrid.com** (free tier, 100 emails/day)
+2. Go to **Settings → API Keys** → Create new API key
+3. Copy the key (looks like: `SG.abcd1234...`)
+4. Verify sender email at **Settings → Sender Authentication**
 5. Use in Railway variables:
 
 ```
-PROTON_EMAIL=your-proton@protonmail.com
-PROTON_PASSWORD=your-generated-proton-password
+SENDGRID_API_KEY=SG.abcd1234efgh5678ijkl9012
+SENDGRID_FROM_EMAIL=noreply@loadlinefitness.com
 ```
 
-**Note:** This is NOT your regular ProtonMail password. It's an app-specific password for SMTP access.
+**See SENDGRID-SETUP.md for step-by-step guide.**
 
-### Alternative: SendGrid (If ProtonMail doesn't work)
+### Alternative: Other SMTP Services
 
-1. Create SendGrid account at sendgrid.com
-2. Generate API key
-3. Modify `server.js` to use SendGrid:
-
-```javascript
-import sgMail from '@sendgrid/mail';
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-// Then use: sgMail.send({ ... })
-```
-
-Install SendGrid:
-```bash
-npm install @sendgrid/mail
-```
+Can also use Mailgun, AWS SES, or any SMTP service. Just modify the `sendEmail` function in `server.js`.
 
 ## Troubleshooting
 
