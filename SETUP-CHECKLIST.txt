@@ -1,0 +1,167 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                   LOADLINE FITNESS SETUP CHECKLIST                          ║
+║                    Complete in 15 Minutes • Go Live Fast                    ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+STEP 1: GET PROTONMAIL APP PASSWORD
+═══════════════════════════════════════════════════════════════════════════════
+Time: 5 minutes | Status: ☐ PENDING
+
+What: Create an app-specific password for Railway to send emails via your
+      ProtonMail account.
+
+Action:
+  1. Go to https://protonmail.com
+  2. Click ⚙️ Settings (top right)
+  3. Click "Accounts" in sidebar
+  4. Find "Other mail services" or "IMAP/SMTP"
+  5. Click "Generate new password"
+  6. ProtonMail shows a 24-character password → COPY IT
+
+Result: You have a password like: abcd1234efgh5678ijkl9012
+Keep it open → you'll need it in Step 3.
+
+
+STEP 2: ADD POSTGRESQL DATABASE TO RAILWAY
+═══════════════════════════════════════════════════════════════════════════════
+Time: 3 minutes | Status: ☐ PENDING
+
+What: Create a database to store all lead submissions.
+
+Action:
+  1. Go to https://railway.app
+  2. Open your LoadLine Fitness project
+  3. Click "+ Create" (blue button, center)
+  4. Select "PostgreSQL" from the list
+  5. Wait 1-2 minutes for database to start
+
+Result: Railway auto-sets DATABASE_URL (you don't need to do anything).
+The database is ready.
+
+
+STEP 3: ADD ENVIRONMENT VARIABLES TO RAILWAY
+═══════════════════════════════════════════════════════════════════════════════
+Time: 5 minutes | Status: ☐ PENDING
+
+What: Tell Railway how to send emails and manage access to the admin dashboard.
+
+Action:
+  1. In Railway, click "Variables" tab (middle tabs at top)
+  2. Click "Add Variable" 5 times
+
+Variable 1:
+  Name:  PROTON_EMAIL
+  Value: your-email@protonmail.com
+  (use your actual ProtonMail email)
+
+Variable 2:
+  Name:  PROTON_PASSWORD
+  Value: abcd1234efgh5678ijkl9012
+  (paste the 24-char password from Step 1)
+
+Variable 3:
+  Name:  NOTIFY_EMAIL
+  Value: jesse@loadlinefitness.com
+  (where you want to receive lead notifications)
+
+Variable 4:
+  Name:  ADMIN_TOKEN
+  Value: MySecurePassword123!
+  (pick any secure password you'll remember)
+
+Variable 5:
+  Name:  DASHBOARD_URL
+  Value: https://www.loadlinefitness.com
+
+  3. Click "Save" or press Enter
+  4. Wait 30 seconds for Railway to redeploy (watch the Deployments tab)
+
+Result: Variables saved. Railway auto-redeploys with your settings.
+
+
+STEP 4: TEST EVERYTHING
+═══════════════════════════════════════════════════════════════════════════════
+Time: 2 minutes | Status: ☐ PENDING
+
+Test 4A — Contact Form:
+  1. Visit https://www.loadlinefitness.com
+  2. Scroll down to "GET IN TOUCH" section
+  3. Fill the form:
+     Name:    Your Name
+     Email:   your-email@example.com
+     Phone:   555-1234
+     Message: Testing the form
+  4. Click "Send My Request"
+  5. ✓ Should see green "✓ Thank you" message
+
+Test 4B — Email Notification:
+  1. Check your inbox (NOTIFY_EMAIL)
+  2. ✓ Should receive email with your lead details
+  3. Email shows: Name, Email, Phone, Message
+
+Test 4C — Admin Dashboard:
+  1. Visit https://www.loadlinefitness.com/admin
+  2. Enter your ADMIN_TOKEN (from Variable 4)
+  3. Click "Login"
+  4. ✓ Should see your test lead in the table
+  5. Try clicking status dropdown → "contacted"
+  6. ✓ Status updates immediately
+
+
+FINAL CHECKLIST
+═══════════════════════════════════════════════════════════════════════════════
+
+✓ ProtonMail app password copied
+✓ PostgreSQL database added to Railway
+✓ 5 environment variables set in Railway
+✓ Railway redeploy completed (30 sec)
+✓ Contact form submits successfully
+✓ Email notification received
+✓ Admin dashboard logs in and shows lead
+✓ Status updates work in dashboard
+
+🎉 YOUR SYSTEM IS LIVE!
+
+
+QUICK LINKS
+═══════════════════════════════════════════════════════════════════════════════
+
+Your Site:           https://www.loadlinefitness.com
+Admin Dashboard:     https://www.loadlinefitness.com/admin
+GitHub Repo:         https://github.com/noexcusesjesse/LLFLanding
+Railway:             https://railway.app
+ProtonMail:          https://protonmail.com
+
+
+TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════════════════════
+
+Problem: Email not sending
+Solution: 
+  - Verify PROTON_PASSWORD is the 24-char app password (not your login password)
+  - Check PROTON_EMAIL matches your ProtonMail account exactly
+  - Generate a NEW password in ProtonMail if needed
+
+Problem: Admin dashboard won't log in
+Solution:
+  - Verify ADMIN_TOKEN is typed correctly (case-sensitive)
+  - Try in incognito window (clears browser storage)
+  - Check browser console (F12) for error messages
+
+Problem: Form submits but doesn't work
+Solution:
+  - Check /api/leads endpoint responds (should get "Unauthorized")
+  - Check Railway logs for errors
+  - Wait 2 minutes for full redeploy after changing variables
+
+
+QUESTIONS?
+═══════════════════════════════════════════════════════════════════════════════
+
+Email: jesse@loadlinefitness.com
+Docs:  See QUICK-START.md in your GitHub repo
+Help:  See PROTONMAIL-SETUP.md or DEPLOYMENT-CHECKLIST.md
+
+═══════════════════════════════════════════════════════════════════════════════
+                    YOU'RE 15 MINUTES AWAY FROM LIVE! 🚀
+═══════════════════════════════════════════════════════════════════════════════
