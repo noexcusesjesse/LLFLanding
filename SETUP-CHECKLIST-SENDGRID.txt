@@ -1,0 +1,200 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                   LOADLINE FITNESS — SENDGRID SETUP                        ║
+║                    10 Minutes to Live Lead Capture 🚀                       ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+STEP 1: SENDGRID ACCOUNT
+═══════════════════════════════════════════════════════════════════════════════
+Time: 3 minutes | Status: ☐ PENDING
+
+1. Go to https://sendgrid.com
+2. Click "Sign Up" (top right)
+3. Create account:
+   Email:    [your email]
+   Name:     [your name]
+   Password: [create secure password]
+4. Click "Create Account"
+5. ✓ Verify email (check inbox for confirmation link)
+
+
+STEP 2: GET API KEY
+═══════════════════════════════════════════════════════════════════════════════
+Time: 2 minutes | Status: ☐ PENDING
+
+1. Log into SendGrid dashboard
+2. Click "Settings" (left sidebar)
+3. Click "API Keys"
+4. Click "Create API Key" (blue button)
+5. Name: LoadLine Fitness
+6. Click "Create & Verify"
+7. ✓ COPY THE KEY (looks like: SG.abcd1234efgh5678ijkl9012...)
+
+Save this key → you need it next!
+
+
+STEP 3: VERIFY SENDER EMAIL
+═══════════════════════════════════════════════════════════════════════════════
+Time: 2 minutes | Status: ☐ PENDING
+
+1. Still in SendGrid
+2. Click "Settings" → "Sender Authentication"
+3. Click "Verify a Single Sender"
+4. Fill in:
+   From Email: noreply@loadlinefitness.com
+   From Name:  LoadLine Fitness
+5. Click "Create"
+6. ✓ Verify email: SendGrid sends link → click it in your inbox
+
+
+STEP 4: ADD TO RAILWAY
+═══════════════════════════════════════════════════════════════════════════════
+Time: 3 minutes | Status: ☐ PENDING
+
+1. Go to https://railway.app
+2. Open your LoadLine Fitness project
+3. Click "Variables" tab
+4. Add these 5 variables (click "Add Variable" each time):
+
+   VARIABLE 1:
+   Name:  SENDGRID_API_KEY
+   Value: SG.abcd1234efgh5678ijkl9012
+   (paste your key from Step 2)
+
+   VARIABLE 2:
+   Name:  SENDGRID_FROM_EMAIL
+   Value: noreply@loadlinefitness.com
+
+   VARIABLE 3:
+   Name:  NOTIFY_EMAIL
+   Value: jesse@loadlinefitness.com
+
+   VARIABLE 4:
+   Name:  ADMIN_TOKEN
+   Value: MySecurePassword123!
+   (pick any secure password you'll remember)
+
+   VARIABLE 5:
+   Name:  DASHBOARD_URL
+   Value: https://www.loadlinefitness.com
+
+5. Click "Save"
+6. ✓ Wait 30 seconds for Railway to redeploy
+
+
+STEP 5: TEST IT
+═══════════════════════════════════════════════════════════════════════════════
+Time: 2 minutes | Status: ☐ PENDING
+
+Test 5A — Contact Form:
+  1. Visit https://www.loadlinefitness.com
+  2. Scroll to "GET IN TOUCH"
+  3. Fill form with:
+     Name:    Test User
+     Email:   test@example.com
+     Phone:   555-1234
+     Message: Testing the form
+  4. Click "Send My Request"
+  5. ✓ See green "✓ Thank you" message
+
+Test 5B — Email Notification:
+  1. Check your inbox (jesse@loadlinefitness.com)
+  2. ✓ Should have email from: noreply@loadlinefitness.com
+  3. Subject: [LoadLine] New Contact Lead: Test User
+  4. Shows: Name, Email, Phone, Message
+
+Test 5C — Admin Dashboard:
+  1. Visit https://www.loadlinefitness.com/admin
+  2. Enter ADMIN_TOKEN: MySecurePassword123!
+  3. Click "Login"
+  4. ✓ See your test lead in the table
+  5. Try clicking status dropdown → change to "contacted"
+  6. ✓ Status updates immediately
+
+
+FINAL CHECKLIST
+═══════════════════════════════════════════════════════════════════════════════
+
+✓ SendGrid account created
+✓ Email verified in SendGrid inbox
+✓ API key copied (SG.abcd...)
+✓ Sender email verified (noreply@...)
+✓ 5 variables added to Railway
+✓ Railway redeploy complete (30 sec)
+✓ Form submits successfully
+✓ Email notification received
+✓ Admin dashboard logs in
+✓ Lead appears in dashboard
+✓ Status updates work
+
+🎉 YOUR SYSTEM IS LIVE!
+
+
+WHAT YOU HAVE NOW
+═══════════════════════════════════════════════════════════════════════════════
+
+Website:              https://www.loadlinefitness.com
+Contact Form:         Embedded in landing page
+Database:             PostgreSQL on Railway
+Email Notifications:  SendGrid (100/day free)
+Admin Dashboard:      https://www.loadlinefitness.com/admin
+Lead Management:      View, filter, update status
+
+
+TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════════════════════
+
+Problem: Email not received
+→ Check SENDGRID_API_KEY is correct (no spaces)
+→ Verify you completed "Verify a Single Sender" step
+→ Wait 2 min and try again
+→ Check spam folder
+
+Problem: "Invalid API Key" in Railway logs
+→ Copy API key again from SendGrid Settings > API Keys
+→ Must be exact (SG.abc123... with no extra spaces)
+
+Problem: Admin dashboard won't log in
+→ Verify ADMIN_TOKEN is typed correctly (case-sensitive)
+→ Try in incognito window (clears browser storage)
+
+Problem: Form doesn't submit
+→ Check Railway deployment completed (wait 30 sec after saving variables)
+→ Refresh page (Ctrl+Shift+R or Cmd+Shift+R)
+→ Check browser console (F12) for errors
+
+
+QUICK LINKS
+═══════════════════════════════════════════════════════════════════════════════
+
+Site:                 https://www.loadlinefitness.com
+Admin:                https://www.loadlinefitness.com/admin
+GitHub:               https://github.com/noexcusesjesse/LLFLanding
+Railway:              https://railway.app
+SendGrid:             https://sendgrid.com
+
+Detailed Docs:        See SENDGRID-SETUP.md in repo
+Full API Reference:   See README-LEAD-SYSTEM.md in repo
+
+
+NEXT STEPS (After Testing)
+═══════════════════════════════════════════════════════════════════════════════
+
+Week 1:
+  - Promote form on your social media (Instagram, TikTok)
+  - Add FAQ section to website
+  - Add team/coach bios
+
+Week 2:
+  - Auto-send assessment questionnaire to new leads
+  - Add testimonials section
+  - Set up Slack alerts for new leads
+
+Month 2:
+  - Add pricing page
+  - Create full intake form
+  - Add payment processing
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                        YOU'RE 10 MINUTES FROM LIVE! 🚀
+═══════════════════════════════════════════════════════════════════════════════
