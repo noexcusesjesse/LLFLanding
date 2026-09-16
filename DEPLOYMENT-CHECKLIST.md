@@ -55,8 +55,8 @@ A **full-stack lead management system** for LoadLine Fitness with:
 In **Railway Dashboard → Variables**, add:
 
 ```
-GMAIL_USER=your-email@gmail.com
-GMAIL_PASSWORD=app-specific-password (see below)
+PROTON_EMAIL=your-proton@protonmail.com
+PROTON_PASSWORD=your-proton-app-password
 NOTIFY_EMAIL=jesse@loadlinefitness.com
 ADMIN_TOKEN=your-secure-random-token-here
 DASHBOARD_URL=https://www.loadlinefitness.com
@@ -64,35 +64,23 @@ DASHBOARD_URL=https://www.loadlinefitness.com
 
 **Note:** `DATABASE_URL` is auto-set by PostgreSQL plugin. Do NOT manually add it.
 
-### Step 3: Gmail Setup (Email Notifications)
+### Step 3: ProtonMail Setup (Email Notifications)
 
-**Option A: Gmail (Easiest)**
+1. Log into your ProtonMail account
+2. Go to **Settings → Accounts → Other mail services**
+3. Click **"Generate new password"** (for IMAP/SMTP)
+4. Copy the generated password
+5. Use that as `PROTON_PASSWORD` in Railway variables
 
-1. Go to [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords)
-2. Select "Mail" and "Windows Computer" (or your device)
-3. Google generates 16-character password
-4. Copy that password as `GMAIL_PASSWORD` (remove spaces)
-
-Example:
-```
-GMAIL_USER=jesse@gmail.com
-GMAIL_PASSWORD=abcdvwxyzabcdvwxyz
-```
-
-**Option B: SendGrid (Production)**
-
-Better for high-volume emails. See README-LEAD-SYSTEM.md for setup.
+**Important:** This is NOT your regular ProtonMail password — it's an app-specific SMTP password.
 
 ### Step 4: Deploy
 
-Railway auto-deploys when you push to GitHub. The repo already pushed with:
-- ✅ Contact form in index.html
-- ✅ Node.js backend (server.js)
-- ✅ Admin dashboard (admin.html)
-- ✅ Docker config
-- ✅ PostgreSQL setup
-
-**Status:** Your Railway deployment should be live now!
+Once variables are set, Railway auto-redeploys. Your site will now:
+- ✅ Accept form submissions
+- ✅ Save leads to database
+- ✅ Send ProtonMail notifications
+- ✅ Admin dashboard works at `/admin`
 
 ---
 

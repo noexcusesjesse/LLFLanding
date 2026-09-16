@@ -233,18 +233,22 @@ Access at `/admin` (e.g., `https://www.loadlinefitness.com/admin`)
 
 ## Email Configuration
 
-### Option 1: Gmail (Easy for testing)
+### ProtonMail (Your Setup)
 
-1. Enable 2-Factor Authentication on Google account
-2. Generate app-specific password at https://myaccount.google.com/apppasswords
-3. Use app password in `GMAIL_PASSWORD`
+1. Log in to ProtonMail account
+2. Go to **Settings → Accounts → Other mail services**
+3. Click **"Generate new password"** for IMAP/SMTP access
+4. Copy the generated password
+5. Use in Railway variables:
 
 ```
-GMAIL_USER=your-email@gmail.com
-GMAIL_PASSWORD=xxxx xxxx xxxx xxxx
+PROTON_EMAIL=your-proton@protonmail.com
+PROTON_PASSWORD=your-generated-proton-password
 ```
 
-### Option 2: SendGrid (Recommended for production)
+**Note:** This is NOT your regular ProtonMail password. It's an app-specific password for SMTP access.
+
+### Alternative: SendGrid (If ProtonMail doesn't work)
 
 1. Create SendGrid account at sendgrid.com
 2. Generate API key

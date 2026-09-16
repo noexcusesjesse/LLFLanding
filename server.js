@@ -19,12 +19,14 @@ const pool = new Pool({
   ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false
 });
 
-// Email transporter (Nodemailer)
+// Email transporter (ProtonMail via SMTP)
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.protonmail.com',
+  port: 587,
+  secure: false, // TLS, not SSL
   auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_PASSWORD
+    user: process.env.PROTON_EMAIL,
+    pass: process.env.PROTON_PASSWORD
   }
 });
 
