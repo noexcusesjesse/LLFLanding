@@ -1020,6 +1020,8 @@ p { font-size: 1.08rem; color: var(--text-primary); }
   background: linear-gradient(135deg, #6b7280, #4b5563);
   color: white;
   box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+  font-size: 0.7rem;
+  padding: 5px 10px;
 }
 
 .pricing-card.coming-soon:hover {
