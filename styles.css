@@ -1005,3 +1005,25 @@ p { font-size: 1.08rem; color: var(--text-primary); }
     padding: 24px;
   }
 }
+
+/* Coming Soon Cards */
+.pricing-card.coming-soon {
+  opacity: 0.7;
+  position: relative;
+}
+
+.pricing-card.coming-soon .pricing-badge {
+  background: linear-gradient(135deg, #6b7280, #4b5563);
+  color: white;
+}
+
+.pricing-card.coming-soon:hover {
+  transform: none;
+  border-color: var(--border-color);
+}
+
+.pricing-card.coming-soon .button {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
+}
