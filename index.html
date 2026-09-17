@@ -633,26 +633,14 @@
       const visitor = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
       
       if (!visitor.firstVisit) {
-        // First visit - go to My Story
+        // First visit - stay at top
         visitor.firstVisit = new Date().toISOString();
         visitor.returnCount = 0;
         localStorage.setItem(STORAGE_KEY, JSON.stringify(visitor));
-        
-        // Scroll to My Story after a short delay
-        setTimeout(() => {
-          document.getElementById('my-story').scrollIntoView({ behavior: 'smooth' });
-        }, 500);
-      } else if (visitor.lastSection) {
-        // Return visit - go to last section
+      } else {
+        // Return visit - stay at top
         visitor.returnCount = (visitor.returnCount || 0) + 1;
         localStorage.setItem(STORAGE_KEY, JSON.stringify(visitor));
-        
-        setTimeout(() => {
-          const lastSection = document.getElementById(visitor.lastSection);
-          if (lastSection) {
-            lastSection.scrollIntoView({ behavior: 'smooth' });
-          }
-        }, 500);
       }
       
       // Update section tracking on scroll
