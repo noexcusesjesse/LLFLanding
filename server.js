@@ -50,7 +50,7 @@ const sendEmail = async (to, subject, html) => {
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(dirname(__dirname)));
+app.use(express.static(__dirname));
 
 // Initialize database
 async function initDB() {
