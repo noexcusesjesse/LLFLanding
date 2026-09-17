@@ -365,11 +365,67 @@
   </button>
 
   <script>
+    // ========== VISITOR TRACKING ==========
+    const STORAGE_KEY = 'loadline_visitor';
+    const SECTIONS = ['my-story', 'qualify', 'system', 'formula', 'journey', 'loadline-30', 'nomad', 'start', 'contact-form'];
+    
+    // Track which section is currently in view
+    function updateCurrentSection() {
+      const scrollPos = window.scrollY + window.innerHeight / 3;
+      
+      for (let i = SECTIONS.length - 1; i >= 0; i--) {
+        const section = document.getElementById(SECTIONS[i]);
+        if (section && section.offsetTop <= scrollPos) {
+          const visitor = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+          visitor.lastSection = SECTIONS[i];
+          visitor.returnCount = (visitor.returnCount || 0);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(visitor));
+          break;
+        }
+      }
+    }
+    
+    // On page load - handle first visit vs return
+    window.addEventListener('DOMContentLoaded', () => {
+      const visitor = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      
+      if (!visitor.firstVisit) {
+        // First visit - go to My Story
+        visitor.firstVisit = new Date().toISOString();
+        visitor.returnCount = 0;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(visitor));
+        
+        // Scroll to My Story after a short delay
+        setTimeout(() => {
+          document.getElementById('my-story').scrollIntoView({ behavior: 'smooth' });
+        }, 500);
+      } else if (visitor.lastSection) {
+        // Return visit - go to last section
+        visitor.returnCount = (visitor.returnCount || 0) + 1;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(visitor));
+        
+        setTimeout(() => {
+          const lastSection = document.getElementById(visitor.lastSection);
+          if (lastSection) {
+            lastSection.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 500);
+      }
+      
+      // Update section tracking on scroll
+      window.addEventListener('scroll', updateCurrentSection);
+    });
+    
     // Quiz Logic
     let answers = {};
     
     function answerQuestion(questionNum, answer) {
       answers[questionNum] = answer;
+      
+      // Track quiz progress
+      const visitor = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      visitor.quizAnswers = answers;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(visitor));
       
       // Hide current question
       document.getElementById(`q${questionNum}`).classList.remove('active');
