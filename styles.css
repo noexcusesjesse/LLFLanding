@@ -749,17 +749,17 @@ p { font-size: 1.08rem; color: var(--text-primary); }
 
 .pricing-badge {
   position: absolute;
-  top: -12px;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 16px;
+  right: 16px;
   background: linear-gradient(135deg, var(--green), var(--green-dark));
   color: white;
-  padding: 6px 16px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
 }
 
 .pricing-header {
@@ -1015,6 +1015,7 @@ p { font-size: 1.08rem; color: var(--text-primary); }
 .pricing-card.coming-soon .pricing-badge {
   background: linear-gradient(135deg, #6b7280, #4b5563);
   color: white;
+  box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
 }
 
 .pricing-card.coming-soon:hover {
