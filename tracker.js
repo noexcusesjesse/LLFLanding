@@ -420,4 +420,4 @@ if (allData.splashAccepted) {
   document.getElementById('splashScreen').classList.add('hidden');
   if (!allData.profile) { document.getElementById('profileSetup').classList.remove('hidden'); }
   else { showApp(); }
-}
+}# force redeploy Fri Sep 18 09:23:26 AM MST 2026
