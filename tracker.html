@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LoadLine Tracker</title>
+  <link rel="icon" href="assets/favicon.jpg">
+  <style>
+    :root {
+      --green: #16a34a;
+      --green-light: #22c55e;
+      --green-dark: #15803d;
+      --bg: #0a0a0a;
+      --bg2: #1e1e1e;
+      --bg3: #2a2a2a;
+      --text: #e0e0e0;
+      --text2: #888888;
+      --border: #3a3a3a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    .header { background: rgba(10,10,10,0.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+    .header h1 { font-size: 1.2rem; color: white; }
+    .header h1 span { color: var(--green-light); }
+    .header .date-nav { display: flex; align-items: center; gap: 12px; }
+    .header .date-nav button { background: var(--bg3); border: 1px solid var(--border); color: var(--text); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; }
+    .header .date-nav button:hover { border-color: var(--green); }
+    .header .date-label { font-size: 0.9rem; color: var(--green-light); font-weight: 700; min-width: 100px; text-align: center; }
+
+    .tabs { display: flex; gap: 4px; padding: 12px 24px; background: var(--bg2); border-bottom: 1px solid var(--border); overflow-x: auto; }
+    .tab { padding: 10px 18px; border-radius: 8px 8px 0 0; cursor: pointer; font-size: 0.85rem; font-weight: 700; color: var(--text2); background: transparent; border: none; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.2s; }
+    .tab.active { color: var(--green-light); border-bottom-color: var(--green); background: rgba(22,163,74,0.08); }
+    .tab:hover { color: white; }
+
+    .main { max-width: 900px; margin: 0 auto; padding: 24px; }
+    .section { display: none; }
+    .section.active { display: block; }
+
+    .card { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+    .card h3 { font-size: 1.1rem; color: white; margin-bottom: 8px; }
+    .card p { font-size: 0.9rem; color: var(--text2); line-height: 1.5; }
+    .card.highlight { border-color: var(--green); }
+
+    .workout-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .workout-header h2 { font-size: 1.3rem; color: white; }
+    .workout-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+    .badge-green { background: rgba(22,163,74,0.15); color: var(--green-light); }
+    .badge-grey { background: rgba(107,114,128,0.15); color: #9ca3af; }
+
+    .exercise { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 12px; }
+    .exercise-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+    .exercise-name { font-weight: 700; color: white; font-size: 0.95rem; }
+    .exercise-detail { font-size: 0.8rem; color: var(--text2); margin-top: 4px; }
+    .exercise-check { width: 24px; height: 24px; border-radius: 6px; border: 2px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
+    .exercise-check.done { background: var(--green); border-color: var(--green); }
+    .exercise-check.done::after { content: '✓'; color: white; font-size: 14px; font-weight: 900; }
+
+    .set-log { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; align-items: center; }
+    .set-log label { font-size: 0.75rem; color: var(--text2); font-weight: 600; text-transform: uppercase; }
+    .set-log input { width: 60px; padding: 6px 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 0.85rem; text-align: center; }
+    .set-log input:focus { outline: none; border-color: var(--green); }
+
+    .meal-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 12px; }
+    .meal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .meal-time { font-size: 0.8rem; color: var(--green-light); font-weight: 700; }
+    .meal-title { font-weight: 700; color: white; font-size: 0.95rem; }
+    .meal-food { font-size: 0.85rem; color: var(--text2); line-height: 1.6; margin-bottom: 8px; }
+    .meal-protein { display: inline-block; padding: 3px 10px; background: rgba(22,163,74,0.1); color: var(--green-light); border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+
+    .supplement-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; }
+    .supplement-time { font-size: 0.75rem; color: var(--green-light); font-weight: 700; min-width: 80px; }
+    .supplement-name { font-size: 0.9rem; color: white; flex: 1; }
+    .supplement-notes { font-size: 0.75rem; color: var(--text2); }
+    .supplement-check { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
+    .supplement-check.done { background: var(--green); border-color: var(--green); }
+    .supplement-check.done::after { content: '✓'; color: white; font-size: 12px; font-weight: 900; }
+
+    .steps-tracker { text-align: center; padding: 40px 20px; }
+    .steps-number { font-size: 4rem; font-weight: 900; color: var(--green-light); line-height: 1; }
+    .steps-label { font-size: 1rem; color: var(--text2); margin-top: 8px; }
+    .steps-input-wrap { margin-top: 24px; display: flex; gap: 12px; justify-content: center; align-items: center; }
+    .steps-input-wrap input { width: 160px; padding: 12px 16px; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 1.2rem; text-align: center; font-weight: 700; }
+    .steps-input-wrap input:focus { outline: none; border-color: var(--green); }
+    .steps-input-wrap button { padding: 12px 24px; background: var(--green); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
+    .steps-input-wrap button:hover { background: var(--green-dark); }
+    .steps-bar-wrap { margin-top: 24px; background: var(--bg3); border-radius: 10px; height: 24px; overflow: hidden; }
+    .steps-bar { height: 100%; background: linear-gradient(90deg, var(--green), var(--green-light)); border-radius: 10px; transition: width 0.5s ease; }
+    .steps-blocks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 32px; }
+    .step-block { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; }
+    .step-block h4 { color: white; font-size: 0.85rem; margin-bottom: 4px; }
+    .step-block .target { color: var(--green-light); font-weight: 700; font-size: 0.8rem; }
+    .step-block .desc { color: var(--text2); font-size: 0.75rem; margin-top: 4px; }
+
+    .primer-exercise { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; }
+    .primer-exercise .exercise-check { width: 22px; height: 22px; }
+    .primer-info { flex: 1; }
+    .primer-name { font-weight: 700; color: white; font-size: 0.85rem; }
+    .primer-detail { font-size: 0.75rem; color: var(--text2); }
+
+    .day-selector { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+    .day-btn { padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg3); color: var(--text2); cursor: pointer; font-size: 0.8rem; font-weight: 700; transition: all 0.2s; }
+    .day-btn.active { border-color: var(--green); color: var(--green-light); background: rgba(22,163,74,0.08); }
+
+    .macro-bar { display: flex; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+    .macro-item { flex: 1; min-width: 120px; background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 14px; text-align: center; }
+    .macro-item h4 { font-size: 0.75rem; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+    .macro-value { font-size: 1.5rem; font-weight: 900; color: var(--green-light); }
+    .macro-target { font-size: 0.75rem; color: var(--text2); }
+
+    .grocery-section { margin-top: 24px; }
+    .grocery-section h3 { font-size: 1rem; color: white; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    .grocery-category h4 { font-size: 0.85rem; color: var(--green-light); margin: 12px 0 8px; }
+    .grocery-item { display: flex; align-items: center; gap: 10px; padding: 6px 0; }
+    .grocery-item input[type="checkbox"] { accent-color: var(--green); width: 16px; height: 16px; }
+    .grocery-item label { font-size: 0.85rem; color: var(--text); }
+
+    @media (max-width: 620px) {
+      .main { padding: 16px; }
+      .tabs { padding: 8px 12px; gap: 2px; }
+      .tab { padding: 8px 12px; font-size: 0.78rem; }
+      .steps-number { font-size: 3rem; }
+      .steps-input-wrap { flex-direction: column; }
+      .macro-bar { gap: 8px; }
+      .day-selector { gap: 6px; }
+      .day-btn { padding: 6px 10px; font-size: 0.75rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Load<span>Line</span> Tracker</h1>
+  <div class="date-nav">
+    <button onclick="changeDate(-1)">←</button>
+    <span class="date-label" id="dateLabel"></span>
+    <button onclick="changeDate(1)">→</button>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('workout')">Workout</button>
+  <button class="tab" onclick="switchTab('nutrition')">Nutrition</button>
+  <button class="tab" onclick="switchTab('supplements')">Supplements</button>
+  <button class="tab" onclick="switchTab('steps')">Steps</button>
+  <button class="tab" onclick="switchTab('primer')">Daily Primer</button>
+  <button class="tab" onclick="switchTab('grocery')">Grocery List</button>
+</div>
+
+<div class="main">
+  <!-- WORKOUT TAB -->
+  <div class="section active" id="sec-workout"></div>
+
+  <!-- NUTRITION TAB -->
+  <div class="section" id="sec-nutrition"></div>
+
+  <!-- SUPPLEMENTS TAB -->
+  <div class="section" id="sec-supplements"></div>
+
+  <!-- STEPS TAB -->
+  <div class="section" id="sec-steps"></div>
+
+  <!-- DAILY PRIMER TAB -->
+  <div class="section" id="sec-primer"></div>
+
+  <!-- GROCERY LIST TAB -->
+  <div class="section" id="sec-grocery"></div>
+</div>
+
+<script>
+// ===================== DATA =====================
+const STORAGE = 'loadline_tracker_v1';
+
+const WORKOUTS = {
+  tuesday: {
+    title: 'Workout 1: Upper Pull, Posture & Biceps',
+    day: 'Tue',
+    exercises: [
+      { name: 'Door Top-Anchor High Lat Pulldown', sets: 3, reps: '12-15', detail: 'Kneel facing door. Pull handles toward upper chest, driving elbows down and back. Squeeze lats 2 seconds at bottom.' },
+      { name: 'Door Mid-Anchor Standing/Seated Neutral Row', sets: 3, reps: '12', detail: 'Anchor at mid-chest. Step back for tension. Pull handles to lower ribs, pinching scapulae together for 2 seconds.' },
+      { name: 'Door-Anchor Face Pull with External Rotation', sets: 3, reps: '15', detail: 'Anchor at eye level. Pull toward forehead with wrists rotating backward so thumbs point behind ears.' },
+      { name: 'Under-Foot Standing Tube Band Bicep Curls', sets: 3, reps: '12-15', detail: 'Stand on middle of band. Keep elbows locked at ribs. 3-second lowering tempo.' },
+      { name: 'Bodyweight Prone Cobra', sets: 2, reps: '10', detail: 'Lie prone on floor. Lift chest and rotate thumbs to ceiling. 3-second apex hold.' }
+    ]
+  },
+  thursday: {
+    title: 'Workout 2: Lower Hinge, Squat & Core',
+    day: 'Thu',
+    exercises: [
+      { name: 'Bodyweight Box / Chair Squats', sets: 3, reps: '12-15', detail: 'Push hips back and lower over 3 seconds until lightly tapping chair seat. Drive through midfoot.' },
+      { name: 'Under-Foot Banded Romanian Deadlift (RDL)', sets: 3, reps: '12', detail: 'Step on tube band, grip handles low. Hinge hips back with soft knees until hamstrings load.' },
+      { name: 'Bodyweight Reverse Lunges', sets: 3, reps: '10/leg', detail: 'Step backward, descending back knee toward floor. Keep front shin vertical.' },
+      { name: 'Door Mid-Anchor Pallof Anti-Rotation Press', sets: 3, reps: '10-12/side', detail: 'Stand sideways to door. Press handle straight out from sternum. Hold 2-3 seconds.' },
+      { name: 'Bodyweight Forearm Plank or Dead Bug', sets: 3, reps: '45s or 10/side', detail: 'Lock in ribcage, brace abs tightly, prevent anterior pelvic tilt.' }
+    ]
+  },
+  saturday: {
+    title: 'Workout 3: Upper Push, Shoulders & Triceps',
+    day: 'Sat',
+    exercises: [
+      { name: 'Door Mid-Anchor Chest Press', sets: 3, reps: '12-15', detail: 'Face away from door anchor. Press forward with elbows tucked at 45 degrees.' },
+      { name: 'Stepped-On Band Lateral Raises', sets: 3, reps: '12-15', detail: 'Stand on band with one foot, raise handles to parallel. 2-second eccentric.' },
+      { name: 'Door Top-Anchor Overhead Triceps Extension', sets: 3, reps: '12-15', detail: 'Facing away from door, hinge forward slightly. Extend elbows to full lockout.' },
+      { name: 'Stepped-On Band Overhead Shoulder Press', sets: 3, reps: '10-12', detail: 'Bring handles to shoulders, press overhead in scapular plane.' },
+      { name: 'Bodyweight Bird-Dog', sets: 3, reps: '10/side', detail: 'Reach opposite arm and leg straight out. 2-second hold at apex.' }
+    ]
+  }
+};
+
+const NUTRITION_PLAN = [
+  { day: 1, meals: [
+    { time: '9:00 AM', title: 'Meal A: Turkey & Egg Power Scramble', food: '4 oz lean ground turkey, 2 whole eggs, 3/4 cup egg whites, peppers/onions/spinach, 1 Tbsp nutritional yeast, 1/4 avocado, 1 cup berries.', protein: '50-55g' },
+    { time: '1:00 PM', title: 'Meal B: Lemon-Garlic Chicken Plate', food: '7 oz cooked chicken breast, 2 cups broccoli/cauliflower, 5 oz sweet potato, 1 tsp olive oil, lemon/garlic/herbs.', protein: '55-60g' },
+    { time: '5:00 PM', title: 'Meal C: Greek Yogurt Berry Bowl', food: '1.5 cups high-protein plain Greek yogurt + berries + cinnamon; add 1/2 scoop protein if needed.', protein: '35-45g' }
+  ]},
+  { day: 2, meals: [
+    { time: '9:00 AM', title: 'Meal A: Greek Yogurt Breakfast + Eggs', food: '1.5 cups plain high-protein Greek yogurt, 3/4 cup berries, 1 Tbsp chia, cinnamon + 2 eggs.', protein: '45-55g' },
+    { time: '1:00 PM', title: 'Meal B: Turkey Taco Bowl', food: '7 oz lean ground turkey, lettuce, tomato, onion, peppers, 1/2 cup black beans, salsa, 1/4 avocado.', protein: '50-55g' },
+    { time: '5:00 PM', title: 'Meal C: Chocolate-Berry Protein Smoothie', food: '1 scoop chocolate protein, 1 cup unsweetened milk, 3/4 cup frozen berries, ice; add 3/4 cup Greek yogurt if needed.', protein: '35-45g' }
+  ]},
+  { day: 3, meals: [
+    { time: '9:00 AM', title: 'Meal A: Spinach Turkey Omelet', food: '2 eggs + 1 cup egg whites, 3 oz turkey, spinach, tomato, onion, 1 Tbsp nutritional yeast; berries on side.', protein: '50-55g' },
+    { time: '1:00 PM', title: 'Meal B: Salmon, Quinoa & Broccoli', food: '7 oz salmon, 1/2 cup cooked quinoa, 2 cups broccoli/asparagus, lemon/herbs.', protein: '45-50g' },
+    { time: '5:00 PM', title: 'Meal C: Cottage Cheese Berry Bowl', food: '1.5 cups low-fat cottage cheese, 3/4 cup berries, cinnamon.', protein: '35-40g' }
+  ]},
+  { day: 4, meals: [
+    { time: '9:00 AM', title: 'Meal A: Southwest Egg & Turkey Bowl', food: '4 oz lean turkey, 2 eggs, 1/2 cup egg whites, peppers, onion, tomato, salsa, spinach, 1/4 avocado.', protein: '45-50g' },
+    { time: '1:00 PM', title: 'Meal B: Loaded Turkey Meatballs', food: '7 oz cooked lean turkey meatballs, 1/2 cup marinara, 2 cups broccoli/cauliflower, optional 1/2 cup quinoa.', protein: '50-55g' },
+    { time: '5:00 PM', title: 'Meal C: Vanilla-Cinnamon Protein Smoothie', food: '1 scoop vanilla protein, 1 cup unsweetened milk, 3/4 cup Greek yogurt, cinnamon, ice.', protein: '40-45g' }
+  ]},
+  { day: 5, meals: [
+    { time: '9:00 AM', title: 'Meal A: Veggie Omelet + Turkey', food: '2 eggs + 1 cup egg whites, 3-4 oz turkey, mushrooms/peppers/spinach, nutritional yeast; fruit on side.', protein: '50-55g' },
+    { time: '1:00 PM', title: 'Meal B: Chicken Fajita Bowl', food: '7 oz chicken, peppers/onions, lettuce, tomato, 1/2 cup black beans, salsa, 1/4 avocado, lime.', protein: '55-60g' },
+    { time: '5:00 PM', title: 'Meal C: Greek Yogurt Crunch Bowl', food: '1.5 cups high-protein Greek yogurt, berries, cinnamon, 1 Tbsp chopped walnuts.', protein: '35-45g' }
+  ]},
+  { day: 6, meals: [
+    { time: '9:00 AM', title: 'Meal A: Protein Oatmeal + Eggs', food: '1/2 cup dry oats + 1/2 scoop protein + cinnamon; 2 eggs + 3/4 cup egg whites. Add berries.', protein: '45-50g' },
+    { time: '1:00 PM', title: 'Meal B: Turkey Burger Power Bowl', food: '7 oz lean turkey burger, large salad/roasted vegetables, tomato/onion, 5 oz sweet potato, 1/4 avocado.', protein: '50-55g' },
+    { time: '5:00 PM', title: 'Meal C: Egg & Veggie Mini Plate', food: '2 eggs + 1 cup egg whites scrambled with vegetables; optional nutritional yeast.', protein: '35-40g' }
+  ]},
+  { day: 7, meals: [
+    { time: '9:00 AM', title: 'Meal A: Southwest Breakfast Scramble', food: '4 oz lean turkey, 2 eggs, 1/2 cup egg whites, peppers, onion, tomato, salsa, spinach, 1/4 avocado.', protein: '45-50g' },
+    { time: '1:00 PM', title: 'Meal B: Garlic Salmon & Sweet Potato', food: '7 oz salmon, green beans/asparagus, 5 oz sweet potato, lemon and garlic.', protein: '45-50g' },
+    { time: '5:00 PM', title: 'Meal C: Berry-Chia Protein Smoothie', food: '1 scoop protein, unsweetened milk, 3/4 cup berries, 1 Tbsp chia, ice; Greek yogurt as needed.', protein: '35-45g' }
+  ]},
+  { day: 8, meals: [
+    { time: '9:00 AM', title: 'Meal A: Turkey & Egg Power Scramble', food: '4 oz lean ground turkey, 2 whole eggs, 3/4 cup egg whites, peppers/onions/spinach, 1 Tbsp nutritional yeast, 1/4 avocado, 1 cup berries.', protein: '50-55g' },
+    { time: '1:00 PM', title: 'Meal B: Turkey Broccoli Power Bowl', food: '7 oz lean turkey, 2 cups broccoli, 1/2 cup quinoa or beans, tomato/onion, 1/4 avocado.', protein: '50-55g' },
+    { time: '5:00 PM', title: 'Meal C: Greek Yogurt Berry Bowl', food: '1.5 cups high-protein plain Greek yogurt + berries + cinnamon; add 1/2 scoop protein if needed.', protein: '35-45g' }
+  ]},
+  { day: 9, meals: [
+    { time: '9:00 AM', title: 'Meal A: Greek Yogurt Breakfast + Eggs', food: '1.5 cups plain high-protein Greek yogurt, 3/4 cup berries, 1 Tbsp chia, cinnamon + 2 eggs.', protein: '45-55g' },
+    { time: '1:00 PM', title: 'Meal B: Salmon Taco Bowl', food: '7 oz salmon, lettuce, cabbage, tomato, salsa, 1/2 cup black beans, 1/4 avocado, lime.', protein: '45-50g' },
+    { time: '5:00 PM', title: 'Meal C: Chocolate-Berry Protein Smoothie', food: '1 scoop chocolate protein, 1 cup unsweetened milk, 3/4 cup frozen berries, ice.', protein: '35-45g' }
+  ]},
+  { day: 10, meals: [
+    { time: '9:00 AM', title: 'Meal A: Spinach Turkey Omelet', food: '2 eggs + 1 cup egg whites, 3 oz turkey, spinach, tomato, onion, 1 Tbsp nutritional yeast; berries on side.', protein: '50-55g' },
+    { time: '1:00 PM', title: 'Meal B: Chicken Meatballs & Vegetables', food: '7 oz cooked chicken meatballs, tomato sauce, 2 cups roasted vegetables, optional 1/2 cup quinoa.', protein: '50-55g' },
+    { time: '5:00 PM', title: 'Meal C: Cottage Cheese Berry Bowl', food: '1.5 cups low-fat cottage cheese, 3/4 cup berries, cinnamon.', protein: '35-40g' }
+  ]},
+  { day: 11, meals: [
+    { time: '9:00 AM', title: 'Meal A: Protein Oatmeal + Eggs', food: '1/2 cup dry oats + 1/2 scoop protein + cinnamon; 2 eggs + 3/4 cup egg whites. Add berries.', protein: '45-50g' },
+    { time: '1:00 PM', title: 'Meal B: Turkey Taco Bowl', food: '7 oz lean ground turkey, lettuce, tomato, onion, peppers, 1/2 cup black beans, salsa, 1/4 avocado.', protein: '50-55g' },
+    { time: '5:00 PM', title: 'Meal C: Vanilla-Cinnamon Protein Smoothie', food: '1 scoop vanilla protein, 1 cup unsweetened milk, 3/4 cup Greek yogurt, cinnamon, ice.', protein: '40-45g' }
+  ]},
+  { day: 12, meals: [
+    { time: '9:00 AM', title: 'Meal A: Veggie Omelet + Turkey', food: '2 eggs + 1 cup egg whites, 3-4 oz turkey, mushrooms/peppers/spinach, nutritional yeast; fruit on side.', protein: '50-55g' },
+    { time: '1:00 PM', title: 'Meal B: Lemon Salmon Plate', food: '7 oz salmon, 2 cups green vegetables, 1/2 cup quinoa or 5 oz sweet potato, lemon/herbs.', protein: '45-50g' },
+    { time: '5:00 PM', title: 'Meal C: Greek Yogurt Crunch Bowl', food: '1.5 cups high-protein Greek yogurt, berries, cinnamon, 1 Tbsp chopped walnuts.', protein: '35-45g' }
+  ]},
+  { day: 13, meals: [
+    { time: '9:00 AM', title: 'Meal A: Southwest Breakfast Scramble', food: '4 oz lean turkey, 2 eggs, 1/2 cup egg whites, peppers, onion, tomato, salsa, spinach, 1/4 avocado.', protein: '45-50g' },
+    { time: '1:00 PM', title: 'Meal B: Chicken Avocado Bowl', food: '7 oz chicken, mixed greens, tomato, cucumber, peppers, 1/2 cup beans, 1/4 avocado, salsa/lime.', protein: '55-60g' },
+    { time: '5:00 PM', title: 'Meal C: Berry-Chia Protein Smoothie', food: '1 scoop protein, unsweetened milk, 3/4 cup berries, 1 Tbsp chia, ice.', protein: '35-45g' }
+  ]},
+  { day: 14, meals: [
+    { time: '9:00 AM', title: 'Meal A: Turkey & Egg Power Scramble', food: '4 oz lean ground turkey, 2 whole eggs, 3/4 cup egg whites, peppers/onions/spinach, 1 Tbsp nutritional yeast, 1/4 avocado, 1 cup berries.', protein: '50-55g' },
+    { time: '1:00 PM', title: 'Meal B: Turkey or Salmon Celebration Bowl', food: 'Choose 7 oz lean turkey or salmon; 2 cups vegetables, 1/2 cup beans/quinoa or sweet potato, salsa/herbs and avocado.', protein: '45-55g' },
+    { time: '5:00 PM', title: 'Meal C: Protein Mini Meal of Choice', food: 'Greek yogurt bowl, cottage cheese bowl, eggs/egg whites, or a protein smoothie. Aim for 35-45g protein.', protein: '35-45g' }
+  ]}
+];
+
+const SUPPLEMENTS = [
+  { time: 'On waking', name: 'Creatine: 3-5g', notes: 'Take with plain water. Fasted.', phase: 'FASTED' },
+  { time: 'Morning', name: 'Decaf green tea (optional)', notes: 'Unsweetened. Fasting-friendly.', phase: 'FASTED' },
+  { time: '~11:30 AM', name: 'Psyllium husk + water', notes: '30 min before Meal A. Separate from meds.', phase: 'Pre-Meal' },
+  { time: '12:00 PM', name: 'Resistant potato starch: 1 tsp', notes: 'Mix into cool/cold food. Do not cook.', phase: 'MEAL A' },
+  { time: '12:00 PM', name: "Bob's Red Mill Nutritional Yeast: 1 Tbsp", notes: 'Sprinkle on eggs, vegetables, bowls.', phase: 'MEAL A' },
+  { time: '12:00 PM', name: 'Multivitamin + D3/K2 + Fish Oil', notes: 'Take with food for absorption.', phase: 'MEAL A' },
+  { time: 'Eating window', name: 'Chia seeds: 2 Tbsp in water', notes: 'Keep inside eating window.', phase: 'EATING' },
+  { time: 'Meal B', name: 'Optional 2nd fish oil dose', notes: 'If regimen calls for it.', phase: 'EATING' },
+  { time: 'Evening', name: 'Magnesium glycinate', notes: '1-2 hours before bed.', phase: 'EVENING' }
+];
+
+const PRIMER = [
+  { name: 'Standing Band Pull-Aparts', detail: '2 sets x 15 reps. Pull band to sternum, squeeze shoulder blades 1 second.' },
+  { name: 'Quadruped Cat-Cow to Child\'s Pose', detail: '8 slow cycles. Inhale extend, exhale round, sink hips to heels for 3s lat stretch.' },
+  { name: 'Bodyweight Glute Bridges', detail: '1 set x 15 reps, 2-second apex hold. Drive heels into floor, squeeze glutes.' },
+  { name: 'Half-Kneeling Hip Flexor Stretch', detail: '30 seconds per side. Tuck pelvis under, shift forward, reach overhead.' },
+  { name: 'Standing Overhead Band Pass-Throughs', detail: '10 slow passes. Wide grip, straight arms, rotate from thighs overhead.' }
+];
+
+const GROCERY = {
+  'Protein': ['Lean ground turkey: 5-6 lb', 'Chicken breast: 4-5 lb', 'Salmon: 3-4 lb', 'Eggs: 2 dozen', 'Liquid egg whites: 2-3 cartons', 'Greek yogurt: 3-4 large tubs', 'Cottage cheese: 2 large tubs', 'Protein powder: 8-10 servings'],
+  'Vegetables': ['Broccoli/cauliflower', 'Spinach', 'Mixed greens/lettuce', 'Bell peppers', 'Onions', 'Tomatoes', 'Cucumbers', 'Green beans', 'Asparagus', 'Cabbage/slaw mix', 'Mushrooms'],
+  'Fruit & Carbs': ['Fresh/frozen berries', 'Sweet potatoes', 'Black beans', 'Quinoa', 'Old-fashioned oats'],
+  'Healthy Fats': ['Avocados', 'Olive oil', 'Walnuts'],
+  'Flavor': ['Lemons', 'Limes', 'Garlic', 'Cinnamon', 'Paprika', 'Cumin', 'Chili powder', 'Italian herbs', 'Black pepper', 'Salsa', 'Lower-sugar marinara'],
+  'LoadLine Pantry': ["Bob's Red Mill Nutritional Yeast", 'Unmodified potato starch', 'Chia seeds', 'Psyllium husk', 'Creatine', 'Unsweetened milk']
+};
+
+// ===================== STATE =====================
+let currentDate = new Date();
+let data = JSON.parse(localStorage.getItem(STORAGE) || '{}');
+
+function save() { localStorage.setItem(STORAGE, JSON.stringify(data)); }
+function dateKey(d) { return d.toISOString().split('T')[0]; }
+function dayOfYear(d) { return Math.floor((d - new Date(d.getFullYear(),0,0)) / 86400000); }
+
+function getDayData(key) {
+  const dk = dateKey(currentDate);
+  if (!data[dk]) data[dk] = {};
+  return data[dk];
+}
+
+// ===================== NAVIGATION =====================
+function changeDate(offset) {
+  currentDate.setDate(currentDate.getDate() + offset);
+  renderAll();
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach((t, i) => { t.classList.toggle('active', ['workout','nutrition','supplements','steps','primer','grocery'][i] === tab); });
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-' + tab).classList.add('active');
+}
+
+// ===================== RENDER WORKOUT =====================
+function renderWorkout() {
+  const el = document.getElementById('sec-workout');
+  const day = currentDate.getDay();
+  const dayNames = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+  const dayName = dayNames[day];
+  const dd = getDayData();
+  if (!dd.workout) dd.workout = {};
+
+  let workoutKey = null;
+  if (dayName === 'tuesday') workoutKey = 'tuesday';
+  else if (dayName === 'thursday') workoutKey = 'thursday';
+  else if (dayName === 'saturday') workoutKey = 'saturday';
+
+  if (!workoutKey) {
+    const isSunday = dayName === 'sunday';
+    el.innerHTML = `
+      <div class="card ${isSunday ? 'highlight' : ''}">
+        <div class="workout-header">
+          <h2>${isSunday ? 'Sunday Lite Day' : 'Rest Day'}</h2>
+          <span class="workout-badge ${isSunday ? 'badge-green' : 'badge-grey'}">${isSunday ? 'Active Recovery' : 'No Resistance'}</span>
+        </div>
+        <p>${isSunday ? 'Lite Day: Walking only. Complete 10,000 steps at a relaxed, conversational pace. Optional 5-10 min gentle mobility or static stretching. No lifting, no bands, no high-intensity work.' : 'Active recovery and step accumulation. Focus on your 10,000-step daily floor. Use the Steps tab to track.'}</p>
+      </div>`;
+    return;
+  }
+
+  const w = WORKOUTS[workoutKey];
+  let html = `<div class="card highlight">
+    <div class="workout-header">
+      <h2>${w.title}</h2>
+      <span class="workout-badge badge-green">${w.day} Training</span>
+    </div>
+    <p style="font-size:0.85rem;color:var(--text2);margin-top:4px;">3-second eccentric tempo (3-0-1-1). Rest 60-75 seconds between sets.</p>
+  </div>`;
+
+  w.exercises.forEach((ex, i) => {
+    const key = workoutKey + '_' + i;
+    const checked = dd.workout[key] && dd.workout[key].done;
+    const sets = dd.workout[key] && dd.workout[key].sets || [];
+    html += `<div class="exercise">
+      <div class="exercise-top">
+        <div>
+          <div class="exercise-name">${ex.name}</div>
+          <div class="exercise-detail">${ex.sets} sets x ${ex.reps} reps. ${ex.detail}</div>
+        </div>
+        <div class="exercise-check ${checked ? 'done' : ''}" onclick="toggleExercise('${workoutKey}',${i})"></div>
+      </div>
+      <div class="set-log"><label>Sets:</label>`;
+    html += `<input placeholder="Wt" value="${sets[0]||''}" onchange="logSet('${workoutKey}',${i},0,this.value)" title="Weight/Band">`;
+    for (let s = 1; s <= ex.sets; s++) {
+      html += `<input placeholder="R${s}" value="${sets[s]||''}" onchange="logSet('${workoutKey}',${i},${s},this.value)" title="Reps set ${s}">`;
+    }
+    html += `</div></div>`;
+  });
+
+  const totalExercises = w.exercises.length;
+  const completed = w.exercises.filter((_, i) => dd.workout[workoutKey + '_' + i] && dd.workout[workoutKey + '_' + i].done).length;
+  html = `<div class="card" style="margin-bottom:20px;text-align:center;"><span style="font-size:2rem;font-weight:900;color:var(--green-light);">${completed}/${totalExercises}</span><br><span style="font-size:0.85rem;color:var(--text2);">exercises completed</span></div>` + html;
+
+  el.innerHTML = html;
+}
+
+function toggleExercise(workoutKey, idx) {
+  const dd = getDayData();
+  const key = workoutKey + '_' + idx;
+  if (!dd.workout) dd.workout = {};
+  if (!dd.workout[key]) dd.workout[key] = {};
+  dd.workout[key].done = !dd.workout[key].done;
+  save();
+  renderWorkout();
+}
+
+function logSet(workoutKey, idx, setIdx, value) {
+  const dd = getDayData();
+  const key = workoutKey + '_' + idx;
+  if (!dd.workout) dd.workout = {};
+  if (!dd.workout[key]) dd.workout[key] = { sets: [] };
+  if (!dd.workout[key].sets) dd.workout[key].sets = [];
+  dd.workout[key].sets[setIdx] = value;
+  save();
+}
+
+// ===================== RENDER NUTRITION =====================
+function renderNutrition() {
+  const el = document.getElementById('sec-nutrition');
+  const nutritionDay = ((dayOfYear(currentDate) - 1) % 14) + 1;
+  const plan = NUTRITION_PLAN[nutritionDay - 1];
+  const dd = getDayData();
+  if (!dd.meals) dd.meals = {};
+
+  const proteinTarget = '150-170g';
+  const carbTarget = '100-140g';
+  const fatTarget = '60-75g';
+
+  let btnHtml = '<div class="day-selector">';
+  for (let d = 1; d <= 14; d++) {
+    btnHtml += `<button class="day-btn ${d === nutritionDay ? 'active' : ''}" onclick="goNutritionDay(${d})">Day ${d}</button>`;
+  }
+  btnHtml += '</div>';
+
+  let macroHtml = `<div class="macro-bar">
+    <div class="macro-item"><h4>Protein</h4><div class="macro-value">${dd.meals.protein || 0}g</div><div class="macro-target">Target: ${proteinTarget}</div></div>
+    <div class="macro-item"><h4>Carbs</h4><div class="macro-value">${dd.meals.carbs || 0}g</div><div class="macro-target">Target: ${carbTarget}</div></div>
+    <div class="macro-item"><h4>Fat</h4><div class="macro-value">${dd.meals.fat || 0}g</div><div class="macro-target">Target: ${fatTarget}</div></div>
+  </div>`;
+
+  let mealHtml = '';
+  plan.meals.forEach((meal, i) => {
+    const checked = dd.meals['day' + nutritionDay + '_meal' + i];
+    mealHtml += `<div class="meal-card">
+      <div class="meal-header">
+        <div>
+          <div class="meal-time">${meal.time}</div>
+          <div class="meal-title">${meal.title}</div>
+        </div>
+        <div class="exercise-check ${checked ? 'done' : ''}" onclick="toggleMeal(${i})"></div>
+      </div>
+      <div class="meal-food">${meal.food}</div>
+      <span class="meal-protein">${meal.protein} protein</span>
+    </div>`;
+  });
+
+  let macroInput = `<div class="card" style="margin-top:20px;">
+    <h3>Log Today's Macros</h3>
+    <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap;">
+      <div style="flex:1;min-width:100px;"><label style="font-size:0.75rem;color:var(--text2);display:block;margin-bottom:4px;">Protein (g)</label><input type="number" id="macroProtein" value="${dd.meals.protein||''}" onchange="logMacro('protein',this.value)" style="width:100%;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);text-align:center;font-size:1rem;"></div>
+      <div style="flex:1;min-width:100px;"><label style="font-size:0.75rem;color:var(--text2);display:block;margin-bottom:4px;">Carbs (g)</label><input type="number" id="macroCarbs" value="${dd.meals.carbs||''}" onchange="logMacro('carbs',this.value)" style="width:100%;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);text-align:center;font-size:1rem;"></div>
+      <div style="flex:1;min-width:100px;"><label style="font-size:0.75rem;color:var(--text2);display:block;margin-bottom:4px;">Fat (g)</label><input type="number" id="macroFat" value="${dd.meals.fat||''}" onchange="logMacro('fat',this.value)" style="width:100%;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);text-align:center;font-size:1rem;"></div>
+    </div>
+  </div>`;
+
+  const completed = plan.meals.filter((_, i) => dd.meals['day' + nutritionDay + '_meal' + i]).length;
+  el.innerHTML = `<div class="card highlight" style="margin-bottom:20px;text-align:center;">
+    <span style="font-size:1.5rem;font-weight:900;">Day ${nutritionDay} of 14</span>
+    <span style="font-size:0.85rem;color:var(--text2);display:block;margin-top:4px;">${completed}/3 meals completed</span>
+  </div>` + btnHtml + macroHtml + mealHtml + macroInput;
+}
+
+function goNutritionDay(d) {
+  const offset = d - ((dayOfYear(currentDate) - 1) % 14 + 1);
+  currentDate.setDate(currentDate.getDate() + offset);
+  renderAll();
+}
+
+function toggleMeal(idx) {
+  const dd = getDayData();
+  const nutritionDay = ((dayOfYear(currentDate) - 1) % 14) + 1;
+  const key = 'day' + nutritionDay + '_meal' + idx;
+  if (!dd.meals) dd.meals = {};
+  dd.meals[key] = !dd.meals[key];
+  save();
+  renderNutrition();
+}
+
+function logMacro(type, value) {
+  const dd = getDayData();
+  if (!dd.meals) dd.meals = {};
+  dd.meals[type] = value;
+  save();
+}
+
+// ===================== RENDER SUPPLEMENTS =====================
+function renderSupplements() {
+  const el = document.getElementById('sec-supplements');
+  const dd = getDayData();
+  if (!dd.supps) dd.supps = {};
+
+  const completed = SUPPLEMENTS.filter((_, i) => dd.supps['s' + i]).length;
+
+  let html = `<div class="card highlight" style="margin-bottom:20px;text-align:center;">
+    <span style="font-size:1.5rem;font-weight:900;">${completed}/${SUPPLEMENTS.length}</span>
+    <span style="font-size:0.85rem;color:var(--text2);display:block;margin-top:4px;">supplements completed</span>
+    <div style="margin-top:8px;background:var(--bg3);border-radius:10px;height:12px;overflow:hidden;">
+      <div style="height:100%;background:linear-gradient(90deg,var(--green),var(--green-light));border-radius:10px;width:${(completed/SUPPLEMENTS.length)*100}%;transition:width 0.3s;"></div>
+    </div>
+  </div>`;
+
+  SUPPLEMENTS.forEach((s, i) => {
+    const checked = dd.supps['s' + i];
+    html += `<div class="supplement-row">
+      <div class="supplement-check ${checked ? 'done' : ''}" onclick="toggleSupp(${i})"></div>
+      <div class="supplement-time">${s.time}</div>
+      <div style="flex:1;">
+        <div class="supplement-name">${s.name}</div>
+        <div class="supplement-notes">${s.notes} <span style="color:var(--green);font-weight:700;font-size:0.7rem;">[${s.phase}]</span></div>
+      </div>
+    </div>`;
+  });
+
+  html += `<div class="card" style="margin-top:20px;">
+    <h3>14:10 TRE Schedule</h3>
+    <p>Fast: 8:00 PM to 12:00 PM (14 hours) | Eating: 12:00 PM to 8:00 PM (10 hours)</p>
+    <p style="margin-top:8px;">Creatine in plain water and unsweetened tea are fasting-compatible. Keep all calorie-containing supplements and foods inside the eating window.</p>
+  </div>`;
+
+  el.innerHTML = html;
+}
+
+function toggleSupp(idx) {
+  const dd = getDayData();
+  if (!dd.supps) dd.supps = {};
+  dd.supps['s' + idx] = !dd.supps['s' + idx];
+  save();
+  renderSupplements();
+}
+
+// ===================== RENDER STEPS =====================
+function renderSteps() {
+  const el = document.getElementById('sec-steps');
+  const dd = getDayData();
+  const steps = dd.steps || 0;
+  const target = 10000;
+  const pct = Math.min((steps / target) * 100, 100);
+
+  el.innerHTML = `<div class="card">
+    <div class="steps-tracker">
+      <div class="steps-number">${steps.toLocaleString()}</div>
+      <div class="steps-label">of 10,000 steps</div>
+      <div class="steps-bar-wrap"><div class="steps-bar" style="width:${pct}%"></div></div>
+      <div class="steps-input-wrap">
+        <input type="number" id="stepsInput" placeholder="Enter steps" value="${steps || ''}" min="0" max="100000">
+        <button onclick="logSteps()">Log Steps</button>
+      </div>
+    </div>
+  </div>
+  <div class="steps-blocks">
+    <div class="step-block">
+      <h4>Block 1</h4>
+      <div class="target">3,500-4,000</div>
+      <div class="desc">Morning fasted walk (30-35 min)</div>
+    </div>
+    <div class="step-block">
+      <h4>Block 2</h4>
+      <div class="target">2,500-3,000</div>
+      <div class="desc">Post-lunch walk (20-25 min)</div>
+    </div>
+    <div class="step-block">
+      <h4>Block 3</h4>
+      <div class="target">3,000-3,500</div>
+      <div class="desc">Evening wind-down walk (25-30 min)</div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:20px;">
+    <h3>Mesa, Arizona Heat Protocol</h3>
+    <p>&lt;85°F: Outdoor walking encouraged. 100 oz baseline hydration.</p>
+    <p>85-99°F: Early morning or post-sunset only. Add 16 oz fluid + electrolytes.</p>
+    <p>100°F+: Indoor steps only on walk pad. 116-130+ oz daily fluid with LMNT electrolytes.</p>
+  </div>`;
+}
+
+function logSteps() {
+  const val = parseInt(document.getElementById('stepsInput').value) || 0;
+  const dd = getDayData();
+  dd.steps = val;
+  save();
+  renderSteps();
+}
+
+// ===================== RENDER PRIMER =====================
+function renderPrimer() {
+  const el = document.getElementById('sec-primer');
+  const dd = getDayData();
+  if (!dd.primer) dd.primer = {};
+  const completed = PRIMER.filter((_, i) => dd.primer['p' + i]).length;
+
+  let html = `<div class="card highlight" style="margin-bottom:20px;text-align:center;">
+    <span style="font-size:1.5rem;font-weight:900;">${completed}/${PRIMER.length}</span>
+    <span style="font-size:0.85rem;color:var(--text2);display:block;margin-top:4px;">primer exercises completed</span>
+    <div style="margin-top:8px;background:var(--bg3);border-radius:10px;height:12px;overflow:hidden;">
+      <div style="height:100%;background:linear-gradient(90deg,var(--green),var(--green-light));border-radius:10px;width:${(completed/PRIMER.length)*100}%;transition:width 0.3s;"></div>
+    </div>
+  </div>`;
+
+  PRIMER.forEach((p, i) => {
+    const checked = dd.primer['p' + i];
+    html += `<div class="primer-exercise">
+      <div class="exercise-check ${checked ? 'done' : ''}" onclick="togglePrimer(${i})"></div>
+      <div class="primer-info">
+        <div class="primer-name">${i + 1}. ${p.name}</div>
+        <div class="primer-detail">${p.detail}</div>
+      </div>
+    </div>`;
+  });
+
+  html += `<div class="card" style="margin-top:20px;">
+    <h3>Daily 5-10 Min Metabolic Primer</h3>
+    <p>Perform every day upon waking, during a midday break, or as pre-workout movement prep. Restores spinal mobility, wakes the posterior chain, and lubricates joints.</p>
+  </div>`;
+
+  el.innerHTML = html;
+}
+
+function togglePrimer(idx) {
+  const dd = getDayData();
+  if (!dd.primer) dd.primer = {};
+  dd.primer['p' + idx] = !dd.primer['p' + idx];
+  save();
+  renderPrimer();
+}
+
+// ===================== RENDER GROCERY =====================
+function renderGrocery() {
+  const el = document.getElementById('sec-grocery');
+  const dd = getDayData();
+  if (!dd.grocery) dd.grocery = {};
+
+  let html = `<div class="card highlight" style="margin-bottom:20px;">
+    <h3>Two-Week Grocery List</h3>
+    <p>From the LoadLine 14-Day Metabolic Nutrition Plan. Check items as you shop.</p>
+  </div>`;
+
+  Object.entries(GROCERY).forEach(([cat, items]) => {
+    html += `<div class="grocery-section"><h3>${cat}</h3>`;
+    items.forEach((item, i) => {
+      const key = cat + '_' + i;
+      const checked = dd.grocery[key];
+      html += `<div class="grocery-item">
+        <input type="checkbox" id="g_${key}" ${checked ? 'checked' : ''} onchange="toggleGrocery('${key}')">
+        <label for="g_${key}">${item}</label>
+      </div>`;
+    });
+    html += '</div>';
+  });
+
+  el.innerHTML = html;
+}
+
+function toggleGrocery(key) {
+  const dd = getDayData();
+  if (!dd.grocery) dd.grocery = {};
+  dd.grocery[key] = !dd.grocery[key];
+  save();
+}
+
+// ===================== RENDER ALL =====================
+function renderAll() {
+  const opts = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
+  document.getElementById('dateLabel').textContent = currentDate.toLocaleDateString('en-US', opts);
+  renderWorkout();
+  renderNutrition();
+  renderSupplements();
+  renderSteps();
+  renderPrimer();
+  renderGrocery();
+}
+
+renderAll();
+</script>
+</body>
+</html>
