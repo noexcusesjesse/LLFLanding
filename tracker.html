@@ -61,14 +61,15 @@
         </div>
         <div class="profile-dropdown" id="profileMenu">
           <button onclick="openEditProfile()">Edit Profile</button>
-          <button onclick="switchTab('stats')">Your Numbers</button>
+          <button onclick="switchTab('dashboard')">Dashboard</button>
           <button onclick="resetApp()" style="color:var(--red);">Reset All Data</button>
         </div>
       </div>
     </div>
   </div>
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('stats')">Your Numbers</button>
+    <button class="tab active" onclick="switchTab('dashboard')">Dashboard</button>
+    <button class="tab" onclick="switchTab('stats')">Your Numbers</button>
     <button class="tab" onclick="switchTab('workout')">Workout</button>
     <button class="tab" onclick="switchTab('nutrition')">Nutrition</button>
     <button class="tab" onclick="switchTab('supplements')">Supplements</button>
@@ -77,7 +78,8 @@
     <button class="tab" onclick="switchTab('grocery')">Grocery List</button>
   </div>
   <div class="main">
-    <div class="section active" id="sec-stats"></div>
+    <div class="section active" id="sec-dashboard"></div>
+    <div class="section" id="sec-stats"></div>
     <div class="section" id="sec-workout"></div>
     <div class="section" id="sec-nutrition"></div>
     <div class="section" id="sec-supplements"></div>

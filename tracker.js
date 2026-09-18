@@ -2,7 +2,7 @@
 const STORAGE = 'loadline_tracker_v1';
 let allData = JSON.parse(localStorage.getItem(STORAGE) || '{}');
 let currentDate = new Date();
-const TABS = ['stats','workout','nutrition','supplements','steps','primer','grocery'];
+const TABS = ['dashboard','stats','workout','nutrition','supplements','steps','primer','grocery'];
 
 function save() { localStorage.setItem(STORAGE, JSON.stringify(allData)); }
 function dateKey(d) { return d.toISOString().split('T')[0]; }
@@ -14,7 +14,7 @@ function acceptSplash() {
   allData.splashAccepted = true; save();
   document.getElementById('splashScreen').classList.add('hidden');
   if (!allData.profile) { document.getElementById('profileSetup').classList.remove('hidden'); }
-  else { showApp(); }
+  else { showApp(); switchTab('dashboard'); }
 }
 
 function saveProfile() {
@@ -157,6 +157,128 @@ function logBodyNumbers() {
 }
 
 function deleteLog(idx) { if (!allData.bodyLog) return; allData.bodyLog.splice(idx, 1); save(); renderStats(); }
+
+
+// ===================== DASHBOARD =====================
+function renderDashboard() {
+  const el = document.getElementById('sec-dashboard');
+  const p = allData.profile || {};
+  const dd = getDayData();
+  const log = allData.bodyLog || [];
+  const latest = log.length ? log[log.length - 1] : {};
+  const h = p.height || 0;
+  const cw = latest.weight || p.weight || 0;
+  const cwa = latest.waist || p.waist || 0;
+  const bmi = (h > 0 && cw > 0) ? ((cw / (h * h)) * 703).toFixed(1) : '--';
+  const whtr = (h > 0 && cwa > 0) ? (cwa / h).toFixed(2) : '--';
+
+  // Calculate compliance score
+  let total = 0, done = 0;
+  // Workout
+  const day = currentDate.getDay();
+  const dayNames = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+  const dayName = dayNames[day];
+  const isWorkoutDay = ['tuesday','thursday','saturday'].includes(dayName);
+  const wkKey = dayName === 'tuesday' ? 'tuesday' : dayName === 'thursday' ? 'thursday' : dayName === 'saturday' ? 'saturday' : null;
+  let workoutPct = 0;
+  if (wkKey && WORKOUTS[wkKey]) {
+    const w = WORKOUTS[wkKey];
+    total += w.exercises.length;
+    const completed = w.exercises.filter((_, i) => dd.workout && dd.workout[wkKey + '_' + i] && dd.workout[wkKey + '_' + i].done).length;
+    done += completed;
+    workoutPct = Math.round((completed / w.exercises.length) * 100);
+  }
+  // Meals
+  const nd = ((dayOfYear(currentDate) - 1) % 14) + 1;
+  total += 3;
+  const mealsDone = (dd.meals ? ['day' + nd + '_meal0','day' + nd + '_meal1','day' + nd + '_meal2'].filter(k => dd.meals[k]).length : 0);
+  done += mealsDone;
+  // Supplements
+  total += SUPPLEMENTS.length;
+  const suppsDone = SUPPLEMENTS.filter((_, i) => dd.supps && dd.supps['s' + i]).length;
+  done += suppsDone;
+  // Steps
+  total += 1;
+  const steps = dd.steps || 0;
+  if (steps >= 10000) done += 1;
+  // Primer
+  total += PRIMER.length;
+  const primerDone = PRIMER.filter((_, i) => dd.primer && dd.primer['p' + i]).length;
+  done += primerDone;
+  // Body log
+  const todayKey = dateKey(currentDate);
+  const hasBodyLog = log.some(e => e.date === todayKey);
+
+  const score = total > 0 ? Math.round((done / total) * 100) : 0;
+  const circumference = 2 * Math.PI * 58;
+  const dashOffset = circumference - (score / 100) * circumference;
+
+  const opts = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+  const dateStr = currentDate.toLocaleDateString('en-US', opts);
+
+  // Streak calculation
+  let streak = 0;
+  const checkDate = new Date(currentDate);
+  for (let i = 0; i < 365; i++) {
+    const dk = dateKey(checkDate);
+    const d = allData[dk];
+    if (d && ((d.workout && Object.values(d.workout).some(v => v && v.done)) || (d.meals && Object.values(d.meals).some(v => v === true)) || (d.supps && Object.values(d.supps).some(v => v)))) {
+      streak++;
+      checkDate.setDate(checkDate.getDate() - 1);
+    } else if (i > 0) break;
+    else { checkDate.setDate(checkDate.getDate() - 1); }
+  }
+
+  let html = '';
+  // Hero
+  html += '<div class="dash-hero"><div class="greeting">Welcome back, <span>' + (p.name || 'User') + '</span></div><div class="date-display">' + dateStr + '</div>' + (streak > 0 ? '<div class="streak">' + streak + ' day streak</div>' : '') + '</div>';
+
+  // Score Ring
+  html += '<div class="dash-score"><div class="score-ring"><svg width="140" height="140"><circle cx="70" cy="70" r="58" stroke="var(--bg)" stroke-width="10" fill="none"/><circle cx="70" cy="70" r="58" stroke="var(--green-light)" stroke-width="10" fill="none" stroke-dasharray="' + circumference + '" stroke-dashoffset="' + dashOffset + '" stroke-linecap="round"/></svg><div class="score-text"><div class="score-num">' + score + '%</div><div class="score-label">Daily Score</div></div></div><div class="score-details">';
+  html += '<div class="score-item"><div class="score-dot ' + (isWorkoutDay ? (workoutPct === 100 ? 'done' : workoutPct > 0 ? 'partial' : 'missed') : 'pending') + '"></div>Workout: ' + (isWorkoutDay ? workoutPct + '%' : 'Rest Day') + '</div>';
+  html += '<div class="score-item"><div class="score-dot ' + (mealsDone === 3 ? 'done' : mealsDone > 0 ? 'partial' : 'missed') + '"></div>Nutrition: ' + mealsDone + '/3 meals</div>';
+  html += '<div class="score-item"><div class="score-dot ' + (suppsDone === SUPPLEMENTS.length ? 'done' : suppsDone > 0 ? 'partial' : 'missed') + '"></div>Supplements: ' + suppsDone + '/' + SUPPLEMENTS.length + '</div>';
+  html += '<div class="score-item"><div class="score-dot ' + (steps >= 10000 ? 'done' : steps > 0 ? 'partial' : 'missed') + '"></div>Steps: ' + steps.toLocaleString() + '/10,000</div>';
+  html += '<div class="score-item"><div class="score-dot ' + (primerDone === PRIMER.length ? 'done' : primerDone > 0 ? 'partial' : 'missed') + '"></div>Primer: ' + primerDone + '/' + PRIMER.length + '</div>';
+  html += '</div></div>';
+
+  // Metric Cards
+  html += '<div class="dash-grid">';
+  html += '<div class="dash-card ' + (cw ? 'status-good' : '') + '" onclick="switchTab(\x27stats\x27)"><div class="dash-card-icon">BODY</div><div class="dash-card-title">Body Numbers</div><div class="dash-card-value">' + (cw ? cw + ' lbs' : '--') + '</div><div class="dash-card-sub">' + (bmi !== '--' ? 'BMI: ' + bmi : 'Log your weight') + '</div></div>';
+  html += '<div class="dash-card ' + (isWorkoutDay ? (workoutPct > 0 ? 'status-good' : 'status-warn') : 'status-good') + '" onclick="switchTab(\x27workout\x27)"><div class="dash-card-icon">TRAIN</div><div class="dash-card-title">Workout</div><div class="dash-card-value">' + (isWorkoutDay ? (workoutPct + '%') : 'Rest Day') + '</div><div class="dash-card-sub">' + (isWorkoutDay ? (wkKey ? WORKOUTS[wkKey].day + ' Training' : '') : 'Active Recovery') + '</div><div class="dash-card-bar"><div class="fill" style="width:' + workoutPct + '%"></div></div></div>';
+  html += '<div class="dash-card ' + (mealsDone === 3 ? 'status-good' : mealsDone > 0 ? 'status-warn' : '') + '" onclick="switchTab(\x27nutrition\x27)"><div class="dash-card-icon">FUEL</div><div class="dash-card-title">Nutrition</div><div class="dash-card-value">Day ' + nd + '</div><div class="dash-card-sub">' + mealsDone + '/3 meals logged</div><div class="dash-card-bar"><div class="fill" style="width:' + (mealsDone / 3 * 100) + '%"></div></div></div>';
+  html += '<div class="dash-card ' + (suppsDone === SUPPLEMENTS.length ? 'status-good' : suppsDone > 0 ? 'status-warn' : '') + '" onclick="switchTab(\x27supplements\x27)"><div class="dash-card-icon">RECOVER</div><div class="dash-card-title">Supplements</div><div class="dash-card-value">' + suppsDone + '/' + SUPPLEMENTS.length + '</div><div class="dash-card-sub">' + (suppsDone === SUPPLEMENTS.length ? 'All done' : (SUPPLEMENTS.length - suppsDone) + ' remaining') + '</div><div class="dash-card-bar"><div class="fill" style="width:' + (suppsDone / SUPPLEMENTS.length * 100) + '%"></div></div></div>';
+  html += '<div class="dash-card ' + (steps >= 10000 ? 'status-good' : steps > 5000 ? 'status-warn' : '') + '" onclick="switchTab(\x27steps\x27)"><div class="dash-card-icon">MOVE</div><div class="dash-card-title">Steps</div><div class="dash-card-value">' + steps.toLocaleString() + '</div><div class="dash-card-sub">' + (steps >= 10000 ? 'Goal reached' : (10000 - steps).toLocaleString() + ' to go') + '</div><div class="dash-card-bar"><div class="fill" style="width:' + Math.min((steps / 10000) * 100, 100) + '%"></div></div></div>';
+  html += '<div class="dash-card ' + (hasBodyLog ? 'status-good' : '') + '" onclick="switchTab(\x27stats\x27)"><div class="dash-card-icon">LOG</div><div class="dash-card-title">Body Log</div><div class="dash-card-value">' + (hasBodyLog ? 'Logged' : 'Pending') + '</div><div class="dash-card-sub">Weight + Waist</div></div>';
+  html += '</div>';
+
+  // Weight Trend (last 7 entries)
+  if (log.length > 1) {
+    const recent = log.slice(-7);
+    const weights = recent.map(e => e.weight || 0).filter(w => w > 0);
+    if (weights.length > 1) {
+      const maxW = Math.max(...weights);
+      const minW = Math.min(...weights);
+      const range = maxW - minW || 1;
+      html += '<div class="dash-trend"><h3>Weight Trend</h3><div class="trend-chart">';
+      recent.forEach((e, i) => {
+        const w = e.weight || 0;
+        const pct = w > 0 ? ((w - minW) / range * 80 + 20) : 0;
+        const isToday = e.date === dateKey(currentDate);
+        html += '<div class="trend-bar-wrap"><div class="trend-value">' + (w || '--') + '</div><div class="trend-bar ' + (isToday ? 'today' : '') + '" style="height:' + pct + '%"></div><div class="trend-label">' + (e.date ? e.date.split('-')[2] : '') + '</div></div>';
+      });
+      html += '</div></div>';
+    }
+  }
+
+  // Quick Actions
+  html += '<div class="dash-actions"><div class="dash-action-btn" onclick="switchTab(\x27workout\x27)"><span class="action-icon">TRAIN</span>Today\x27s Workout</div>';
+  html += '<div class="dash-action-btn" onclick="switchTab(\x27nutrition\x27)"><span class="action-icon">FUEL</span>Meal Plan</div>';
+  html += '<div class="dash-action-btn" onclick="switchTab(\x27supplements\x27)"><span class="action-icon">RECOVER</span>Supplements</div>';
+  html += '<div class="dash-action-btn" onclick="switchTab(\x27primer\x27)"><span class="action-icon">PRIME</span>Daily Primer</div></div>';
+
+  el.innerHTML = html;
+}
 
 // ===================== WORKOUT DATA =====================
 const WORKOUTS = {
@@ -412,12 +534,12 @@ function toggleGrocery(key) { const dd = getDayData(); if (!dd.grocery) dd.groce
 function renderAll() {
   const opts = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
   document.getElementById('dateLabel').textContent = currentDate.toLocaleDateString('en-US', opts);
-  renderStats(); renderWorkout(); renderNutrition(); renderSupplements(); renderSteps(); renderPrimer(); renderGrocery();
+  renderDashboard(); renderStats(); renderWorkout(); renderNutrition(); renderSupplements(); renderSteps(); renderPrimer(); renderGrocery();
 }
 
 // ===================== INIT =====================
 if (allData.splashAccepted) {
   document.getElementById('splashScreen').classList.add('hidden');
   if (!allData.profile) { document.getElementById('profileSetup').classList.remove('hidden'); }
-  else { showApp(); }
+  else { showApp(); switchTab('dashboard'); }
 }
