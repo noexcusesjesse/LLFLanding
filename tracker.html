@@ -378,81 +378,6 @@ const GROCERY={'Protein':['Lean ground turkey: 5-6 lb','Chicken breast: 4-5 lb',
 
 
 // ===================== RENDER YOUR NUMBERS =====================
-function renderStats(){
-  const el=document.getElementById('sec-stats');
-  const p=allData.profile||{};
-  const log=allData.bodyLog||[];
-  const latest=log.length?log[log.length-1]:{};
-  const baseline=log.length?log[0]:{};
-  const currentWeight=latest.weight||p.weight||0;
-  const currentWaist=latest.waist||p.waist||0;
-  const height=p.height||0;
-  const bmi=(height>0&&currentWeight>0)?((currentWeight/(height*height))*703).toFixed(1):'--';
-  const whtr=(height>0&&currentWaist>0)?(currentWaist/height).toFixed(2):'--';
-  const whtrStatus=whtr!=='--'?(parseFloat(whtr)<0.5?'Healthy':'Elevated'):'';
-  const weightChange=(baseline.weight&&currentWeight&&baseline.weight!==currentWeight)?(currentWeight-baseline.weight):null;
-  const waistChange=(baseline.waist&&currentWaist&&baseline.waist!==currentWaist)?(currentWaist-baseline.waist):null;
-
-  let html=`<div class="stats-hero">
-    <div class="stat-card"><div class="stat-value">${currentWeight||'--'}</div><div class="stat-label">Weight (lbs)</div>${weightChange!==null?`<div class="stat-change ${weightChange<0?'down':weightChange>0?'up':'neutral'}">${weightChange>0?'+':''}${weightChange.toFixed(1)} lbs</div>`:''}</div>
-    <div class="stat-card"><div class="stat-value">${currentWaist||'--'}</div><div class="stat-label">Waist (in)</div>${waistChange!==null?`<div class="stat-change ${waistChange<0?'down':waistChange>0?'up':'neutral'}">${waistChange>0?'+':''}${waistChange.toFixed(1)} in</div>`:''}</div>
-    <div class="stat-card"><div class="stat-value">${bmi}</div><div class="stat-label">BMI</div><div class="stat-change neutral">${bmi!=='--'?(parseFloat(bmi)<25?'Normal':parseFloat(bmi)<30?'Overweight':'Obese'):''}</div></div>
-    <div class="stat-card"><div class="stat-value">${whtr}</div><div class="stat-label">Waist/Height</div><div class="stat-change ${whtrStatus==='Healthy'?'down':'up'}">${whtrStatus}</div></div>
-  </div>`;
-
-  html+=`<div class="card highlight"><h3>Your Profile</h3><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:12px;">
-    <div><span style="font-size:0.75rem;color:var(--text2);display:block;">Name</span><span style="font-weight:700;color:white;">${p.name||'--'}</span></div>
-    <div><span style="font-size:0.75rem;color:var(--text2);display:block;">Gender</span><span style="font-weight:700;color:white;">${p.gender?p.gender.charAt(0).toUpperCase()+p.gender.slice(1):'--'}</span></div>
-    <div><span style="font-size:0.75rem;color:var(--text2);display:block;">Age</span><span style="font-weight:700;color:white;">${p.age||'--'}</span></div>
-    <div><span style="font-size:0.75rem;color:var(--text2);display:block;">Height</span><span style="font-weight:700;color:white;">${p.height?p.height+'"':'--'}</span></div>
-    <div><span style="font-size:0.75rem;color:var(--text2);display:block;">TRE Window</span><span style="font-weight:700;color:white;">${p.tre||'14:10'}</span></div>
-    <div><span style="font-size:0.75rem;color:var(--text2);display:block;">Days Tracking</span><span style="font-weight:700;color:white;">${log.length}</span></div>
-  </div></div>`;
-
-  html+=`<div class="card"><h3>Log Today's Numbers</h3><div class="log-form">
-    <div class="form-field"><label>Weight (lbs)</label><input type="number" id="logWeight" step="0.1" placeholder="${currentWeight||'200'}"></div>
-    <div class="form-field"><label>Waist (in)</label><input type="number" id="logWaist" step="0.1" placeholder="${currentWaist||'38'}"></div>
-    <div class="form-field"><label>Notes</label><input type="text" id="logNotes" placeholder="Optional"></div>
-    <button onclick="logBodyNumbers()">Log</button>
-  </div></div>`;
-
-  if(log.length>0){
-    html+=`<div class="card"><h3>History</h3><table class="history-table"><thead><tr><th>Date</th><th>Weight</th><th>Waist</th><th>BMI</th><th>WHtR</th><th>Notes</th><th></th></tr></thead><tbody>`;
-    for(let i=log.length-1;i>=0;i--){
-      const entry=log[i];
-      const entryBmi=(p.height>0&&entry.weight)?((entry.weight/(p.height*p.height))*703).toFixed(1):'--';
-      const entryWhtr=(p.height>0&&entry.waist)?(entry.waist/p.height).toFixed(2):'--';
-      html+=`<tr><td>${entry.date}</td><td>${entry.weight||'--'} lbs</td><td>${entry.waist||'--'}"</td><td>${entryBmi}</td><td>${entryWhtr}</td><td style="font-size:0.8rem;color:var(--text2);">${entry.notes||''}</td><td><button class="del-btn" onclick="deleteLog(${i})">x</button></td></tr>`;
-    }
-    html+=`</tbody></table></div>`;
-  }
-
-  html+=`<div class="card"><h3>LoadLine Domain Targets</h3><div style="display:grid;gap:8px;margin-top:12px;">
-    <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg2);border-radius:6px;"><span style="font-size:0.85rem;">Body Load</span><span style="font-size:0.85rem;color:var(--green-light);font-weight:700;">5 lb Green Zone corridor</span></div>
-    <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg2);border-radius:6px;"><span style="font-size:0.85rem;">Abdominal Load (WHtR)</span><span style="font-size:0.85rem;color:var(--green-light);font-weight:700;">&lt; 0.50</span></div>
-    <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg2);border-radius:6px;"><span style="font-size:0.85rem;">Glycemic Load (HbA1c)</span><span style="font-size:0.85rem;color:var(--green-light);font-weight:700;">&lt; 5.7%</span></div>
-    <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg2);border-radius:6px;"><span style="font-size:0.85rem;">Cardiovascular (BP)</span><span style="font-size:0.85rem;color:var(--green-light);font-weight:700;">&lt; 120/80 mmHg</span></div>
-    <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg2);border-radius:6px;"><span style="font-size:0.85rem;">Lipid Load (Trig/HDL)</span><span style="font-size:0.85rem;color:var(--green-light);font-weight:700;">&lt; 2.0</span></div>
-    <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg2);border-radius:6px;"><span style="font-size:0.85rem;">Performance</span><span style="font-size:0.85rem;color:var(--green-light);font-weight:700;">8,000+ steps + 3x resistance/week</span></div>
-    <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg2);border-radius:6px;"><span style="font-size:0.85rem;">Recovery</span><span style="font-size:0.85rem;color:var(--green-light);font-weight:700;">7-9 hrs sleep + TRE window</span></div>
-  </div></div>`;
-
-  el.innerHTML=html;
-}
-
-function logBodyNumbers(){
-  const weight=parseFloat(document.getElementById('logWeight').value)||null;
-  const waist=parseFloat(document.getElementById('logWaist').value)||null;
-  const notes=document.getElementById('logNotes').value.trim();
-  if(!weight&&!waist)return;
-  if(!allData.bodyLog)allData.bodyLog=[];
-  const dk=dateKey(currentDate);
-  const existing=allData.bodyLog.findIndex(e=>e.date===dk);
-  const entry={date:dk,weight,waist,notes};
-  if(existing>=0){allData.bodyLog[existing]=entry;}else{allData.bodyLog.push(entry);}
-  save();renderStats();
-}
-function deleteLog(idx){if(!allData.bodyLog)return;allData.bodyLog.splice(idx,1);save();renderStats();}
 
 
 function renderWorkout(){
@@ -521,7 +446,7 @@ function toggleGrocery(key){const dd=getDayData();if(!dd.grocery)dd.grocery={};d
 function renderAll(){
   const opts={weekday:'long',month:'short',day:'numeric',year:'numeric'};
   document.getElementById('dateLabel').textContent=currentDate.toLocaleDateString('en-US',opts);
-  renderStats();renderStats();renderWorkout();renderNutrition();renderSupplements();renderSteps();renderPrimer();renderGrocery();
+  renderStats();renderWorkout();renderNutrition();renderSupplements();renderSteps();renderPrimer();renderGrocery();
 }
 
 if(allData.splashAccepted){document.getElementById('splashScreen').classList.add('hidden');if(!allData.profile){document.getElementById('profileSetup').classList.remove('hidden');}else{showApp();}}
