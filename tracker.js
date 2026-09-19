@@ -2,7 +2,7 @@
 const STORAGE = 'loadline_tracker_v1';
 let allData = JSON.parse(localStorage.getItem(STORAGE) || '{}');
 let currentDate = new Date();
-const TABS = ['dashboard','stats','workout','nutrition','supplements','steps','primer','grocery'];
+const TABS = ['dashboard','stats','workout','nutrition','supplements','steps','primer','grocery','challenges'];
 
 function save() { localStorage.setItem(STORAGE, JSON.stringify(allData)); }
 function dateKey(d) { return d.toISOString().split('T')[0]; }
@@ -79,6 +79,7 @@ function switchTab(tab) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.getElementById('sec-' + tab).classList.add('active');
   if (tab === 'stats') renderStats();
+  if (tab === 'challenges') renderChallenges();
 }
 
 // ===================== YOUR NUMBERS =====================
@@ -275,7 +276,32 @@ function renderDashboard() {
   html += '<div class="dash-actions"><div class="dash-action-btn" onclick="switchTab(\x27workout\x27)"><span class="action-icon">TRAIN</span>Today\x27s Workout</div>';
   html += '<div class="dash-action-btn" onclick="switchTab(\x27nutrition\x27)"><span class="action-icon">FUEL</span>Meal Plan</div>';
   html += '<div class="dash-action-btn" onclick="switchTab(\x27supplements\x27)"><span class="action-icon">RECOVER</span>Supplements</div>';
-  html += '<div class="dash-action-btn" onclick="switchTab(\x27primer\x27)"><span class="action-icon">PRIME</span>Daily Primer</div></div>';
+  html += '<div class="dash-action-btn" onclick="switchTab(\x27primer\x27)"><span class="action-icon">PRIME</span>Daily Primer</div>';
+  html += '<div class="dash-action-btn" onclick="switchTab(\x27challenges\x27)"><span class="action-icon">\u2694\ufe0f</span>Challenges</div></div>';
+
+  // Active Challenges Summary on Dashboard
+  (function() {
+    var cdDash = getChallengesData();
+    var activeChallengeIds = Object.keys(cdDash.active);
+    if (activeChallengeIds.length > 0) {
+      html += '<div class="dash-trend" style="margin-top:24px;"><h3>\u2694\ufe0f Active Challenges</h3>';
+      activeChallengeIds.forEach(function(id) {
+        var challenge = CHALLENGES.find(function(c) { return c.id === id; });
+        var active = cdDash.active[id];
+        if (!challenge) return;
+        recalcChallengeProgress(id);
+        var pct = Math.min(Math.round((active.progress / challenge.goal) * 100), 100);
+        var statusLabel = active.completed ? '\u2705 Complete!' : pct + '%';
+        html += '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">';
+        html += '<div style="font-size:1.4rem;">' + challenge.icon + '</div>';
+        html += '<div style="flex:1;"><div style="font-weight:700;color:white;font-size:0.9rem;">' + challenge.name + '</div>';
+        html += '<div style="margin-top:6px;background:var(--bg);border-radius:6px;height:8px;overflow:hidden;"><div style="height:100%;background:linear-gradient(90deg,var(--green),var(--green-light));border-radius:6px;width:' + pct + '%;transition:width 0.3s;"></div></div></div>';
+        html += '<div style="font-weight:700;color:var(--green-light);font-size:0.85rem;min-width:80px;text-align:right;">' + statusLabel + '</div>';
+        html += '</div>';
+      });
+      html += '</div>';
+    }
+  })();
 
   el.innerHTML = html;
 }
@@ -468,7 +494,18 @@ function renderNutrition() {
   });
   let macroInput = `<div class="card" style="margin-top:20px;"><h3>Log Today's Macros</h3><div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap;"><div style="flex:1;min-width:100px;"><label style="font-size:0.75rem;color:var(--text2);display:block;margin-bottom:4px;">Protein (g)</label><input type="number" value="${dd.meals.protein || ''}" onchange="logMacro('protein',this.value)" style="width:100%;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);text-align:center;font-size:1rem;"></div><div style="flex:1;min-width:100px;"><label style="font-size:0.75rem;color:var(--text2);display:block;margin-bottom:4px;">Carbs (g)</label><input type="number" value="${dd.meals.carbs || ''}" onchange="logMacro('carbs',this.value)" style="width:100%;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);text-align:center;font-size:1rem;"></div><div style="flex:1;min-width:100px;"><label style="font-size:0.75rem;color:var(--text2);display:block;margin-bottom:4px;">Fat (g)</label><input type="number" value="${dd.meals.fat || ''}" onchange="logMacro('fat',this.value)" style="width:100%;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);text-align:center;font-size:1rem;"></div></div></div>`;
   const completed = plan.meals.filter((_, i) => dd.meals['day' + nd + '_meal' + i]).length;
-  el.innerHTML = '<div class="card highlight" style="margin-bottom:20px;text-align:center;"><span style="font-size:1.5rem;font-weight:900;">Day ' + nd + ' of 14</span><span style="font-size:0.85rem;color:var(--text2);display:block;margin-top:4px;">' + completed + '/3 meals completed</span></div>' + btnHtml + macroHtml + mealHtml + macroInput;
+
+  // Water + Sleep tracking
+  const prof = allData.profile || {};
+  const waterTarget = Math.ceil((prof.weight || 200) / 2);
+  const waterNow = dd.water || 0;
+  const sleepNow = dd.sleep || 0;
+  let waterSleepHtml = `<div class="card" style="margin-top:20px;"><h3>💧 Hydration & 😴 Sleep</h3><div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap;">`;
+  waterSleepHtml += `<div style="flex:1;min-width:140px;"><label style="font-size:0.75rem;color:var(--text2);display:block;margin-bottom:4px;">Water (oz) — Target: ${waterTarget}</label><div style="display:flex;gap:8px;"><input type="number" id="waterInput" value="${waterNow || ''}" placeholder="0" min="0" style="flex:1;padding:8px;background:var(--bg);border:1px solid ${waterNow >= waterTarget ? 'var(--green)' : 'var(--border)'};border-radius:6px;color:var(--text);text-align:center;font-size:1rem;"><button onclick="logWater()" style="padding:8px 14px;background:var(--green);color:white;border:none;border-radius:6px;font-weight:700;cursor:pointer;">Log</button></div></div>`;
+  waterSleepHtml += `<div style="flex:1;min-width:140px;"><label style="font-size:0.75rem;color:var(--text2);display:block;margin-bottom:4px;">Sleep (hours) — Target: 7+</label><div style="display:flex;gap:8px;"><input type="number" id="sleepInput" value="${sleepNow || ''}" placeholder="0" min="0" max="24" step="0.5" style="flex:1;padding:8px;background:var(--bg);border:1px solid ${sleepNow >= 7 ? 'var(--green)' : 'var(--border)'};border-radius:6px;color:var(--text);text-align:center;font-size:1rem;"><button onclick="logSleep();renderNutrition()" style="padding:8px 14px;background:var(--green);color:white;border:none;border-radius:6px;font-weight:700;cursor:pointer;">Log</button></div></div>`;
+  waterSleepHtml += `</div></div>`;
+
+  el.innerHTML = '<div class="card highlight" style="margin-bottom:20px;text-align:center;"><span style="font-size:1.5rem;font-weight:900;">Day ' + nd + ' of 14</span><span style="font-size:0.85rem;color:var(--text2);display:block;margin-top:4px;">' + completed + '/3 meals completed</span></div>' + btnHtml + macroHtml + mealHtml + macroInput + waterSleepHtml;
 }
 
 function goNutDay(d) { currentDate.setDate(currentDate.getDate() + (d - ((dayOfYear(currentDate) - 1) % 14 + 1))); renderAll(); }
@@ -531,10 +568,607 @@ function renderGrocery() {
 }
 function toggleGrocery(key) { const dd = getDayData(); if (!dd.grocery) dd.grocery = {}; dd.grocery[key] = !dd.grocery[key]; save(); }
 
+// ===================== CHALLENGES DATA =====================
+const CHALLENGES = [
+  {
+    id: 'metabolic_reset_oct26',
+    name: '7-Day Metabolic Reset',
+    description: 'Our first community challenge! 7 days of fundamental resets: Know Your Starting Point, Hydration, Movement, Nutrition, Sleep, Strength, Review & Repeat.',
+    category: 'all',
+    icon: '🔥',
+    type: 'main',
+    challengeType: 'main',
+    goal: 7,
+    unit: 'days completed',
+    difficulty: 'Medium',
+    startDate: '2026-10-01',
+    endDate: '2026-10-07',
+    code: null,
+    days: [
+      { day: 1, title: 'Know Your Starting Point', focus: 'Log your baseline: weight, waist, measurements. Take a progress photo if comfortable.', checkFn: 'bodylog', icon: '📏' },
+      { day: 2, title: 'Hydration Reset', focus: 'Drink half your bodyweight in ounces of water. Log your water intake.', checkFn: 'water', icon: '💧' },
+      { day: 3, title: 'Movement Reset', focus: 'Hit your step target. Walk after every meal.', checkFn: 'steps', icon: '🚶' },
+      { day: 4, title: 'Nutrition Reset', focus: 'Log all 3 meals. Hit your protein target at every meal.', checkFn: 'meals', icon: '🍽️' },
+      { day: 5, title: 'Sleep Reset', focus: 'Set a consistent bedtime. No screens 30min before bed. Log your sleep.', checkFn: 'sleep', icon: '😴' },
+      { day: 6, title: 'Strength Reset', focus: 'Complete your primer + a workout session or strength circuit.', checkFn: 'workout', icon: '💪' },
+      { day: 7, title: 'Review. Reset. Repeat.', focus: 'Review your week. Compare Day 1 and Day 7. Post your results in the group!', checkFn: 'review', icon: '🔄' }
+    ]
+  },
+  {
+    id: 'step_streak_7',
+    name: '10K Step Streak',
+    description: 'Hit 10,000 steps every day for 7 consecutive days.',
+    category: 'movement',
+    icon: '🚶',
+    type: 'micro',
+    challengeType: 'micro',
+    goal: 7,
+    unit: 'days',
+    difficulty: 'Medium',
+    checkFn: 'steps'
+  },
+  {
+    id: 'supp_streak_14',
+    name: 'Supplement Streak',
+    description: 'Take all supplements every day for 14 consecutive days.',
+    category: 'recovery',
+    icon: '💊',
+    type: 'micro',
+    challengeType: 'micro',
+    goal: 14,
+    unit: 'days',
+    difficulty: 'Hard',
+    checkFn: 'supps'
+  },
+  {
+    id: 'primer_perfect_21',
+    name: 'Primer Perfect',
+    description: 'Complete every daily primer exercise for 21 consecutive days.',
+    category: 'recovery',
+    icon: '🧘',
+    type: 'micro',
+    challengeType: 'micro',
+    goal: 21,
+    unit: 'days',
+    difficulty: 'Hard',
+    checkFn: 'primer'
+  },
+  {
+    id: 'nutrition_10',
+    name: 'Nutrition Compliance',
+    description: 'Log all 3 meals for 10 days (not necessarily consecutive).',
+    category: 'nutrition',
+    icon: '🍽️',
+    type: 'micro',
+    challengeType: 'micro',
+    goal: 10,
+    unit: 'days',
+    difficulty: 'Medium',
+    checkFn: 'meals'
+  },
+  {
+    id: 'steps_100k',
+    name: '100K Steps Challenge',
+    description: 'Accumulate 100,000 total steps across all tracked days.',
+    category: 'movement',
+    icon: '🔥',
+    type: 'micro',
+    challengeType: 'micro',
+    goal: 100000,
+    unit: 'steps',
+    difficulty: 'Hard',
+    checkFn: 'total_steps'
+  },
+  {
+    id: 'transformation_30',
+    name: '30-Day Transformation',
+    description: 'Achieve full daily compliance (workout + meals + supps + primer + 10K steps) for 30 days.',
+    category: 'all',
+    icon: '⭐',
+    type: 'micro',
+    challengeType: 'micro',
+    goal: 30,
+    unit: 'perfect days',
+    difficulty: 'Extreme',
+    checkFn: 'full_compliance'
+  },
+  {
+    id: 'body_log_14',
+    name: '2-Week Body Logger',
+    description: 'Log your weight and waist measurements for 14 consecutive days.',
+    category: 'body',
+    icon: '📏',
+    type: 'micro',
+    challengeType: 'micro',
+    goal: 14,
+    unit: 'days',
+    difficulty: 'Medium',
+    checkFn: 'bodylog'
+  }
+];
+
+// Friends-only challenges (unlocked via code)
+const FRIEND_CHALLENGES = [
+  {
+    id: 'jesse_core_30',
+    name: '30-Day Core Challenge',
+    description: 'Complete the primer exercises every single day for 30 days straight. No excuses.',
+    category: 'training',
+    icon: '🔥',
+    type: 'friends',
+    challengeType: 'friends',
+    goal: 30,
+    unit: 'days',
+    difficulty: 'Hard',
+    code: 'JESSE30',
+    checkFn: 'primer'
+  },
+  {
+    id: 'group_step_warrior',
+    name: 'Group Step Warrior',
+    description: 'Hit 12,000 steps every day for 14 days. Only for the dedicated.',
+    category: 'movement',
+    icon: '⚔️',
+    type: 'friends',
+    challengeType: 'friends',
+    goal: 14,
+    unit: 'days',
+    difficulty: 'Hard',
+    code: 'STEPS14',
+    checkFn: 'steps_12k'
+  }
+];
+
+const ALL_CHALLENGES = [...CHALLENGES, ...FRIEND_CHALLENGES];
+
+function getChallengesData() {
+  if (!allData.challenges) allData.challenges = { active: {}, completed: [] };
+  return allData.challenges;
+}
+
+function checkDayCompliance(dd, dateObj) {
+  // Check if a given day's data meets "full compliance"
+  const day = dateObj.getDay();
+  const dayNames = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+  const dayName = dayNames[day];
+  const isWorkoutDay = ['tuesday','thursday','saturday'].includes(dayName);
+
+  // Workout check
+  let workoutOk = true;
+  if (isWorkoutDay) {
+    const wkKey = dayName;
+    if (WORKOUTS[wkKey]) {
+      workoutOk = WORKOUTS[wkKey].exercises.every((_, i) => dd.workout && dd.workout[wkKey + '_' + i] && dd.workout[wkKey + '_' + i].done);
+    }
+  }
+
+  // Meals check
+  const nd = ((dayOfYear(dateObj) - 1) % 14) + 1;
+  const mealsOk = dd.meals && ['day' + nd + '_meal0','day' + nd + '_meal1','day' + nd + '_meal2'].every(k => dd.meals[k]);
+
+  // Supplements check
+  const suppsOk = dd.supps && SUPPLEMENTS.every((_, i) => dd.supps['s' + i]);
+
+  // Primer check
+  const primerOk = dd.primer && PRIMER.every((_, i) => dd.primer['p' + i]);
+
+  // Steps check
+  const stepsOk = (dd.steps || 0) >= 10000;
+
+  return { workoutOk, mealsOk, suppsOk, primerOk, stepsOk, full: workoutOk && mealsOk && suppsOk && primerOk && stepsOk };
+}
+
+function checkChallengeDay(challenge, dk, dd, dateObj) {
+  // Returns true if this day counts toward the challenge
+  switch (challenge.checkFn) {
+    case 'workout': {
+      const day = dateObj.getDay();
+      const dayNames = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+      const dayName = dayNames[day];
+      if (!['tuesday','thursday','saturday'].includes(dayName)) return null; // not a workout day, skip
+      const wkKey = dayName;
+      if (!WORKOUTS[wkKey]) return null;
+      return WORKOUTS[wkKey].exercises.every((_, i) => dd.workout && dd.workout[wkKey + '_' + i] && dd.workout[wkKey + '_' + i].done);
+    }
+    case 'steps':
+      return (dd.steps || 0) >= 10000;
+    case 'supps':
+      return dd.supps && SUPPLEMENTS.every((_, i) => dd.supps['s' + i]);
+    case 'primer':
+      return dd.primer && PRIMER.every((_, i) => dd.primer['p' + i]);
+    case 'meals': {
+      const nd = ((dayOfYear(dateObj) - 1) % 14) + 1;
+      return dd.meals && ['day' + nd + '_meal0','day' + nd + '_meal1','day' + nd + '_meal2'].every(k => dd.meals[k]);
+    }
+    case 'bodylog':
+      return allData.bodyLog && allData.bodyLog.some(e => e.date === dk);
+    case 'water': {
+      const prof = allData.profile || {};
+      const target = Math.ceil((prof.weight || 200) / 2);
+      return (dd.water || 0) >= target;
+    }
+    case 'sleep':
+      return (dd.sleep || 0) >= 7;
+    case 'steps_12k':
+      return (dd.steps || 0) >= 12000;
+    case 'full_compliance':
+      return checkDayCompliance(dd, dateObj).full;
+    case 'review':
+      return dd.reviewed || false;
+    default:
+      return false;
+  }
+}
+
+function recalcChallengeProgress(challengeId) {
+  const cd = getChallengesData();
+  const active = cd.active[challengeId];
+  if (!active) return;
+  const challenge = ALL_CHALLENGES.find(c => c.id === challengeId);
+  if (!challenge) return;
+
+  if (challenge.type === 'streak') {
+    // Count consecutive days backward from today
+    let streak = 0;
+    const checkDate = new Date();
+    for (let i = 0; i < 365; i++) {
+      const dk = dateKey(checkDate);
+      const dayData = allData[dk] || {};
+      const result = checkChallengeDay(challenge, dk, dayData, checkDate);
+      if (result === true) {
+        streak++;
+        checkDate.setDate(checkDate.getDate() - 1);
+      } else if (result === null) {
+        // Skip day (e.g., non-workout day for workout challenge)
+        checkDate.setDate(checkDate.getDate() - 1);
+        continue;
+      } else if (i > 0) {
+        break;
+      } else {
+        checkDate.setDate(checkDate.getDate() - 1);
+      }
+    }
+    active.progress = streak;
+    if (streak >= challenge.goal && !active.completed) {
+      active.completed = true;
+      active.completedDate = new Date().toISOString();
+    }
+  } else if (challenge.type === 'total') {
+    let total = 0;
+    // Scan all stored day data
+    Object.keys(allData).forEach(key => {
+      if (/^\d{4}-\d{2}-\d{2}$/.test(key)) {
+        const dayData = allData[key];
+        const dateObj = new Date(key + 'T12:00:00');
+        const result = checkChallengeDay(challenge, key, dayData, dateObj);
+        if (challenge.checkFn === 'total_steps') {
+          total += (dayData.steps || 0);
+        } else if (result === true) {
+          total++;
+        }
+      }
+    });
+    active.progress = total;
+    if (total >= challenge.goal && !active.completed) {
+      active.completed = true;
+      active.completedDate = new Date().toISOString();
+    }
+  }
+}
+
+function joinChallenge(challengeId) {
+  const cd = getChallengesData();
+  if (cd.active[challengeId]) return;
+  cd.active[challengeId] = {
+    started: new Date().toISOString(),
+    progress: 0,
+    completed: false,
+    completedDate: null
+  };
+  save();
+  recalcChallengeProgress(challengeId);
+  save();
+  renderChallenges();
+}
+
+function abandonChallenge(challengeId) {
+  const cd = getChallengesData();
+  if (!cd.active[challengeId]) return;
+  if (!confirm('Abandon this challenge? Progress will be lost.')) return;
+  delete cd.active[challengeId];
+  save();
+  renderChallenges();
+}
+
+function claimChallenge(challengeId) {
+  const cd = getChallengesData();
+  const active = cd.active[challengeId];
+  if (!active || !active.completed) return;
+  // Move to completed
+  cd.completed.push({ id: challengeId, completedDate: active.completedDate, claimedDate: new Date().toISOString() });
+  delete cd.active[challengeId];
+  save();
+  renderChallenges();
+}
+
+function getChallengeProgress(challengeId) {
+  const cd = getChallengesData();
+  const active = cd.active[challengeId];
+  if (!active) return null;
+  recalcChallengeProgress(challengeId);
+  return active;
+}
+
+function unlockChallenge() {
+  const code = document.getElementById('unlockCodeInput').value.trim().toUpperCase();
+  if (!code) return;
+  const cd = getChallengesData();
+  if (!cd.unlocked) cd.unlocked = [];
+  const challenge = FRIEND_CHALLENGES.find(c => c.code === code);
+  if (!challenge) {
+    alert('Invalid code. Check with your challenge creator.');
+    return;
+  }
+  if (cd.unlocked.includes(challenge.id)) {
+    alert('Already unlocked!');
+    return;
+  }
+  cd.unlocked.push(challenge.id);
+  addChallengeToMain(challenge);
+  save();
+  renderChallenges();
+  alert('"' + challenge.name + '" unlocked!');
+}
+
+function addChallengeToMain(challenge) {
+  if (!CHALLENGES.find(c => c.id === challenge.id)) {
+    CHALLENGES.push(challenge);
+  }
+}
+
+function logWater() {
+  const val = parseInt(document.getElementById('waterInput').value) || 0;
+  const dd = getDayData();
+  dd.water = val;
+  save();
+  renderNutrition();
+}
+
+function logSleep() {
+  const val = parseFloat(document.getElementById('sleepInput').value) || 0;
+  const dd = getDayData();
+  dd.sleep = val;
+  save();
+}
+
+function renderChallenges() {
+  const el = document.getElementById('sec-challenges');
+  const cd = getChallengesData();
+
+  // Recalc all active
+  Object.keys(cd.active).forEach(id => recalcChallengeProgress(id));
+  save();
+
+  const categories = ['all', 'training', 'movement', 'nutrition', 'recovery', 'body'];
+  const catLabels = { all: 'All', training: 'Training', movement: 'Movement', nutrition: 'Nutrition', recovery: 'Recovery', body: 'Body' };
+
+  // Stats summary
+  const activeCount = Object.keys(cd.active).filter(id => !cd.active[id].completed).length;
+  const completedCount = cd.completed.length + Object.keys(cd.active).filter(id => cd.active[id].completed).length;
+  const totalChallenges = ALL_CHALLENGES.length;
+
+  let html = '';
+
+  // Hero summary
+  html += '<div class="card highlight" style="margin-bottom:20px;text-align:center;">';
+  html += '<div style="font-size:2.2rem;font-weight:900;color:var(--green-light);">⚔️ Challenges</div>';
+  html += '<div style="font-size:0.9rem;color:var(--text2);margin-top:6px;">Push your limits. Earn your badges.</div>';
+  html += '<div style="display:flex;justify-content:center;gap:32px;margin-top:16px;">';
+  html += '<div><div style="font-size:1.6rem;font-weight:900;color:white;">' + activeCount + '</div><div style="font-size:0.75rem;color:var(--text2);text-transform:uppercase;">Active</div></div>';
+  html += '<div><div style="font-size:1.6rem;font-weight:900;color:var(--green-light);">' + completedCount + '</div><div style="font-size:0.75rem;color:var(--text2);text-transform:uppercase;">Completed</div></div>';
+  html += '<div><div style="font-size:1.6rem;font-weight:900;color:var(--text2);">' + totalChallenges + '</div><div style="font-size:0.75rem;color:var(--text2);text-transform:uppercase;">Available</div></div>';
+  html += '</div></div>';
+
+  // Active challenges
+  const activeIds = Object.keys(cd.active).filter(id => !cd.active[id].completed);
+  const readyToClaim = Object.keys(cd.active).filter(id => cd.active[id].completed);
+
+  if (readyToClaim.length > 0) {
+    html += '<div class="card" style="margin-bottom:16px;border-color:var(--green-light);">';
+    html += '<h3 style="color:var(--green-light);">🏆 Ready to Claim!</h3>';
+    readyToClaim.forEach(id => {
+      const challenge = ALL_CHALLENGES.find(c => c.id === id);
+      const active = cd.active[id];
+      if (!challenge) return;
+      html += '<div class="challenge-card challenge-complete" style="margin-top:12px;">';
+      html += '<div class="challenge-top">';
+      html += '<div class="challenge-icon">' + challenge.icon + '</div>';
+      html += '<div class="challenge-info">';
+      html += '<div class="challenge-name">' + challenge.name + '</div>';
+      html += '<div class="challenge-desc">' + challenge.description + '</div>';
+      html += '</div>';
+      html += '<button class="challenge-claim-btn" onclick="claimChallenge(\'' + id + '\')">Claim Badge 🏅</button>';
+      html += '</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+
+  if (activeIds.length > 0) {
+    html += '<div class="card" style="margin-bottom:16px;"><h3>🔥 In Progress</h3>';
+    activeIds.forEach(id => {
+      const challenge = ALL_CHALLENGES.find(c => c.id === id);
+      const active = cd.active[id];
+      if (!challenge) return;
+      const pct = Math.min(Math.round((active.progress / challenge.goal) * 100), 100);
+      const diffColor = challenge.difficulty === 'Easy' ? 'var(--green-light)' : challenge.difficulty === 'Medium' ? '#eab308' : challenge.difficulty === 'Hard' ? '#f97316' : 'var(--red)';
+
+      html += '<div class="challenge-card" style="margin-top:12px;">';
+      html += '<div class="challenge-top">';
+      html += '<div class="challenge-icon">' + challenge.icon + '</div>';
+      html += '<div class="challenge-info">';
+      html += '<div class="challenge-name">' + challenge.name + '</div>';
+      html += '<div class="challenge-desc">' + challenge.description + '</div>';
+      html += '<div class="challenge-meta">';
+      html += '<span class="challenge-difficulty" style="color:' + diffColor + ';">' + challenge.difficulty + '</span>';
+      html += '<span class="challenge-category">' + catLabels[challenge.category] + '</span>';
+      html += '</div>';
+      html += '</div>';
+      html += '<button class="challenge-abandon-btn" onclick="abandonChallenge(\'' + id + '\')" title="Abandon">✕</button>';
+      html += '</div>';
+      html += '<div class="challenge-progress-wrap">';
+      html += '<div class="challenge-progress-bar"><div class="challenge-progress-fill" style="width:' + pct + '%;"></div></div>';
+      html += '<div class="challenge-progress-text">' + (challenge.checkFn === 'total_steps' ? active.progress.toLocaleString() : active.progress) + ' / ' + (challenge.checkFn === 'total_steps' ? challenge.goal.toLocaleString() : challenge.goal) + ' ' + challenge.unit + ' (' + pct + '%)</div>';
+      html += '</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+
+  // Completed badges
+  if (cd.completed.length > 0) {
+    html += '<div class="card" style="margin-bottom:16px;"><h3>🏅 Earned Badges</h3>';
+    html += '<div class="challenge-badges">';
+    cd.completed.forEach(entry => {
+      const challenge = ALL_CHALLENGES.find(c => c.id === entry.id);
+      if (!challenge) return;
+      const d = new Date(entry.claimedDate || entry.completedDate);
+      const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      html += '<div class="challenge-badge">';
+      html += '<div class="challenge-badge-icon">' + challenge.icon + '</div>';
+      html += '<div class="challenge-badge-name">' + challenge.name + '</div>';
+      html += '<div class="challenge-badge-date">' + dateStr + '</div>';
+      html += '</div>';
+    });
+    html += '</div></div>';
+  }
+
+  // Available challenges (not yet joined)
+  const availableIds = ALL_CHALLENGES.filter(c => !cd.active[c.id] && (c.challengeType !== 'friends' || (cd.unlocked && cd.unlocked.includes(c.id)))).map(c => c.id);
+  if (availableIds.length > 0) {
+    html += '<div class="card" style="margin-bottom:16px;"><h3>🔐 Enter Challenge Code</h3>';
+    html += '<p style="font-size:0.85rem;color:var(--text2);margin-bottom:12px;">Have a code for a friends-only challenge? Enter it below to unlock.</p>';
+    html += '<div style="display:flex;gap:12px;"><input type="text" id="unlockCodeInput" placeholder="Enter code..." style="flex:1;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.95rem;text-transform:uppercase;"><button onclick="unlockChallenge()" style="padding:10px 24px;background:var(--green);color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;">Unlock</button></div></div>';
+    html += '<div class="card"><h3>📋 Available Challenges</h3>';
+    // Category filter
+    html += '<div class="challenge-filters">';
+    categories.forEach(cat => {
+      const count = cat === 'all' ? availableIds.length : ALL_CHALLENGES.filter(c => !cd.active[c.id] && c.category === cat && (c.challengeType !== 'friends' || (cd.unlocked && cd.unlocked.includes(c.id)))).length;
+      html += '<button class="challenge-filter-btn" data-cat="' + cat + '" onclick="filterChallenges(\'' + cat + '\')">' + catLabels[cat] + ' (' + count + ')</button>';
+    });
+    html += '</div>';
+
+    html += '<div id="challengeAvailableList">';
+    availableIds.forEach(id => {
+      const challenge = ALL_CHALLENGES.find(c => c.id === id);
+      if (!challenge) return;
+      const diffColor = challenge.difficulty === 'Easy' ? 'var(--green-light)' : challenge.difficulty === 'Medium' ? '#eab308' : challenge.difficulty === 'Hard' ? '#f97316' : 'var(--red)';
+
+      html += '<div class="challenge-card challenge-available" data-category="' + challenge.category + '">';
+      html += '<div class="challenge-top">';
+      html += '<div class="challenge-icon">' + challenge.icon + '</div>';
+      html += '<div class="challenge-info">';
+      html += '<div class="challenge-name">' + challenge.name + '</div>';
+      html += '<div class="challenge-desc">' + challenge.description + '</div>';
+      html += '<div class="challenge-meta">';
+      html += '<span class="challenge-difficulty" style="color:' + diffColor + ';">' + challenge.difficulty + '</span>';
+      html += '<span class="challenge-goal">Goal: ' + (challenge.checkFn === 'total_steps' ? challenge.goal.toLocaleString() : challenge.goal) + ' ' + challenge.unit + '</span>';
+      html += '<span class="challenge-category">' + catLabels[challenge.category] + '</span>';
+      html += '</div>';
+      html += '</div>';
+      html += '<button class="challenge-join-btn" onclick="joinChallenge(\'' + id + '\')">Join</button>';
+      html += '</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+    html += '</div>';
+  }
+
+  // Special section forMain challenges (7-Day Metabolic Reset)
+  const mainChallenges = ALL_CHALLENGES.filter(c => c.challengeType === 'main' && !cd.active[c.id]);
+  if (mainChallenges.length > 0) {
+    mainChallenges.forEach(challenge => {
+      const start = new Date(challenge.startDate + 'T12:00:00');
+      const end = new Date(challenge.endDate + 'T12:00:00');
+      const now = new Date();
+      const isLive = now >= start && now <= end;
+      const statusLabel = isLive ? 'LIVE NOW' : (now < start ? 'STARTS ' + start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'ENDED');
+      const statusColor = isLive ? 'var(--green-light)' : (now < start ? '#eab308' : 'var(--text2)');
+      
+      html += '<div class="card highlight" style="margin-bottom:16px;">';
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;">';
+      html += '<div><span style="font-size:0.75rem;color:var(--text2);text-transform:uppercase;letter-spacing:0.1em;">MAIN CHALLENGE</span>';
+      html += '<h2 style="font-size:1.4rem;color:white;margin-top:6px;">' + challenge.icon + ' ' + challenge.name + '</h2></div>';
+      html += '<span style="padding:6px 14px;border-radius:20px;font-size:0.75rem;font-weight:700;background:' + statusColor + '22;color:' + statusColor + ';">' + statusLabel + '</span>';
+      html += '</div>';
+      html += '<p style="color:var(--text2);margin-top:12px;">' + challenge.description + '</p>';
+      
+      if (challenge.days) {
+        html += '<div style="margin-top:20px;">';
+        challenge.days.forEach((dayConfig, idx) => {
+          const dayDate = new Date(start);
+          dayDate.setDate(start.getDate() + idx);
+          const dk = dateKey(dayDate);
+          const dd = allData[dk] || {};
+          let dayDone = false;
+          switch (dayConfig.checkFn) {
+            case 'bodylog': dayDone = allData.bodyLog && allData.bodyLog.some(e => e.date === dk); break;
+            case 'water': { const prof = allData.profile || {}; const t = Math.ceil((prof.weight||200)/2); dayDone = (dd.water||0) >= t; break; }
+            case 'steps': dayDone = (dd.steps||0) >= 10000; break;
+            case 'meals': { const nd = ((dayOfYear(new Date(dk+'T12:00:00'))-1)%14)+1; dayDone = dd.meals && ['day'+nd+'_meal0','day'+nd+'_meal1','day'+nd+'_meal2'].every(k=>dd.meals[k]); break; }
+            case 'sleep': dayDone = (dd.sleep||0) >= 7; break;
+            case 'workout': dayDone = dd.workout && Object.keys(dd.workout).some(k => dd.workout[k] && dd.workout[k].done); dayDone = dayDone || (dd.primer && PRIMER.every((_,i)=>dd.primer['p'+i])); break;
+            case 'review': dayDone = dd.reviewed || false; break;
+            default: dayDone = false;
+          }
+          const dateStr = dayDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+          html += '<div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:' + (dayDone ? 'rgba(22,163,74,0.08)' : 'var(--bg3)') + ';border:1px solid ' + (dayDone ? 'rgba(22,163,74,0.3)' : 'var(--border)') + ';border-radius:8px;margin-bottom:8px;">';
+          html += '<div style="font-size:1.4rem;">' + (dayDone ? '✅' : dayConfig.icon) + '</div>';
+          html += '<div style="flex:1;"><div style="font-weight:700;color:white;font-size:0.9rem;">Day ' + (idx+1) + ': ' + dayConfig.title + '</div>';
+          html += '<div style="font-size:0.8rem;color:var(--text2);margin-top:2px;">' + dayConfig.focus + '</div>';
+          html += '<div style="font-size:0.75rem;color:var(--text2);margin-top:4px;">' + dateStr + '</div>';
+          html += '</div>';
+          html += '<div style="font-size:0.8rem;color:' + (dayDone ? 'var(--green-light)' : 'var(--text2)') + ';font-weight:700;">' + (dayDone ? 'DONE' : 'PENDING') + '</div>';
+          html += '</div>';
+        });
+        html += '</div>';
+      }
+      
+      html += '<button onclick="joinChallenge(\'' + challenge.id + '\')" style="margin-top:16px;padding:14px 32px;background:var(--green);color:white;border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;">' + (isLive ? 'Join This Challenge' : 'Get Ready') + '</button>';
+      html += '</div>';
+    });
+  }
+
+  // Info card
+  html += '<div class="card" style="margin-top:16px;"><h3>About Challenges</h3>';
+  html += '<p>Challenges track your consistency over time using your existing tracker data. Join a challenge and your progress updates automatically as you log workouts, meals, steps, supplements, and primer exercises. Complete the goal to earn a badge!</p>';
+  html += '<p style="margin-top:8px;"><strong>Streak challenges</strong> require consecutive qualifying days. <strong>Total challenges</strong> count cumulative progress.</p>';
+  html += '</div>';
+
+  el.innerHTML = html;
+
+  // Set active filter button
+  const firstBtn = el.querySelector('.challenge-filter-btn');
+  if (firstBtn) firstBtn.classList.add('active');
+}
+
+function filterChallenges(cat) {
+  const items = document.querySelectorAll('.challenge-available');
+  const btns = document.querySelectorAll('.challenge-filter-btn');
+  btns.forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
+  items.forEach(item => {
+    if (cat === 'all' || item.dataset.category === cat) {
+      item.style.display = '';
+    } else {
+      item.style.display = 'none';
+    }
+  });
+}
+
 function renderAll() {
   const opts = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
   document.getElementById('dateLabel').textContent = currentDate.toLocaleDateString('en-US', opts);
-  renderDashboard(); renderStats(); renderWorkout(); renderNutrition(); renderSupplements(); renderSteps(); renderPrimer(); renderGrocery();
+  renderDashboard(); renderStats(); renderWorkout(); renderNutrition(); renderSupplements(); renderSteps(); renderPrimer(); renderGrocery(); renderChallenges();
 }
 
 // ===================== INIT =====================
