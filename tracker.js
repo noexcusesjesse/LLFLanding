@@ -11,8 +11,9 @@ function save() { localStorage.setItem(STORAGE, JSON.stringify(allData)); syncTo
 // ===================== AUTH =====================
 function showAuthTab(tab) {
   document.getElementById('auth-login').classList.toggle('hidden', tab !== 'login');
-  document.getElementById('auth-register').classList.toggle('hidden', tab !== 'register');
-  document.querySelectorAll('.auth-tab').forEach((btn, i) => btn.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'register')));
+  document.getElementById('auth-request').classList.toggle('hidden', tab !== 'request');
+  document.getElementById('auth-thankyou').classList.toggle('hidden', tab !== 'thankyou');
+  document.querySelectorAll('.auth-tab').forEach((btn, i) => btn.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'request')));
 }
 
 async function doLogin() {
@@ -34,24 +35,25 @@ async function doLogin() {
   } catch (e) { errEl.textContent = 'Connection error. Try again.'; }
 }
 
-async function doRegister() {
-  const username = document.getElementById('regUsername').value.trim();
-  const email = document.getElementById('regEmail').value.trim();
-  const displayName = document.getElementById('regDisplayName').value.trim();
-  const password = document.getElementById('regPassword').value;
-  const errEl = document.getElementById('regError');
+async function submitAccessRequest() {
+  const name = document.getElementById('reqName').value.trim();
+  const email = document.getElementById('reqEmail').value.trim();
+  const phone = document.getElementById('reqPhone').value.trim();
+  const agreed = document.getElementById('reqDisclaimer').checked;
+  const errEl = document.getElementById('reqError');
   errEl.textContent = '';
-  if (!username || !email || !password) { errEl.textContent = 'Please fill in all fields'; return; }
+  if (!name || !email) { errEl.textContent = 'Name and email are required'; return; }
+  if (!agreed) { errEl.textContent = 'You must accept the disclaimer to continue'; return; }
+  const btn = document.getElementById('reqSubmitBtn');
+  btn.textContent = 'Submitting...';
+  btn.disabled = true;
   try {
-    const res = await fetch('/api/auth/register', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ username, email, password, displayName }) });
+    const res = await fetch('/api/access-request', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name, email, phone }) });
     const data = await res.json();
-    if (!res.ok) { errEl.textContent = data.error || 'Registration failed'; return; }
-    authToken = data.token;
-    currentUser = data.user;
-    localStorage.setItem('loadline_token', authToken);
-    localStorage.setItem('loadline_user', JSON.stringify(currentUser));
-    proceedAfterAuth();
-  } catch (e) { errEl.textContent = 'Connection error. Try again.'; }
+    if (!res.ok) { errEl.textContent = data.error || 'Request failed'; btn.textContent = 'Request Access'; btn.disabled = false; return; }
+    document.getElementById('thankYouName').textContent = name.split(' ')[0];
+    showAuthTab('thankyou');
+  } catch (e) { errEl.textContent = 'Connection error. Try again.'; btn.textContent = 'Request Access'; btn.disabled = false; }
 }
 
 function continueAsGuest() {

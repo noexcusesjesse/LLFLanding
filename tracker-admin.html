@@ -79,6 +79,14 @@
     <div class="msg msg-ok" id="msgOk"></div>
     <div class="msg msg-err" id="msgErr"></div>
 
+    <div class="card" id="accessRequestsCard" style="display:none;">
+      <h3 style="color:var(--green-light);">Pending Access Requests</h3>
+      <table>
+        <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Date</th><th>Actions</th></tr></thead>
+        <tbody id="requestTable"></tbody>
+      </table>
+    </div>
+
     <div class="card">
       <h3>Create New User</h3>
       <div class="form-row">
@@ -119,6 +127,19 @@
     <div class="modal-actions">
       <button class="btn-outline" onclick="closeModal('deleteModal')">Cancel</button>
       <button class="btn-red" onclick="doDeleteUser()">Delete User</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="approveModal">
+  <div class="modal-box">
+    <h3 style="color:var(--green-light);">Approve Access Request</h3>
+    <p style="color:var(--text2);margin-bottom:12px;">Set the username and password for this new user. Email them their credentials after approving.</p>
+    <div class="form-group"><label>Username</label><input type="text" id="approveUsername" placeholder="username"></div>
+    <div class="form-group"><label>Password</label><input type="text" id="approvePassword" placeholder="password"></div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('approveModal')">Cancel</button>
+      <button class="btn-green" onclick="doApprove()">Create Account</button>
     </div>
   </div>
 </div>
@@ -171,6 +192,7 @@ async function loadUsers() {
   if (data.error) return false;
   USERS = data;
   renderUsers();
+  loadAccessRequests();
   return true;
 }
 
@@ -256,6 +278,63 @@ async function doDeleteUser() {
 }
 
 function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+// Access Requests
+let REQUESTS = [];
+
+async function loadAccessRequests() {
+  const data = await api('GET', '/access-requests');
+  if (data.error) return;
+  REQUESTS = data.filter(r => r.status === 'pending');
+  renderRequests();
+}
+
+function renderRequests() {
+  const card = document.getElementById('accessRequestsCard');
+  if (REQUESTS.length === 0) { card.style.display = 'none'; return; }
+  card.style.display = 'block';
+  document.getElementById('requestTable').innerHTML = REQUESTS.map(r => {
+    const date = new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return `<tr>
+      <td style="font-weight:700;color:white;">${r.name}</td>
+      <td>${r.email}</td>
+      <td style="color:var(--text2);">${r.phone || '-'}</td>
+      <td style="color:var(--text2);font-size:0.8rem;">${date}</td>
+      <td class="actions">
+        <button class="btn-green btn-sm" onclick="approveRequest(${r.id}, '${r.name}')">Approve</button>
+        <button class="btn-red btn-sm" onclick="denyRequest(${r.id})">Deny</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function approveRequest(id, name) {
+  targetUserId = id;
+  const username = name.toLowerCase().replace(/[^a-z0-9]/g, '').substring(0, 20) || 'user' + id;
+  const pw = Math.random().toString(36).substring(2, 10) + 'A1!';
+  document.getElementById('approveUsername').value = username;
+  document.getElementById('approvePassword').value = pw;
+  document.getElementById('approveModal').classList.add('show');
+}
+
+async function doApprove() {
+  const username = document.getElementById('approveUsername').value.trim();
+  const password = document.getElementById('approvePassword').value;
+  if (!username || !password) { showMsg('Username and password required', false); return; }
+  const res = await api('POST', '/access-requests/' + targetUserId + '/approve', { username, password });
+  if (res.error) { showMsg(res.error, false); return; }
+  closeModal('approveModal');
+  showMsg('User ' + res.user.username + ' created! Email them their credentials.', true);
+  loadUsers();
+}
+
+async function denyRequest(id) {
+  if (!confirm('Deny this access request?')) return;
+  const res = await api('PATCH', '/access-requests/' + id + '/deny');
+  if (res.error) { showMsg(res.error, false); return; }
+  showMsg('Request denied', true);
+  loadAccessRequests();
+}
 
 // Auto-login if token exists
 if (TOKEN) {

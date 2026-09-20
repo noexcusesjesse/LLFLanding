@@ -13,10 +13,10 @@
   <div class="auth-box">
     <img src="assets/nomad-tracker-logo.jpg" alt="LoadLine Core" style="width:60px;height:60px;border-radius:12px;margin-bottom:12px;">
     <h2>Load<span>Line</span> Core</h2>
-    <p class="sub">Sign in to your account or create a new one.</p>
+    <p class="sub">Sign in to your account or request access to join.</p>
     <div class="auth-tabs">
       <button class="auth-tab active" onclick="showAuthTab('login')">Sign In</button>
-      <button class="auth-tab" onclick="showAuthTab('register')">Create Account</button>
+      <button class="auth-tab" onclick="showAuthTab('request')">Request Access</button>
     </div>
     <div id="auth-login" class="auth-form">
       <div class="form-group"><label>Username or Email</label><input type="text" id="loginUsername" placeholder="username or email"></div>
@@ -24,13 +24,49 @@
       <div class="auth-error" id="loginError"></div>
       <button class="btn-start" onclick="doLogin()">Sign In</button>
     </div>
-    <div id="auth-register" class="auth-form hidden">
-      <div class="form-group"><label>Username</label><input type="text" id="regUsername" placeholder="Choose a username"></div>
-      <div class="form-group"><label>Email</label><input type="email" id="regEmail" placeholder="your@email.com"></div>
-      <div class="form-group"><label>Display Name</label><input type="text" id="regDisplayName" placeholder="Your name"></div>
-      <div class="form-group"><label>Password</label><input type="password" id="regPassword" placeholder="Min 6 characters"></div>
-      <div class="auth-error" id="regError"></div>
-      <button class="btn-start" onclick="doRegister()">Create Account</button>
+    <div id="auth-request" class="auth-form hidden">
+      <div class="form-group"><label>Full Name *</label><input type="text" id="reqName" placeholder="Your full name"></div>
+      <div class="form-group"><label>Email Address *</label><input type="email" id="reqEmail" placeholder="your@email.com"></div>
+      <div class="form-group"><label>Phone Number</label><input type="tel" id="reqPhone" placeholder="(480) 555-0123 (optional)"></div>
+      <div class="disclaimer-box">
+        <h4>Important Disclaimer</h4>
+        <p><strong>LoadLine Fitness provides fitness, movement, education, coaching, and accountability. This is not medical advice.</strong></p>
+        <p style="margin-top:6px;">This tracker is an educational and organizational tool. It does not diagnose, treat, or replace professional medical guidance. By requesting access, you acknowledge that LoadLine Fitness is not a medical provider and you accept full responsibility for your own health decisions.</p>
+      </div>
+      <label class="disclaimer-check"><input type="checkbox" id="reqDisclaimer"> I understand and accept these terms</label>
+      <div class="auth-error" id="reqError"></div>
+      <button class="btn-start" id="reqSubmitBtn" onclick="submitAccessRequest()">Request Access</button>
+    </div>
+    <div id="auth-thankyou" class="auth-form hidden thankyou-screen">
+      <div class="thankyou-icon">&#10003;</div>
+      <h2 style="color:var(--green-light);margin-bottom:12px;">Thank You!</h2>
+      <div class="thankyou-message">
+        <p>Hey <span id="thankYouName"></span>,</p>
+        <p>Welcome to the <strong style="color:white;">LoadLine Fitness &amp; Wellness Family</strong>. We're excited that you've taken this step toward owning your health.</p>
+        <p>Your login credentials and welcome kit will be emailed to you within <strong style="color:var(--green-light);">24 hours</strong>. In the meantime, here are three tips to get you started:</p>
+      </div>
+      <div class="tips-grid">
+        <div class="tip-card">
+          <div class="tip-num">1</div>
+          <div class="tip-title">Protein First</div>
+          <div class="tip-text">Start every meal with a protein source. Aim for 0.7 to 1 gram per pound of your target bodyweight daily. This single change drives everything else.</div>
+        </div>
+        <div class="tip-card">
+          <div class="tip-num">2</div>
+          <div class="tip-title">Walk After You Eat</div>
+          <div class="tip-text">A 10 to 15-minute walk after your largest meal blunts blood sugar spikes and improves insulin sensitivity. No gym required. Just move.</div>
+        </div>
+        <div class="tip-card">
+          <div class="tip-num">3</div>
+          <div class="tip-title">Sleep Is the Multiplier</div>
+          <div class="tip-text">Everything works better when you sleep 7 to 9 hours. Set a consistent bedtime, dim the lights, and put the phone away 30 minutes before bed.</div>
+        </div>
+      </div>
+      <div class="thankyou-footer">
+        <p>We'll see you inside.</p>
+        <p style="color:white;font-weight:700;margin-top:4px;">Jesse Collins &amp; The LoadLine Team</p>
+        <p style="font-size:0.8rem;color:var(--text2);font-style:italic;margin-top:4px;">Load the Standard. Live the Life.</p>
+      </div>
     </div>
     <button class="btn-guest" onclick="continueAsGuest()">Continue as Guest</button>
   </div>

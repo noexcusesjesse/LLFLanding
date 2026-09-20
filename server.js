@@ -100,6 +100,17 @@ async function initDB() {
 
     await pool.query(`CREATE INDEX IF NOT EXISTS idx_tracker_user ON tracker_data(user_id);`);
 
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS access_requests (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        email VARCHAR(255) NOT NULL,
+        phone VARCHAR(30),
+        status VARCHAR(20) DEFAULT 'pending',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
     console.log('✅ Database initialized');
   } catch (error) {
     console.error('❌ Database init error:', error.message);
@@ -342,6 +353,23 @@ function authenticateAdmin(req, res, next) {
   next();
 }
 
+// ===================== ACCESS REQUESTS =====================
+
+// Submit access request (public)
+app.post('/api/access-request', async (req, res) => {
+  const { name, email, phone } = req.body;
+  if (!name || !email) return res.status(400).json({ error: 'Name and email required' });
+  try {
+    // Check if already requested
+    const existing = await pool.query("SELECT id FROM access_requests WHERE email = $1 AND status = 'pending'", [email]);
+    if (existing.rows.length > 0) return res.json({ success: true, message: 'Request already submitted' });
+    await pool.query('INSERT INTO access_requests (name, email, phone) VALUES ($1, $2, $3)', [name, email, phone || null]);
+    res.json({ success: true, message: 'Access request submitted' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to submit request' });
+  }
+});
+
 // ===================== ADMIN USER MANAGEMENT =====================
 
 // List all users
@@ -424,6 +452,49 @@ app.get('/api/admin/users/:id/data', authenticateAdmin, async (req, res) => {
     res.json({ user: user.rows[0], trackerData: data.rows[0]?.data || {}, updatedAt: data.rows[0]?.updated_at });
   } catch (error) {
     res.status(500).json({ error: 'Failed to get user data' });
+  }
+});
+
+// List access requests
+app.get('/api/admin/access-requests', authenticateAdmin, async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM access_requests ORDER BY created_at DESC');
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to list requests' });
+  }
+});
+
+// Approve access request (creates user)
+app.post('/api/admin/access-requests/:id/approve', authenticateAdmin, async (req, res) => {
+  const { id } = req.params;
+  const { username, password } = req.body;
+  if (!username || !password) return res.status(400).json({ error: 'Username and password required' });
+  try {
+    const reqResult = await pool.query('SELECT * FROM access_requests WHERE id = $1', [id]);
+    if (reqResult.rows.length === 0) return res.status(404).json({ error: 'Request not found' });
+    const request = reqResult.rows[0];
+    const hash = await bcrypt.hash(password, 10);
+    const userResult = await pool.query(
+      'INSERT INTO users (username, email, password_hash, display_name) VALUES ($1, $2, $3, $4) RETURNING id, username, display_name',
+      [username, request.email, hash, request.name]
+    );
+    await pool.query('INSERT INTO tracker_data (user_id, data) VALUES ($1, $2) ON CONFLICT DO NOTHING', [userResult.rows[0].id, '{}']);
+    await pool.query("UPDATE access_requests SET status = 'approved' WHERE id = $1", [id]);
+    res.json({ success: true, user: userResult.rows[0], request });
+  } catch (error) {
+    if (error.code === '23505') return res.status(409).json({ error: 'Username already exists' });
+    res.status(500).json({ error: 'Failed to approve request' });
+  }
+});
+
+// Deny access request
+app.patch('/api/admin/access-requests/:id/deny', authenticateAdmin, async (req, res) => {
+  try {
+    await pool.query("UPDATE access_requests SET status = 'denied' WHERE id = $1", [req.params.id]);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to deny request' });
   }
 });
 
