@@ -1171,6 +1171,12 @@ function renderAll() {
   renderDashboard(); renderStats(); renderWorkout(); renderNutrition(); renderSupplements(); renderSteps(); renderPrimer(); renderGrocery(); renderChallenges();
 }
 
+// ===================== BACK TO TOP =====================
+window.addEventListener('scroll', function() {
+  const btn = document.getElementById('backToTop');
+  if (btn) btn.classList.toggle('visible', window.scrollY > 300);
+});
+
 // ===================== INIT =====================
 if (allData.splashAccepted) {
   document.getElementById('splashScreen').classList.add('hidden');
