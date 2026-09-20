@@ -11,6 +11,7 @@ body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color
 .splash-overlay.hidden { display: none; }
 
 /* AUTH */
+.hidden { display: none !important; }
 .auth-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 1100; display: flex; align-items: flex-start; justify-content: center; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 20px 0; }
 .auth-overlay.hidden { display: none; }
 .auth-box { max-width: 420px; width: 90%; padding: 36px; background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; text-align: center; margin: auto; }
