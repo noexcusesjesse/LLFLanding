@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LoadLine Core - Admin</title>
+  <link rel="icon" href="assets/nomad-tracker-logo.jpg">
+  <style>
+    :root { --green: #16a34a; --green-light: #22c55e; --bg: #0a0a0a; --bg2: #1e1e1e; --bg3: #2a2a2a; --text: #e0e0e0; --text2: #888; --border: #3a3a3a; --red: #ef4444; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 24px; }
+    .container { max-width: 960px; margin: 0 auto; }
+    h1 { font-size: 1.6rem; color: white; margin-bottom: 8px; }
+    h1 span { color: var(--green-light); }
+    .sub { color: var(--text2); font-size: 0.85rem; margin-bottom: 24px; }
+    .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+    .card h3 { color: white; margin-bottom: 12px; font-size: 1.1rem; }
+    table { width: 100%; border-collapse: collapse; }
+    th { font-size: 0.75rem; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+    td { padding: 10px 12px; font-size: 0.9rem; border-bottom: 1px solid rgba(58,58,58,0.3); }
+    tr:hover td { background: rgba(22,163,74,0.04); }
+    .badge { padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; }
+    .badge-active { background: rgba(22,163,74,0.15); color: var(--green-light); }
+    .badge-suspended { background: rgba(239,68,68,0.15); color: var(--red); }
+    button { padding: 8px 14px; border: none; border-radius: 6px; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: 0.2s; }
+    .btn-green { background: var(--green); color: white; }
+    .btn-green:hover { background: #15803d; }
+    .btn-red { background: var(--red); color: white; }
+    .btn-red:hover { background: #dc2626; }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-outline:hover { border-color: var(--green); color: var(--green-light); }
+    .btn-sm { padding: 5px 10px; font-size: 0.75rem; }
+    .form-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+    .form-group { flex: 1; min-width: 160px; }
+    .form-group label { display: block; font-size: 0.75rem; color: var(--text2); font-weight: 700; text-transform: uppercase; margin-bottom: 4px; }
+    .form-group input { width: 100%; padding: 10px 12px; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.9rem; }
+    .form-group input:focus { outline: none; border-color: var(--green); }
+    .actions { display: flex; gap: 6px; }
+    .msg { padding: 10px 14px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 12px; display: none; }
+    .msg-ok { background: rgba(22,163,74,0.1); border: 1px solid rgba(22,163,74,0.3); color: var(--green-light); }
+    .msg-err { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: var(--red); }
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100; align-items: center; justify-content: center; }
+    .modal.show { display: flex; }
+    .modal-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 28px; max-width: 420px; width: 90%; }
+    .modal-box h3 { color: white; margin-bottom: 16px; }
+    .modal-actions { display: flex; gap: 10px; margin-top: 16px; justify-content: flex-end; }
+    .stat-row { display: flex; gap: 24px; margin-bottom: 20px; }
+    .stat { text-align: center; }
+    .stat .num { font-size: 2rem; font-weight: 900; color: var(--green-light); }
+    .stat .label { font-size: 0.75rem; color: var(--text2); text-transform: uppercase; }
+    #loginPrompt { text-align: center; padding: 60px 20px; }
+    #loginPrompt h2 { color: white; margin-bottom: 16px; }
+    #loginPrompt input { max-width: 300px; margin: 0 auto 12px; display: block; width: 100%; padding: 12px; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.95rem; text-align: center; }
+    #loginPrompt input:focus { outline: none; border-color: var(--green); }
+    .link { color: var(--green-light); cursor: pointer; text-decoration: underline; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div id="loginPrompt">
+    <h2>LoadLine <span style="color:var(--green-light)">Core</span> Admin</h2>
+    <p class="sub">Enter your admin token to manage users.</p>
+    <input type="password" id="adminToken" placeholder="Admin Token">
+    <button class="btn-green" onclick="adminLogin()" style="margin-top:12px;">Access Admin</button>
+    <div id="loginErr" class="msg msg-err" style="margin-top:12px;"></div>
+  </div>
+
+  <div id="adminPanel" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <div>
+        <h1>Load<span>Line</span> Core Admin</h1>
+        <p class="sub">Manage user accounts, passwords, and access.</p>
+      </div>
+      <button class="btn-outline" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="stat-row" id="stats"></div>
+
+    <div class="msg msg-ok" id="msgOk"></div>
+    <div class="msg msg-err" id="msgErr"></div>
+
+    <div class="card">
+      <h3>Create New User</h3>
+      <div class="form-row">
+        <div class="form-group"><label>Username</label><input type="text" id="newUsername" placeholder="username"></div>
+        <div class="form-group"><label>Email</label><input type="email" id="newEmail" placeholder="email@example.com"></div>
+        <div class="form-group"><label>Display Name</label><input type="text" id="newDisplayName" placeholder="Name"></div>
+        <div class="form-group"><label>Password</label><input type="password" id="newPassword" placeholder="Min 6 chars"></div>
+      </div>
+      <button class="btn-green" onclick="createUser()">Create User</button>
+    </div>
+
+    <div class="card">
+      <h3>All Users</h3>
+      <table>
+        <thead><tr><th>ID</th><th>Username</th><th>Display Name</th><th>Email</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead>
+        <tbody id="userTable"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="resetModal">
+  <div class="modal-box">
+    <h3>Reset Password</h3>
+    <p style="color:var(--text2);margin-bottom:12px;">Reset password for: <strong id="resetUser" style="color:white;"></strong></p>
+    <div class="form-group"><label>New Password</label><input type="password" id="resetPassword" placeholder="Min 6 characters"></div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('resetModal')">Cancel</button>
+      <button class="btn-green" onclick="doResetPassword()">Reset Password</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="deleteModal">
+  <div class="modal-box">
+    <h3 style="color:var(--red);">Delete User</h3>
+    <p style="color:var(--text2);margin-bottom:12px;">Are you sure you want to delete <strong id="deleteUser" style="color:white;"></strong>? This removes all their data permanently.</p>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('deleteModal')">Cancel</button>
+      <button class="btn-red" onclick="doDeleteUser()">Delete User</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let TOKEN = localStorage.getItem('loadline_admin_token') || null;
+let USERS = [];
+let targetUserId = null;
+
+function showMsg(text, ok) {
+  const el = document.getElementById(ok ? 'msgOk' : 'msgErr');
+  el.textContent = text;
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 4000);
+}
+
+async function api(method, path, body) {
+  const opts = { method, headers: { 'Authorization': 'Bearer ' + TOKEN, 'Content-Type': 'application/json' } };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch('/api/admin' + path, opts);
+  return res.json();
+}
+
+function adminLogin() {
+  TOKEN = document.getElementById('adminToken').value.trim();
+  if (!TOKEN) return;
+  localStorage.setItem('loadline_admin_token', TOKEN);
+  loadUsers().then(ok => {
+    if (ok) {
+      document.getElementById('loginPrompt').style.display = 'none';
+      document.getElementById('adminPanel').style.display = 'block';
+    } else {
+      document.getElementById('loginErr').textContent = 'Invalid admin token';
+      document.getElementById('loginErr').style.display = 'block';
+      TOKEN = null;
+      localStorage.removeItem('loadline_admin_token');
+    }
+  });
+}
+
+function logout() {
+  TOKEN = null;
+  localStorage.removeItem('loadline_admin_token');
+  document.getElementById('adminPanel').style.display = 'none';
+  document.getElementById('loginPrompt').style.display = 'block';
+}
+
+async function loadUsers() {
+  const data = await api('GET', '/users');
+  if (data.error) return false;
+  USERS = data;
+  renderUsers();
+  return true;
+}
+
+function renderUsers() {
+  const active = USERS.filter(u => u.status === 'active').length;
+  const suspended = USERS.filter(u => u.status === 'suspended').length;
+  document.getElementById('stats').innerHTML = `
+    <div class="stat"><div class="num">${USERS.length}</div><div class="label">Total Users</div></div>
+    <div class="stat"><div class="num">${active}</div><div class="label">Active</div></div>
+    <div class="stat"><div class="num" style="color:${suspended > 0 ? 'var(--red)' : 'var(--text2)'}">${suspended}</div><div class="label">Suspended</div></div>
+  `;
+  const tbody = document.getElementById('userTable');
+  tbody.innerHTML = USERS.map(u => {
+    const date = new Date(u.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const isSuspended = u.status === 'suspended';
+    return `<tr>
+      <td>${u.id}</td>
+      <td style="font-weight:700;color:white;">${u.username}</td>
+      <td>${u.display_name || '-'}</td>
+      <td style="color:var(--text2);">${u.email}</td>
+      <td><span class="badge ${isSuspended ? 'badge-suspended' : 'badge-active'}">${u.status}</span></td>
+      <td style="color:var(--text2);font-size:0.8rem;">${date}</td>
+      <td class="actions">
+        <button class="btn-outline btn-sm" onclick="openReset(${u.id}, '${u.username}')">Reset PW</button>
+        <button class="${isSuspended ? 'btn-green' : 'btn-red'} btn-sm" onclick="toggleStatus(${u.id}, '${isSuspended ? 'active' : 'suspended'}')">${isSuspended ? 'Unsuspend' : 'Suspend'}</button>
+        <button class="btn-outline btn-sm" onclick="openDelete(${u.id}, '${u.username}')">Delete</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function createUser() {
+  const username = document.getElementById('newUsername').value.trim();
+  const email = document.getElementById('newEmail').value.trim();
+  const displayName = document.getElementById('newDisplayName').value.trim();
+  const password = document.getElementById('newPassword').value;
+  if (!username || !email || !password) { showMsg('All fields required', false); return; }
+  const res = await api('POST', '/users', { username, email, password, displayName });
+  if (res.error) { showMsg(res.error, false); return; }
+  showMsg('User ' + res.username + ' created!', true);
+  document.getElementById('newUsername').value = '';
+  document.getElementById('newEmail').value = '';
+  document.getElementById('newDisplayName').value = '';
+  document.getElementById('newPassword').value = '';
+  loadUsers();
+}
+
+function openReset(id, username) {
+  targetUserId = id;
+  document.getElementById('resetUser').textContent = username;
+  document.getElementById('resetPassword').value = '';
+  document.getElementById('resetModal').classList.add('show');
+}
+
+async function doResetPassword() {
+  const pw = document.getElementById('resetPassword').value;
+  if (!pw || pw.length < 6) { showMsg('Password must be at least 6 characters', false); return; }
+  const res = await api('PATCH', '/users/' + targetUserId + '/reset-password', { newPassword: pw });
+  if (res.error) { showMsg(res.error, false); return; }
+  closeModal('resetModal');
+  showMsg('Password reset for ' + res.user.username, true);
+}
+
+async function toggleStatus(id, newStatus) {
+  const res = await api('PATCH', '/users/' + id + '/status', { status: newStatus });
+  if (res.error) { showMsg(res.error, false); return; }
+  showMsg(res.username + ' ' + (newStatus === 'suspended' ? 'suspended' : 'reactivated'), true);
+  loadUsers();
+}
+
+function openDelete(id, username) {
+  targetUserId = id;
+  document.getElementById('deleteUser').textContent = username;
+  document.getElementById('deleteModal').classList.add('show');
+}
+
+async function doDeleteUser() {
+  const res = await api('DELETE', '/users/' + targetUserId);
+  if (res.error) { showMsg(res.error, false); return; }
+  closeModal('deleteModal');
+  showMsg('User ' + res.deleted.username + ' deleted', true);
+  loadUsers();
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+// Auto-login if token exists
+if (TOKEN) {
+  loadUsers().then(ok => {
+    if (ok) {
+      document.getElementById('loginPrompt').style.display = 'none';
+      document.getElementById('adminPanel').style.display = 'block';
+    }
+  });
+}
+</script>
+</body>
+</html>

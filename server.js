@@ -81,9 +81,12 @@ async function initDB() {
         email VARCHAR(255) UNIQUE NOT NULL,
         password_hash VARCHAR(255) NOT NULL,
         display_name VARCHAR(100),
+        status VARCHAR(20) DEFAULT 'active',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
+    // Ensure status column exists (for upgrades)
+    await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS status VARCHAR(20) DEFAULT 'active'`).catch(() => {});
 
     await pool.query(`
       CREATE TABLE IF NOT EXISTS tracker_data (
@@ -167,6 +170,9 @@ app.post('/api/auth/login', async (req, res) => {
     const valid = await bcrypt.compare(password, user.password_hash);
     if (!valid) {
       return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    if (user.status === 'suspended') {
+      return res.status(403).json({ error: 'Your account has been suspended. Contact support.' });
     }
     const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: '30d' });
     res.json({ token, user: { id: user.id, username: user.username, displayName: user.display_name } });
@@ -336,9 +342,99 @@ function authenticateAdmin(req, res, next) {
   next();
 }
 
+// ===================== ADMIN USER MANAGEMENT =====================
+
+// List all users
+app.get('/api/admin/users', authenticateAdmin, async (req, res) => {
+  try {
+    const result = await pool.query('SELECT id, username, email, display_name, status, created_at FROM users ORDER BY created_at DESC');
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to list users' });
+  }
+});
+
+// Create user (admin)
+app.post('/api/admin/users', authenticateAdmin, async (req, res) => {
+  const { username, email, password, displayName } = req.body;
+  if (!username || !email || !password) return res.status(400).json({ error: 'Username, email, and password required' });
+  try {
+    const hash = await bcrypt.hash(password, 10);
+    const result = await pool.query(
+      'INSERT INTO users (username, email, password_hash, display_name) VALUES ($1, $2, $3, $4) RETURNING id, username, email, display_name, status, created_at',
+      [username, email, hash, displayName || username]
+    );
+    await pool.query('INSERT INTO tracker_data (user_id, data) VALUES ($1, $2) ON CONFLICT DO NOTHING', [result.rows[0].id, '{}']);
+    res.json(result.rows[0]);
+  } catch (error) {
+    if (error.code === '23505') return res.status(409).json({ error: 'Username or email already exists' });
+    res.status(500).json({ error: 'Failed to create user' });
+  }
+});
+
+// Reset user password
+app.patch('/api/admin/users/:id/reset-password', authenticateAdmin, async (req, res) => {
+  const { id } = req.params;
+  const { newPassword } = req.body;
+  if (!newPassword || newPassword.length < 6) return res.status(400).json({ error: 'Password must be at least 6 characters' });
+  try {
+    const hash = await bcrypt.hash(newPassword, 10);
+    const result = await pool.query('UPDATE users SET password_hash = $1 WHERE id = $2 RETURNING id, username, display_name', [hash, id]);
+    if (result.rows.length === 0) return res.status(404).json({ error: 'User not found' });
+    res.json({ success: true, user: result.rows[0] });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to reset password' });
+  }
+});
+
+// Suspend / Unsuspend user
+app.patch('/api/admin/users/:id/status', authenticateAdmin, async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  if (!['active', 'suspended'].includes(status)) return res.status(400).json({ error: 'Status must be active or suspended' });
+  try {
+    const result = await pool.query('UPDATE users SET status = $1 WHERE id = $2 RETURNING id, username, display_name, status', [status, id]);
+    if (result.rows.length === 0) return res.status(404).json({ error: 'User not found' });
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update status' });
+  }
+});
+
+// Delete user
+app.delete('/api/admin/users/:id', authenticateAdmin, async (req, res) => {
+  const { id } = req.params;
+  try {
+    await pool.query('DELETE FROM tracker_data WHERE user_id = $1', [id]);
+    const result = await pool.query('DELETE FROM users WHERE id = $1 RETURNING id, username', [id]);
+    if (result.rows.length === 0) return res.status(404).json({ error: 'User not found' });
+    res.json({ success: true, deleted: result.rows[0] });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete user' });
+  }
+});
+
+// Get user's tracker data (admin view)
+app.get('/api/admin/users/:id/data', authenticateAdmin, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const user = await pool.query('SELECT id, username, display_name, status FROM users WHERE id = $1', [id]);
+    if (user.rows.length === 0) return res.status(404).json({ error: 'User not found' });
+    const data = await pool.query('SELECT data, updated_at FROM tracker_data WHERE user_id = $1', [id]);
+    res.json({ user: user.rows[0], trackerData: data.rows[0]?.data || {}, updatedAt: data.rows[0]?.updated_at });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to get user data' });
+  }
+});
+
 // Serve admin dashboard
 app.get('/admin', (req, res) => {
   res.sendFile(join(__dirname, 'admin.html'));
+});
+
+// Serve tracker admin
+app.get('/tracker-admin', (req, res) => {
+  res.sendFile(join(__dirname, 'tracker-admin.html'));
 });
 
 // Serve index.html for SPA
