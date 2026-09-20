@@ -357,3 +357,32 @@ start().catch(error => {
   console.error('Startup error:', error);
   process.exit(1);
 });
+
+// Migration endpoint (temporary)
+app.get('/api/migrate', async (req, res) => {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        username VARCHAR(100) UNIQUE NOT NULL,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        password_hash VARCHAR(255) NOT NULL,
+        display_name VARCHAR(100),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS tracker_data (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+        data JSONB NOT NULL DEFAULT '{}',
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE(user_id)
+      );
+    `);
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_tracker_user ON tracker_data(user_id);`);
+    res.json({ success: true, message: 'Tables created' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
