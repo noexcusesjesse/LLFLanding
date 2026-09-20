@@ -343,36 +343,22 @@ app.get('/admin', (req, res) => {
 
 // Migration endpoint (temporary)
 app.get('/api/migrate', async (req, res) => {
+  let results = [];
   try {
-    // Check if tables exist
-    const checkUsers = await pool.query("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'users')");
-    const checkTracker = await pool.query("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'tracker_data')");
-    
-    let results = [];
-    
-    if (!checkUsers.rows[0].exists) {
-      await pool.query('CREATE TABLE users (id SERIAL PRIMARY KEY, username VARCHAR(100) UNIQUE NOT NULL, email VARCHAR(255) UNIQUE NOT NULL, password_hash VARCHAR(255) NOT NULL, display_name VARCHAR(100), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)');
-      results.push('users created');
-    } else {
-      results.push('users already exists');
-    }
-    
-    if (!checkTracker.rows[0].exists) {
-      await pool.query(`CREATE TABLE tracker_data (id SERIAL PRIMARY KEY, user_id INTEGER REFERENCES users(id) ON DELETE CASCADE, data JSONB NOT NULL DEFAULT '{}', updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, UNIQUE(user_id))`);
-      results.push('tracker_data created');
-    } else {
-      // Drop and recreate to fix FK constraint
-      await pool.query('DROP TABLE IF EXISTS tracker_data');
-      await pool.query(`CREATE TABLE tracker_data (id SERIAL PRIMARY KEY, user_id INTEGER REFERENCES users(id) ON DELETE CASCADE, data JSONB NOT NULL DEFAULT '{}', updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, UNIQUE(user_id))`);
-      results.push('tracker_data recreated');
-    }
-    
+    // Drop and recreate in correct order
+    await pool.query('DROP TABLE IF EXISTS tracker_data');
+    results.push('tracker_data dropped');
+    await pool.query('DROP TABLE IF EXISTS users CASCADE');
+    results.push('users dropped');
+    await pool.query('CREATE TABLE users (id SERIAL PRIMARY KEY, username VARCHAR(100) UNIQUE NOT NULL, email VARCHAR(255) UNIQUE NOT NULL, password_hash VARCHAR(255) NOT NULL, display_name VARCHAR(100), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)');
+    results.push('users created');
+    await pool.query("CREATE TABLE tracker_data (id SERIAL PRIMARY KEY, user_id INTEGER REFERENCES users(id) ON DELETE CASCADE, data JSONB NOT NULL DEFAULT '{}', updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, UNIQUE(user_id))");
+    results.push('tracker_data created');
     await pool.query('CREATE INDEX IF NOT EXISTS idx_tracker_user ON tracker_data(user_id)');
     results.push('index ok');
-    
     res.json({ success: true, tables: results });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message, step: results });
   }
 });
 
