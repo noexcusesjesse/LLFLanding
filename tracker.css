@@ -9,6 +9,25 @@ body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color
 /* SPLASH */
 .splash-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: flex; align-items: center; justify-content: center; }
 .splash-overlay.hidden { display: none; }
+
+/* AUTH */
+.auth-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 1100; display: flex; align-items: center; justify-content: center; }
+.auth-overlay.hidden { display: none; }
+.auth-box { max-width: 420px; width: 90%; padding: 36px; background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; text-align: center; }
+.auth-box h2 { font-size: 1.6rem; color: white; margin-bottom: 4px; }
+.auth-box h2 span { color: var(--green-light); }
+.auth-box .sub { color: var(--text2); font-size: 0.85rem; margin-bottom: 20px; }
+.auth-tabs { display: flex; gap: 4px; margin-bottom: 20px; background: var(--bg3); border-radius: 8px; padding: 4px; }
+.auth-tab { flex: 1; padding: 10px; border: none; border-radius: 6px; background: transparent; color: var(--text2); font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+.auth-tab.active { background: var(--green); color: white; }
+.auth-form { text-align: left; }
+.auth-form .form-group { margin-bottom: 14px; }
+.auth-form .form-group label { font-size: 0.8rem; color: var(--text2); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 4px; }
+.auth-form .form-group input { width: 100%; padding: 12px 14px; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.95rem; }
+.auth-form .form-group input:focus { outline: none; border-color: var(--green); }
+.auth-error { color: var(--red); font-size: 0.8rem; min-height: 20px; margin-bottom: 8px; }
+.btn-guest { margin-top: 12px; padding: 10px; background: none; border: 1px solid var(--border); border-radius: 8px; color: var(--text2); font-size: 0.85rem; cursor: pointer; width: 100%; transition: all 0.2s; }
+.btn-guest:hover { border-color: var(--green); color: var(--text); }
 .splash-box { max-width: 520px; width: 90%; padding: 40px; background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; text-align: center; }
 .splash-box h1 { font-size: 1.8rem; color: white; margin-bottom: 6px; }
 .splash-box h1 span { color: var(--green-light); }

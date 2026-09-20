@@ -3,8 +3,114 @@ const STORAGE = 'loadline_tracker_v1';
 let allData = JSON.parse(localStorage.getItem(STORAGE) || '{}');
 let currentDate = new Date();
 const TABS = ['dashboard','stats','workout','nutrition','supplements','steps','primer','grocery','challenges'];
+let authToken = localStorage.getItem('loadline_token') || null;
+let currentUser = JSON.parse(localStorage.getItem('loadline_user') || 'null');
 
-function save() { localStorage.setItem(STORAGE, JSON.stringify(allData)); }
+function save() { localStorage.setItem(STORAGE, JSON.stringify(allData)); syncToServer(); }
+
+// ===================== AUTH =====================
+function showAuthTab(tab) {
+  document.getElementById('auth-login').classList.toggle('hidden', tab !== 'login');
+  document.getElementById('auth-register').classList.toggle('hidden', tab !== 'register');
+  document.querySelectorAll('.auth-tab').forEach((btn, i) => btn.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'register')));
+}
+
+async function doLogin() {
+  const username = document.getElementById('loginUsername').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const errEl = document.getElementById('loginError');
+  errEl.textContent = '';
+  if (!username || !password) { errEl.textContent = 'Please fill in all fields'; return; }
+  try {
+    const res = await fetch('/api/auth/login', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ username, password }) });
+    const data = await res.json();
+    if (!res.ok) { errEl.textContent = data.error || 'Login failed'; return; }
+    authToken = data.token;
+    currentUser = data.user;
+    localStorage.setItem('loadline_token', authToken);
+    localStorage.setItem('loadline_user', JSON.stringify(currentUser));
+    await loadFromServer();
+    proceedAfterAuth();
+  } catch (e) { errEl.textContent = 'Connection error. Try again.'; }
+}
+
+async function doRegister() {
+  const username = document.getElementById('regUsername').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const displayName = document.getElementById('regDisplayName').value.trim();
+  const password = document.getElementById('regPassword').value;
+  const errEl = document.getElementById('regError');
+  errEl.textContent = '';
+  if (!username || !email || !password) { errEl.textContent = 'Please fill in all fields'; return; }
+  try {
+    const res = await fetch('/api/auth/register', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ username, email, password, displayName }) });
+    const data = await res.json();
+    if (!res.ok) { errEl.textContent = data.error || 'Registration failed'; return; }
+    authToken = data.token;
+    currentUser = data.user;
+    localStorage.setItem('loadline_token', authToken);
+    localStorage.setItem('loadline_user', JSON.stringify(currentUser));
+    proceedAfterAuth();
+  } catch (e) { errEl.textContent = 'Connection error. Try again.'; }
+}
+
+function continueAsGuest() {
+  authToken = null;
+  currentUser = null;
+  localStorage.removeItem('loadline_token');
+  localStorage.removeItem('loadline_user');
+  document.getElementById('authScreen').classList.add('hidden');
+  if (allData.splashAccepted) {
+    if (!allData.profile) { document.getElementById('profileSetup').classList.remove('hidden'); }
+    else { showApp(); switchTab('dashboard'); }
+  } else {
+    document.getElementById('splashScreen').classList.remove('hidden');
+  }
+}
+
+function proceedAfterAuth() {
+  document.getElementById('authScreen').classList.add('hidden');
+  if (allData.splashAccepted) {
+    if (!allData.profile) { document.getElementById('profileSetup').classList.remove('hidden'); }
+    else { showApp(); switchTab('dashboard'); }
+  } else {
+    document.getElementById('splashScreen').classList.remove('hidden');
+  }
+}
+
+function logout() {
+  authToken = null;
+  currentUser = null;
+  localStorage.removeItem('loadline_token');
+  localStorage.removeItem('loadline_user');
+  document.getElementById('profileMenu').classList.remove('show');
+  document.getElementById('mainApp').classList.add('hidden');
+  document.getElementById('authScreen').classList.remove('hidden');
+}
+
+async function syncToServer() {
+  if (!authToken) return;
+  try {
+    await fetch('/api/tracker/sync', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+      body: JSON.stringify({ data: allData })
+    });
+  } catch (e) { /* silent fail */ }
+}
+
+async function loadFromServer() {
+  if (!authToken) return;
+  try {
+    const res = await fetch('/api/tracker/data', { headers: { 'Authorization': 'Bearer ' + authToken } });
+    if (!res.ok) return;
+    const result = await res.json();
+    if (result.data && Object.keys(result.data).length > 0) {
+      allData = result.data;
+      localStorage.setItem(STORAGE, JSON.stringify(allData));
+    }
+  } catch (e) { /* silent fail */ }
+}
 function dateKey(d) { return d.toISOString().split('T')[0]; }
 function dayOfYear(d) { return Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 86400000); }
 function getDayData() { const dk = dateKey(currentDate); if (!allData[dk]) allData[dk] = {}; return allData[dk]; }
@@ -51,9 +157,10 @@ function openEditProfile() {
 function showApp() {
   document.getElementById('mainApp').classList.remove('hidden');
   const p = allData.profile;
+  const displayName = (currentUser && currentUser.displayName) ? currentUser.displayName : (p ? p.name : 'User');
   if (p) {
-    document.getElementById('profAvatar').textContent = p.name.charAt(0).toUpperCase();
-    document.getElementById('profDisplayName').textContent = p.name;
+    document.getElementById('profAvatar').textContent = displayName.charAt(0).toUpperCase();
+    document.getElementById('profDisplayName').textContent = displayName;
   }
   renderAll();
 }
@@ -1178,7 +1285,20 @@ window.addEventListener('scroll', function() {
 });
 
 // ===================== INIT =====================
-if (allData.splashAccepted) {
+if (currentUser && authToken) {
+  // Logged in - try to load from server then proceed
+  document.getElementById('authScreen').classList.add('hidden');
+  loadFromServer().then(() => {
+    if (allData.splashAccepted) {
+      if (!allData.profile) { document.getElementById('profileSetup').classList.remove('hidden'); }
+      else { showApp(); switchTab('dashboard'); }
+    } else {
+      document.getElementById('splashScreen').classList.remove('hidden');
+    }
+  });
+} else if (allData.splashAccepted) {
+  // Guest with existing data
+  document.getElementById('authScreen').classList.add('hidden');
   document.getElementById('splashScreen').classList.add('hidden');
   if (!allData.profile) { document.getElementById('profileSetup').classList.remove('hidden'); }
   else { showApp(); switchTab('dashboard'); }
