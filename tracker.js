@@ -2,7 +2,7 @@
 const STORAGE = 'loadline_tracker_v1';
 let allData = JSON.parse(localStorage.getItem(STORAGE) || '{}');
 let currentDate = new Date();
-const TABS = ['dashboard','stats','workout','nutrition','supplements','steps','primer','grocery','challenges'];
+const TABS = ['guide','dashboard','stats','workout','nutrition','supplements','steps','primer','grocery','challenges'];
 let authToken = localStorage.getItem('loadline_token') || null;
 let currentUser = JSON.parse(localStorage.getItem('loadline_user') || 'null');
 
@@ -64,7 +64,7 @@ function continueAsGuest() {
   document.getElementById('authScreen').classList.add('hidden');
   if (allData.splashAccepted) {
     if (!allData.profile) { document.getElementById('profileSetup').classList.remove('hidden'); }
-    else { showApp(); switchTab('dashboard'); }
+    else { showApp(); switchTab('guide'); }
   } else {
     document.getElementById('splashScreen').classList.remove('hidden');
   }
@@ -74,7 +74,7 @@ function proceedAfterAuth() {
   document.getElementById('authScreen').classList.add('hidden');
   if (allData.splashAccepted) {
     if (!allData.profile) { document.getElementById('profileSetup').classList.remove('hidden'); }
-    else { showApp(); switchTab('dashboard'); }
+    else { showApp(); switchTab('guide'); }
   } else {
     document.getElementById('splashScreen').classList.remove('hidden');
   }
@@ -122,7 +122,7 @@ function acceptSplash() {
   allData.splashAccepted = true; save();
   document.getElementById('splashScreen').classList.add('hidden');
   if (!allData.profile) { document.getElementById('profileSetup').classList.remove('hidden'); }
-  else { showApp(); switchTab('dashboard'); }
+  else { showApp(); switchTab('guide'); }
 }
 
 function saveProfile() {
@@ -188,7 +188,135 @@ function switchTab(tab) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.getElementById('sec-' + tab).classList.add('active');
   if (tab === 'stats') renderStats();
+  if (tab === 'guide') renderGuide();
   if (tab === 'challenges') renderChallenges();
+}
+
+// ===================== GUIDE =====================
+function renderGuide() {
+  const el = document.getElementById('sec-guide');
+  let html = `
+  <div style="max-width:740px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:28px;">
+      <h2 style="color:white;font-size:1.5rem;margin-bottom:6px;">The Core Guide</h2>
+      <p style="color:var(--text2);font-size:0.9rem;">Your quick-start reference for the LoadLine Core framework.</p>
+    </div>
+
+    <div class="guide-card">
+      <div class="guide-header">
+        <span class="guide-icon">FRAMEWORK</span>
+        <h3>The LoadLine Core System</h3>
+      </div>
+      <p>Everything in LoadLine Core follows five pillars. Master these and the rest takes care of itself.</p>
+      <div class="guide-pillars">
+        <div class="guide-pillar"><span class="pillar-num">1</span><div><strong>TRAIN</strong><br>Lift weights 3 to 4 days per week. Focus on compound movements. Push, pull, squat, hinge, carry.</div></div>
+        <div class="guide-pillar"><span class="pillar-num">2</span><div><strong>MOVE</strong><br>Walk 8,000 to 10,000 steps daily. Non-negotiable. Walking is the most underrated fat loss tool you have.</div></div>
+        <div class="guide-pillar"><span class="pillar-num">3</span><div><strong>RECOVER</strong><br>Sleep 7 to 9 hours. Manage stress. Take your supplements. Recovery is where progress actually happens.</div></div>
+        <div class="guide-pillar"><span class="pillar-num">4</span><div><strong>TRACK</strong><br>Log your meals, workouts, weight, and waist. What gets measured gets managed. Use this tracker daily.</div></div>
+        <div class="guide-pillar"><span class="pillar-num">5</span><div><strong>REPEAT</strong><br>Consistency beats intensity. Show up every day. Small wins compound. Trust the process.</div></div>
+      </div>
+    </div>
+
+    <div class="guide-card">
+      <div class="guide-header">
+        <span class="guide-icon">NUTRITION</span>
+        <h3>Eating Rules</h3>
+      </div>
+      <div class="guide-rules">
+        <div class="guide-rule">
+          <div class="rule-badge">Rule 1</div>
+          <div><strong>Protein First</strong><br>Hit 0.7 to 1 gram per pound of your target bodyweight every single day. Protein preserves muscle, controls hunger, and drives recovery. Build every meal around a protein source.</div>
+        </div>
+        <div class="guide-rule">
+          <div class="rule-badge">Rule 2</div>
+          <div><strong>Three Meals, No Snacking</strong><br>Eat three structured meals. Stop grazing. Each meal should have protein, fiber (vegetables), and a healthy fat source. This alone fixes most diets.</div>
+        </div>
+        <div class="guide-rule">
+          <div class="rule-badge">Rule 3</div>
+          <div><strong>Time-Restricted Eating</strong><br>Pick a 10 to 12-hour eating window (for example, 8am to 7pm). This is not starvation. It is structure. It reduces late-night eating and improves insulin sensitivity.</div>
+        </div>
+        <div class="guide-rule">
+          <div class="rule-badge">Rule 4</div>
+          <div><strong>Water</strong><br>Drink half your bodyweight in ounces daily. If you weigh 200 pounds, drink 100 ounces. Add electrolytes if you sweat heavily or train hard.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="guide-card">
+      <div class="guide-header">
+        <span class="guide-icon">TRAINING</span>
+        <h3>How to Train</h3>
+      </div>
+      <p>You do not need a gym membership or fancy equipment. You need consistency and effort.</p>
+      <div class="guide-rules">
+        <div class="guide-rule">
+          <div class="rule-badge">Lift</div>
+          <div><strong>3 to 4 Days Per Week</strong><br>Follow the workout plan in the Workout tab. Each session is 30 to 45 minutes. Focus on getting stronger over time, not destroying yourself.</div>
+        </div>
+        <div class="guide-rule">
+          <div class="rule-badge">Move</div>
+          <div><strong>Walk Every Day</strong><br>8,000 to 10,000 steps. Walk after meals. Take the stairs. Park farther away. This is not cardio punishment, it is daily movement.</div>
+        </div>
+        <div class="guide-rule">
+          <div class="rule-badge">Rest</div>
+          <div><strong>Listen to Your Body</strong><br>Rest days are not lazy days. They are recovery days. If you are sore, walk. If you are exhausted, sleep. The goal is longevity, not burnout.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="guide-card">
+      <div class="guide-header">
+        <span class="guide-icon">SLEEP</span>
+        <h3>Sleep is the Multiplier</h3>
+      </div>
+      <p>Everything works better when you sleep well. Poor sleep increases hunger, kills motivation, and slows recovery.</p>
+      <div class="guide-rules">
+        <div class="guide-rule">
+          <div class="rule-badge">Tip 1</div>
+          <div><strong>Consistent Bedtime</strong><br>Go to bed and wake up at the same time every day, including weekends. Your body runs on a clock. Respect it.</div>
+        </div>
+        <div class="guide-rule">
+          <div class="rule-badge">Tip 2</div>
+          <div><strong>Ditch the Screens</strong><br>No phone, TV, or laptop 30 minutes before bed. Blue light suppresses melatonin. Read a book or stretch instead.</div>
+        </div>
+        <div class="guide-rule">
+          <div class="rule-badge">Tip 3</div>
+          <div><strong>Cool and Dark</strong><br>Keep your room at 65 to 68 degrees. Use blackout curtains. A cool, dark room is the fastest path to deep sleep.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="guide-card">
+      <div class="guide-header">
+        <span class="guide-icon">TRACKER</span>
+        <h3>How to Use This Tracker</h3>
+      </div>
+      <div class="guide-tabs-list">
+        <div class="guide-tab-item"><span class="tab-icon">DASH</span><div><strong>Dashboard</strong><br>Your daily snapshot. Compliance score, streak, and quick links to everything.</div></div>
+        <div class="guide-tab-item"><span class="tab-icon">BODY</span><div><strong>Your Numbers</strong><br>Log weight and waist weekly. Watch your BMI and waist-to-height ratio trend down.</div></div>
+        <div class="guide-tab-item"><span class="tab-icon">LIFT</span><div><strong>Workout</strong><br>Log each exercise, sets, and reps. Check off what you finish. Track progress over time.</div></div>
+        <div class="guide-tab-item"><span class="tab-icon">FUEL</span><div><strong>Nutrition</strong><br>Log meals, water, and sleep. Hit your protein target. Stay in your eating window.</div></div>
+        <div class="guide-tab-item"><span class="tab-icon">SUPP</span><div><strong>Supplements</strong><br>Check off your daily supplements as you take them. Never miss a dose again.</div></div>
+        <div class="guide-tab-item"><span class="tab-icon">STEP</span><div><strong>Steps</strong><br>Log your daily steps. Aim for 10,000. Walk after meals for bonus points.</div></div>
+        <div class="guide-tab-item"><span class="tab-icon">PRIME</span><div><strong>Daily Primer</strong><br>Your morning checklist. Review your plan, set intentions, and start the day right.</div></div>
+        <div class="guide-tab-item"><span class="tab-icon">LIST</span><div><strong>Grocery List</strong><br>Auto-generated from your meal plan. Check items off as you shop.</div></div>
+        <div class="guide-tab-item"><span class="tab-icon">GO</span><div><strong>Challenges</strong><br>Join challenges from the Metabolic Reset community. Earn badges and track progress.</div></div>
+      </div>
+    </div>
+
+    <div class="guide-card" style="border-color:var(--green);background:rgba(22,163,74,0.05);">
+      <div class="guide-header">
+        <span class="guide-icon" style="background:var(--green);color:white;">MINDSET</span>
+        <h3>The Bottom Line</h3>
+      </div>
+      <p style="font-size:1rem;line-height:1.7;color:var(--text);">
+        You do not need to be perfect. You need to be consistent. Track your food. Move your body. Sleep like it matters. Lift something heavy a few times a week. Drink your water. Take your supplements.<br><br>
+        <strong style="color:white;">That is the Core program. It works if you work it.</strong><br><br>
+        <span style="color:var(--green-light);font-weight:700;">Load the Standard. Live the Life.</span>
+      </p>
+    </div>
+  </div>`;
+  el.innerHTML = html;
 }
 
 // ===================== YOUR NUMBERS =====================
@@ -1293,7 +1421,7 @@ if (currentUser && authToken) {
   loadFromServer().then(() => {
     if (allData.splashAccepted) {
       if (!allData.profile) { document.getElementById('profileSetup').classList.remove('hidden'); }
-      else { showApp(); switchTab('dashboard'); }
+      else { showApp(); switchTab('guide'); }
     } else {
       document.getElementById('splashScreen').classList.remove('hidden');
     }
@@ -1303,5 +1431,5 @@ if (currentUser && authToken) {
   document.getElementById('authScreen').classList.add('hidden');
   document.getElementById('splashScreen').classList.add('hidden');
   if (!allData.profile) { document.getElementById('profileSetup').classList.remove('hidden'); }
-  else { showApp(); switchTab('dashboard'); }
+  else { showApp(); switchTab('guide'); }
 }
