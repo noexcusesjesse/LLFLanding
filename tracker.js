@@ -2,7 +2,7 @@
 const STORAGE = 'loadline_tracker_v1';
 let allData = JSON.parse(localStorage.getItem(STORAGE) || '{}');
 let currentDate = new Date();
-const TABS = ['guide','dashboard','stats','workout','nutrition','supplements','steps','primer','grocery','challenges'];
+const TABS = ['dashboard','stats','workout','nutrition','supplements','steps','primer','grocery','challenges'];
 let authToken = localStorage.getItem('loadline_token') || null;
 let currentUser = JSON.parse(localStorage.getItem('loadline_user') || 'null');
 
@@ -64,7 +64,7 @@ function continueAsGuest() {
   document.getElementById('authScreen').classList.add('hidden');
   if (allData.splashAccepted) {
     if (!allData.profile) { document.getElementById('profileSetup').classList.remove('hidden'); }
-    else { showApp(); switchTab('guide'); }
+    else { showApp(); switchTab('dashboard'); }
   } else {
     document.getElementById('splashScreen').classList.remove('hidden');
   }
@@ -74,7 +74,7 @@ function proceedAfterAuth() {
   document.getElementById('authScreen').classList.add('hidden');
   if (allData.splashAccepted) {
     if (!allData.profile) { document.getElementById('profileSetup').classList.remove('hidden'); }
-    else { showApp(); switchTab('guide'); }
+    else { showApp(); switchTab('dashboard'); }
   } else {
     document.getElementById('splashScreen').classList.remove('hidden');
   }
@@ -122,7 +122,7 @@ function acceptSplash() {
   allData.splashAccepted = true; save();
   document.getElementById('splashScreen').classList.add('hidden');
   if (!allData.profile) { document.getElementById('profileSetup').classList.remove('hidden'); }
-  else { showApp(); switchTab('guide'); }
+  else { showApp(); switchTab('dashboard'); }
 }
 
 function saveProfile() {
@@ -510,7 +510,8 @@ function renderDashboard() {
   }
 
   // Quick Actions
-  html += '<div class="dash-actions"><div class="dash-action-btn" onclick="switchTab(\x27workout\x27)"><span class="action-icon">TRAIN</span>Today\x27s Workout</div>';
+  html += '<div class="dash-actions"><div class="dash-action-btn" onclick="switchTab(\x27guide\x27)"><span class="action-icon">GUIDE</span>Core Guide</div>';
+  html += '<div class="dash-action-btn" onclick="switchTab(\x27workout\x27)"><span class="action-icon">TRAIN</span>Today\x27s Workout</div>';
   html += '<div class="dash-action-btn" onclick="switchTab(\x27nutrition\x27)"><span class="action-icon">FUEL</span>Meal Plan</div>';
   html += '<div class="dash-action-btn" onclick="switchTab(\x27supplements\x27)"><span class="action-icon">RECOVER</span>Supplements</div>';
   html += '<div class="dash-action-btn" onclick="switchTab(\x27primer\x27)"><span class="action-icon">PRIME</span>Daily Primer</div>';
@@ -1421,7 +1422,7 @@ if (currentUser && authToken) {
   loadFromServer().then(() => {
     if (allData.splashAccepted) {
       if (!allData.profile) { document.getElementById('profileSetup').classList.remove('hidden'); }
-      else { showApp(); switchTab('guide'); }
+      else { showApp(); switchTab('dashboard'); }
     } else {
       document.getElementById('splashScreen').classList.remove('hidden');
     }
@@ -1431,5 +1432,5 @@ if (currentUser && authToken) {
   document.getElementById('authScreen').classList.add('hidden');
   document.getElementById('splashScreen').classList.add('hidden');
   if (!allData.profile) { document.getElementById('profileSetup').classList.remove('hidden'); }
-  else { showApp(); switchTab('guide'); }
+  else { showApp(); switchTab('dashboard'); }
 }
