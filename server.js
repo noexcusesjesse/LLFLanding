@@ -337,27 +337,6 @@ app.get('/admin', (req, res) => {
   res.sendFile(join(__dirname, 'admin.html'));
 });
 
-// Serve index.html for SPA
-app.get('*', (req, res) => {
-  res.sendFile(join(__dirname, 'index.html'), (err) => {
-    if (err) res.status(404).send('Not found');
-  });
-});
-
-// Start server
-async function start() {
-  await initDB();
-  app.listen(PORT, () => {
-    console.log(`🚀 LoadLine Fitness API running on port ${PORT}`);
-    console.log(`📊 Dashboard: http://localhost:${PORT}/admin`);
-  });
-}
-
-start().catch(error => {
-  console.error('Startup error:', error);
-  process.exit(1);
-});
-
 // Migration endpoint (temporary)
 app.get('/api/migrate', async (req, res) => {
   try {
@@ -386,3 +365,25 @@ app.get('/api/migrate', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+// Serve index.html for SPA
+app.get('*', (req, res) => {
+  res.sendFile(join(__dirname, 'index.html'), (err) => {
+    if (err) res.status(404).send('Not found');
+  });
+});
+
+// Start server
+async function start() {
+  await initDB();
+  app.listen(PORT, () => {
+    console.log(`🚀 LoadLine Fitness API running on port ${PORT}`);
+    console.log(`📊 Dashboard: http://localhost:${PORT}/admin`);
+  });
+}
+
+start().catch(error => {
+  console.error('Startup error:', error);
+  process.exit(1);
+});
+
