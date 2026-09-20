@@ -70,10 +70,11 @@ async function initDB() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
-      
       CREATE INDEX IF NOT EXISTS idx_leads_email ON leads(email);
       CREATE INDEX IF NOT EXISTS idx_leads_status ON leads(status);
+    `);
 
+    await pool.query(`
       CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
         username VARCHAR(100) UNIQUE NOT NULL,
@@ -82,7 +83,9 @@ async function initDB() {
         display_name VARCHAR(100),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
+    `);
 
+    await pool.query(`
       CREATE TABLE IF NOT EXISTS tracker_data (
         id SERIAL PRIMARY KEY,
         user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
@@ -90,9 +93,10 @@ async function initDB() {
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         UNIQUE(user_id)
       );
-
-      CREATE INDEX IF NOT EXISTS idx_tracker_user ON tracker_data(user_id);
     `);
+
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_tracker_user ON tracker_data(user_id);`);
+
     console.log('✅ Database initialized');
   } catch (error) {
     console.error('❌ Database init error:', error.message);
@@ -340,26 +344,9 @@ app.get('/admin', (req, res) => {
 // Migration endpoint (temporary)
 app.get('/api/migrate', async (req, res) => {
   try {
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
-        username VARCHAR(100) UNIQUE NOT NULL,
-        email VARCHAR(255) UNIQUE NOT NULL,
-        password_hash VARCHAR(255) NOT NULL,
-        display_name VARCHAR(100),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS tracker_data (
-        id SERIAL PRIMARY KEY,
-        user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-        data JSONB NOT NULL DEFAULT '{}',
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        UNIQUE(user_id)
-      );
-    `);
-    await pool.query(`CREATE INDEX IF NOT EXISTS idx_tracker_user ON tracker_data(user_id);`);
+    await pool.query('CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, username VARCHAR(100) UNIQUE NOT NULL, email VARCHAR(255) UNIQUE NOT NULL, password_hash VARCHAR(255) NOT NULL, display_name VARCHAR(100), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)');
+    await pool.query(`CREATE TABLE IF NOT EXISTS tracker_data (id SERIAL PRIMARY KEY, user_id INTEGER REFERENCES users(id) ON DELETE CASCADE, data JSONB NOT NULL DEFAULT '{}', updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, UNIQUE(user_id))`);
+    await pool.query('CREATE INDEX IF NOT EXISTS idx_tracker_user ON tracker_data(user_id)');
     res.json({ success: true, message: 'Tables created' });
   } catch (error) {
     res.status(500).json({ error: error.message });
