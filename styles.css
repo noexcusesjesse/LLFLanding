@@ -1425,3 +1425,46 @@ p { font-size: 1.08rem; color: var(--text-primary); }
     font-size: 0.8rem;
   }
 }
+
+/* Book page — same tokens, cover beside the details */
+.book-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 340px) 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.book-cover {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.book-meta {
+  margin: 18px 0 8px;
+  color: var(--text-secondary);
+}
+
+.book-meta strong { color: white; font-weight: 700; }
+
+.book-price {
+  margin: 8px 0 22px;
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: var(--green-light);
+  line-height: 1;
+}
+
+.book-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+@media (max-width: 900px) {
+  .book-layout { grid-template-columns: 1fr; }
+  .book-cover { max-width: 280px; }
+}
