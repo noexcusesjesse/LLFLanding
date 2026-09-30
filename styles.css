@@ -1498,6 +1498,21 @@ p { font-size: 1.08rem; color: var(--text-primary); }
 .shop-item .book-actions { margin-bottom: 0; }
 .shop-item p + .book-actions { margin-top: 16px; }
 
+.shop-disclaimer {
+  margin-top: 36px;
+  padding-top: 28px;
+  border-top: 1px solid var(--border-color);
+  max-width: 760px;
+}
+
+.shop-disclaimer p {
+  margin: 0 0 12px;
+  max-width: 760px;
+  color: var(--text-secondary);
+  font-size: .85rem;
+  line-height: 1.6;
+}
+
 @media (max-width: 900px) {
   .shop-item,
   .shop-item-wide {
