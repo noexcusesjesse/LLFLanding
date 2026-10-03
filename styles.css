@@ -1449,11 +1449,15 @@ p { font-size: 1.08rem; color: var(--text-primary); }
 .book-meta strong { color: white; font-weight: 700; }
 
 .book-price {
-  margin: 8px 0 22px;
-  font-size: 2.4rem;
-  font-weight: 900;
-  color: var(--green-light);
-  line-height: 1;
+  margin: 14px 0 6px;
+  font-size: 1.08rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.book-price + .book-price {
+  margin: 0 0 22px;
 }
 
 .book-actions {
