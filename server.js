@@ -53,6 +53,19 @@ const sendEmail = async (to, subject, html) => {
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Clean URL for the Papers page. Registered before express.static, because
+// the papers/ asset folder would otherwise turn /papers into a redirect to
+// /papers/, which then falls through to the home page.
+// /papers/ redirects to /papers so the page's relative links keep working.
+app.get('/papers', (req, res) => {
+  const [path, query] = req.originalUrl.split('?');
+  if (path.endsWith('/')) {
+    return res.redirect(301, '/papers' + (query ? '?' + query : ''));
+  }
+  res.sendFile(join(__dirname, 'papers.html'));
+});
+
 app.use(express.static(__dirname));
 
 // Initialize database

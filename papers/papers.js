@@ -23,17 +23,11 @@
  */
 window.LOADLINE_PAPERS = [
   {
-    // TODO: Placeholder card. The added sugar paper is still being written.
-    // TODO: Confirm the final title (working title below) and the summary.
-    // TODO: Drop in papers/added-sugar-fact-check.pdf and
-    //       papers/added-sugar-fact-check-cover.png, set the real publish
-    //       date, then remove "comingSoon: true".
     slug: 'added-sugar-fact-check',
     title: 'Added Sugar: The Fact-Check',
-    summary: 'How much added sugar Americans really eat, where it hides, and what the research says it does to your body. Plain-English answers to the most common myths, backed by official guidelines and real studies, plus simple swaps you can start today.',
+    summary: 'The average U.S. adult eats about 17 teaspoons of added sugar a day, and sugary drinks are the #1 source. Added Sugar: The Fact-Check explains what counts as added sugar, how to read the new label in 30 seconds, what the 2025–2030 Dietary Guidelines say, and gives 12 popular sugar claims a straight verdict, all backed by 41 public sources. Plain English, no hype, and practical swaps for real families.',
     date: '2026-10-06',
     pdf: 'papers/added-sugar-fact-check.pdf',
-    cover: 'papers/added-sugar-fact-check-cover.png',
-    comingSoon: true
+    cover: 'papers/added-sugar-fact-check-cover.png'
   }
 ];
