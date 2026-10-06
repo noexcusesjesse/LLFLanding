@@ -1525,3 +1525,188 @@ p { font-size: 1.08rem; color: var(--text-primary); }
     align-items: start;
   }
 }
+
+/* Papers — fact-check paper cards and the read-online viewer */
+.papers-section { padding: 40px 0 24px; }
+
+.papers-intro {
+  max-width: 760px;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+}
+
+.papers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 28px;
+}
+
+.paper-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-color);
+  background: rgba(42, 42, 42, 0.5);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+
+.paper-card:hover { border-color: var(--green); }
+
+.paper-cover-wrap {
+  position: relative;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.paper-cover {
+  width: 100%;
+  aspect-ratio: 17 / 22;
+  object-fit: cover;
+}
+
+.paper-cover-fallback {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 28px 26px;
+  background:
+    linear-gradient(160deg, rgba(22, 163, 74, 0.28), transparent 55%),
+    var(--bg-secondary);
+}
+
+.paper-cover-brand,
+.paper-cover-tag {
+  font-size: .78rem;
+  font-weight: 900;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--green-light);
+}
+
+.paper-cover-title {
+  font-size: clamp(1.8rem, 3vw, 2.3rem);
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -.03em;
+  color: white;
+}
+
+.paper-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--bg-primary);
+  border: 1px solid var(--green);
+  color: var(--green-light);
+  font-size: .75rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.paper-card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 22px 24px 24px;
+}
+
+.paper-date {
+  font-size: .85rem;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.paper-title {
+  font-size: 1.45rem;
+  letter-spacing: -.01em;
+  margin-bottom: 10px;
+}
+
+.paper-summary {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+
+.paper-actions { margin-top: auto; margin-bottom: 18px; }
+.paper-actions .button { flex: 1 1 140px; }
+
+.paper-share {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-color);
+  font-size: .9rem;
+}
+
+.paper-share-label {
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.paper-share-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.paper-share-link:hover { color: var(--green); }
+
+.paper-back { margin-bottom: 18px; font-size: .95rem; }
+.paper-back a { color: var(--text-secondary); font-weight: 600; }
+.paper-back a:hover { color: var(--green); }
+
+.paper-viewer-title { font-size: clamp(2.2rem, 4.5vw, 3.6rem); margin-bottom: 8px; }
+
+.paper-viewer-actions { margin-top: 18px; }
+
+.paper-viewer iframe {
+  display: block;
+  width: 100%;
+  height: 85vh;
+  min-height: 560px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: white;
+}
+
+.paper-viewer-fallback {
+  margin-top: 10px;
+  font-size: .9rem;
+  color: var(--text-secondary);
+}
+
+.paper-viewer-fallback a,
+.paper-message a { color: var(--green-light); font-weight: 700; }
+
+.paper-message {
+  margin-top: 18px;
+  padding: 22px 24px;
+  border-left: 4px solid var(--green);
+  background: var(--bg-secondary);
+  border-radius: 0 8px 8px 0;
+  max-width: 760px;
+}
+
+@media (max-width: 620px) {
+  .papers-grid { grid-template-columns: 1fr; }
+  .paper-card-body { padding: 20px; }
+}
+
+.paper-viewer-actions[hidden],
+.paper-viewer[hidden],
+.paper-message[hidden] { display: none; }
+
+.paper-actions .button { white-space: nowrap; padding: 12px 16px; }
