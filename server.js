@@ -82,6 +82,20 @@ function cleanPage(urlPath, file) {
 cleanPage('/papers', 'papers.html');
 cleanPage('/apps', 'apps.html');
 
+// The guide sits under the app directory. Register it before static files so
+// both /apps/walkingout/help and the trailing-slash URL render this page
+// instead of falling through to the home page.
+function walkingoutHelp(req, res) {
+  const [path, query] = req.originalUrl.split('?');
+  const canonical = '/apps/walkingout/help/';
+  if (path !== canonical) {
+    return res.redirect(301, canonical + (query ? '?' + query : ''));
+  }
+  sendHtml(res, 'apps/walkingout/help/index.html');
+}
+
+app.get(['/apps/walkingout/help', '/apps/walkingout/help/', '/apps/walkingout/help/index.html'], walkingoutHelp);
+
 const STATIC_HTML = new Set(['admin.html', 'tracker-admin.html', 'tracker.html']);
 
 app.use((req, res, next) => {

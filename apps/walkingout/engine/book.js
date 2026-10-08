@@ -5,6 +5,7 @@
 
 import { dateForMinutes, dateFromKey, keyFor, minutesSinceStart, weekdayOf } from './calendar.js';
 import {
+  RoutineProblem,
   Scope,
   Slot,
   allowsSlot,

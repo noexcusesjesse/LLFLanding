@@ -1,7 +1,7 @@
 /**
- * Browser store. The book is the same JSON the planner reads; goal, everyday
- * steps, and typed daily totals live beside it because HealthKit is not
- * available here.
+ * Browser store. The book is the same JSON the planner reads. Goal, everyday
+ * steps, and typed daily totals live beside it because a website can't read
+ * a phone's step counter.
  */
 
 import { keyFor } from './calendar.js';
