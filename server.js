@@ -3,6 +3,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { existsSync, readFileSync } from 'fs';
+import { applySiteNav } from './partials/site-nav.js';
 import pkg from 'pg';
 import axios from 'axios';
 import bcrypt from 'bcryptjs';
@@ -54,16 +56,42 @@ const sendEmail = async (to, subject, html) => {
 app.use(cors());
 app.use(express.json());
 
-// Clean URL for the Papers page. Registered before express.static, because
-// the papers/ asset folder would otherwise turn /papers into a redirect to
-// /papers/, which then falls through to the home page.
-// /papers/ redirects to /papers so the page's relative links keep working.
-app.get('/papers', (req, res) => {
-  const [path, query] = req.originalUrl.split('?');
-  if (path.endsWith('/')) {
-    return res.redirect(301, '/papers' + (query ? '?' + query : ''));
+function sendHtml(res, filename) {
+  try {
+    const html = applySiteNav(readFileSync(join(__dirname, filename), 'utf8'));
+    res.type('html').send(html);
+  } catch (error) {
+    console.error('Page error:', error.message);
+    res.status(404).send('Not found');
   }
-  res.sendFile(join(__dirname, 'papers.html'));
+}
+
+// Clean paths registered before express.static. A real folder (papers/, apps/)
+// would otherwise redirect /papers or /apps onto a directory URL that then
+// falls through to the home page.
+function cleanPage(urlPath, file) {
+  app.get(urlPath, (req, res) => {
+    const [path, query] = req.originalUrl.split('?');
+    if (path.endsWith('/')) {
+      return res.redirect(301, urlPath + (query ? '?' + query : ''));
+    }
+    sendHtml(res, file);
+  });
+}
+
+cleanPage('/papers', 'papers.html');
+cleanPage('/apps', 'apps.html');
+
+const STATIC_HTML = new Set(['admin.html', 'tracker-admin.html', 'tracker.html']);
+
+app.use((req, res, next) => {
+  if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+  if (req.path === '/' || req.path === '/index.html') return sendHtml(res, 'index.html');
+  if (!req.path.endsWith('.html') || req.path.includes('..')) return next();
+  const name = req.path.slice(1);
+  if (name.includes('/') || STATIC_HTML.has(name)) return next();
+  if (!existsSync(join(__dirname, name))) return next();
+  return sendHtml(res, name);
 });
 
 app.use(express.static(__dirname));
@@ -521,11 +549,9 @@ app.get('/tracker-admin', (req, res) => {
   res.sendFile(join(__dirname, 'tracker-admin.html'));
 });
 
-// Serve index.html for SPA
+// Unknown paths still land on the home page, with the shared nav filled in.
 app.get('*', (req, res) => {
-  res.sendFile(join(__dirname, 'index.html'), (err) => {
-    if (err) res.status(404).send('Not found');
-  });
+  sendHtml(res, 'index.html');
 });
 
 // Start server
