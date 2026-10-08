@@ -255,6 +255,7 @@ h1, h2, .display {
 
 .center-empty { min-height: 70vh; display: flex; flex-direction: column; justify-content: center; gap: 14px; text-align: center; align-items: center; }
 .center-empty p { max-width: 360px; color: var(--ink-dim); }
+.center-empty .btn { flex: 0 0 auto; width: min(100%, 320px); }
 
 .scope button {
   width: 100%; text-align: left; background: transparent; border: 0; color: inherit;

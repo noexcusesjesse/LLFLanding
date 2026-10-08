@@ -1,4 +1,4 @@
-const CACHE = 'walkingout-shell-v2';
+const CACHE = 'walkingout-shell-v3';
 const SCOPE = '/apps/walkingout/';
 const SHELL = [
   `${SCOPE}`,
