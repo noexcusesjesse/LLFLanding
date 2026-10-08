@@ -824,7 +824,7 @@ p { font-size: 1.08rem; color: var(--text-primary); }
 /* PRICING SECTION */
 .pricing-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 24px;
   margin-top: 48px;
 }
@@ -908,10 +908,24 @@ p { font-size: 1.08rem; color: var(--text-primary); }
   flex-grow: 1;
 }
 
+.pricing-features {
+  list-style: disc;
+  margin: 0 0 8px 1.15rem;
+  padding: 0;
+  flex-grow: 1;
+}
+
+.pricing-features li {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
 /* LOCATION SECTION */
 .location-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 30px;
   margin-top: 48px;
 }
@@ -1176,6 +1190,29 @@ p { font-size: 1.08rem; color: var(--text-primary); }
 
 .price-ladder-extra a {
   color: var(--green-light);
+}
+
+.price-ladder-visits-block {
+  margin-top: 16px;
+  padding: 24px;
+  background: rgba(22, 163, 74, 0.08);
+  border: 1px solid rgba(22, 163, 74, 0.2);
+  border-radius: 12px;
+}
+
+.price-ladder-visits-block p {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.price-ladder-visits-block .price-ladder-label {
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: white;
+  margin-bottom: 6px;
 }
 
 .price-ladder-visits {
@@ -1445,7 +1482,7 @@ p { font-size: 1.08rem; color: var(--text-primary); }
 
 .comparison-row {
   display: grid;
-  grid-template-columns: 1fr 72px 72px 96px;
+  grid-template-columns: 1fr 72px 72px;
   align-items: center;
   padding: 16px 24px;
   border-bottom: 1px solid var(--border-color);
@@ -1517,7 +1554,7 @@ p { font-size: 1.08rem; color: var(--text-primary); }
 
 @media (max-width: 620px) {
   .comparison-row {
-    grid-template-columns: 1fr 52px 52px 72px;
+    grid-template-columns: 1fr 52px 52px;
     padding: 14px 12px;
     gap: 4px;
   }
