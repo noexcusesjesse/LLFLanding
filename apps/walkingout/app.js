@@ -171,6 +171,7 @@ function header() {
   return `<header class="app-header">
     <a class="brand-lockup" href="/"><img src="/assets/loadline-fitness-logo.jpg" alt="LoadLine Fitness"></a>
     <div class="header-actions">
+      <a class="header-link" href="/apps/walkingout/help/">Help</a>
       <a class="header-link" href="/apps">Apps</a>
       <button type="button" class="icon-button" data-action="open-reminders" aria-label="Reminders">${icon('bell')}</button>
     </div>
@@ -528,7 +529,7 @@ function summaryBar(plan) {
       <div><b>${formatNumber(goal)}</b><span>GOAL</span></div>
     </div>
     <div class="rail"><span style="width:${fraction * 100}%"></span></div>
-    <p class="fine" style="margin:8px 0 0">Type the steps you actually walked. The phone app reads these from Health; this page does not. ${key === keyFor(ui.now) ? "Today's count marks the week strip and the bedtime nudge." : ''}</p>
+    <p class="fine" style="margin:8px 0 0">A website can't read your phone's step counter, so type in the steps you walked.${key === keyFor(ui.now) ? " Today's count marks the week strip and the bedtime nudge." : ''}</p>
   </div>`;
 }
 
@@ -538,7 +539,7 @@ function reminderBanner() {
     return `<p class="banner">This browser can't show system reminders. The timeline is here whenever the page is open. Installing Walkingout keeps the icon handy, and reminders still need the page open.</p>`;
   }
   if (Notification.permission === 'granted') {
-    return `<p class="banner">A heads-up fires 5 minutes before each walk <strong>while this page is open</strong>. Browsers can't schedule it after you leave, the way the iPhone app can.</p>`;
+    return `<p class="banner">A heads-up fires 5 minutes before each walk <strong>while this page is open</strong>. Browsers can't schedule reminders after you leave.</p>`;
   }
   return `<p class="banner">Reminders need permission, and they only fire while this page is open. <button type="button" class="btn small" data-action="allow-reminders">Allow reminders</button></p>`;
 }

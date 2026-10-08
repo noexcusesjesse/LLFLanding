@@ -173,6 +173,32 @@ describe('Daily routine', () => {
     assert.equal(walk(plan(book, 5), Slot.lunch).startTime, 790);
   });
 
+  test('makeUpFailureSurfacesItsOwnMessage', () => {
+    const book = freshBook();
+    const morning = walk(plan(book, 4), Slot.morning);
+    const late = dateFromParts({ year: 2026, month: 10, day: 4, hour: 21, minute: 30 });
+    assert.throws(
+      () => book.makeUp(morning.id, date(4), inputs, late),
+      (error) => {
+        assert.ok(error instanceof RoutineProblem);
+        assert.equal(error.message, 'No room left before bedtime today.');
+        return true;
+      },
+    );
+
+    const tuesday = walk(plan(book, 6), Slot.morning);
+    const added = book.makeUp(tuesday.id, date(6), inputs, now);
+    assert.equal(added.makeUpFor, tuesday.id);
+    assert.throws(
+      () => book.makeUp(tuesday.id, date(6), inputs, now),
+      (error) => {
+        assert.ok(error instanceof RoutineProblem);
+        assert.equal(error.message, "Already made up — it's on the timeline.");
+        return true;
+      },
+    );
+  });
+
   test('shortfallNoteWording', () => {
     const covered = formatNumber(9_800);
     const goal = formatNumber(12_000);
