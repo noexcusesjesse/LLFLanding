@@ -563,6 +563,17 @@ app.get('/tracker-admin', (req, res) => {
   res.sendFile(join(__dirname, 'tracker-admin.html'));
 });
 
+// /papers/<slug> is a paper detail page. Real files in papers/ (the PDF, the
+// cover, papers.js) are already served by express.static above. A slug with
+// no matching file would otherwise fall through to the home page.
+app.get(['/papers/:slug', '/papers/:slug/'], (req, res, next) => {
+  const slug = req.params.slug;
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return next();
+  if (!existsSync(join(__dirname, 'papers', `${slug}.pdf`))) return next();
+  const query = req.originalUrl.split('?')[1];
+  return res.redirect(301, '/paper.html?p=' + encodeURIComponent(slug) + (query ? '&' + query : ''));
+});
+
 // Unknown paths still land on the home page, with the shared nav filled in.
 app.get('*', (req, res) => {
   sendHtml(res, 'index.html');
