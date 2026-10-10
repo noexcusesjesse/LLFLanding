@@ -97,10 +97,16 @@ function walkingoutHelp(req, res) {
 app.get(['/apps/walkingout/help', '/apps/walkingout/help/', '/apps/walkingout/help/index.html'], walkingoutHelp);
 
 // WalkQuest is a static app, same as Walkingout. Canonical URL keeps the
-// trailing slash; the bare path and index.html redirect onto it.
-app.get(['/apps/walkquest', '/apps/walkquest/index.html'], (req, res) => {
-  const query = req.originalUrl.split('?')[1];
-  res.redirect(301, '/apps/walkquest/' + (query ? '?' + query : ''));
+// trailing slash. Express treats /apps/walkquest and /apps/walkquest/ as the
+// same route unless we look at the original path, so the slash form must fall
+// through to the static file instead of redirecting to itself.
+app.get(['/apps/walkquest', '/apps/walkquest/index.html'], (req, res, next) => {
+  const [path, query] = req.originalUrl.split('?');
+  if (path === '/apps/walkquest/') return next();
+  if (path === '/apps/walkquest' || path === '/apps/walkquest/index.html') {
+    return res.redirect(301, '/apps/walkquest/' + (query ? '?' + query : ''));
+  }
+  return next();
 });
 
 const STATIC_HTML = new Set(['admin.html', 'tracker-admin.html', 'tracker.html']);
