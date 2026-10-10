@@ -96,6 +96,13 @@ function walkingoutHelp(req, res) {
 
 app.get(['/apps/walkingout/help', '/apps/walkingout/help/', '/apps/walkingout/help/index.html'], walkingoutHelp);
 
+// WalkQuest is a static app, same as Walkingout. Canonical URL keeps the
+// trailing slash; the bare path and index.html redirect onto it.
+app.get(['/apps/walkquest', '/apps/walkquest/index.html'], (req, res) => {
+  const query = req.originalUrl.split('?')[1];
+  res.redirect(301, '/apps/walkquest/' + (query ? '?' + query : ''));
+});
+
 const STATIC_HTML = new Set(['admin.html', 'tracker-admin.html', 'tracker.html']);
 
 app.use((req, res, next) => {
