@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Free LoadLine Plan Builder. Build a daily wellness routine and a 3- or 4-day workout plan in your browser. Ages 18 and over.">
+  <meta name="theme-color" content="#0a0a0a">
+  <meta property="og:title" content="LoadLine Plan Builder">
+  <meta property="og:description" content="A free daily wellness routine and 3- or 4-day workout plan from LoadLine Fitness &amp; Wellness. Ages 18 and over.">
+  <meta property="og:type" content="website">
+  <title>LoadLine Plan Builder | LoadLine Fitness</title>
+  <link rel="icon" href="assets/icons/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16.png">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/icons/icon-512.png">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="plan-builder.css">
+</head>
+<body class="plan-builder">
+  <a class="skip-link" href="#top">Skip to content</a>
+  <header class="site-header">
+    <!-- SITE-NAV current="plan" -->
+  </header>
+
+  <main id="top">
+    <div class="container">
+      <section class="plan-hero">
+        <p class="eyebrow">LoadLine Fitness &amp; Wellness</p>
+        <h1>LoadLine <span>Plan Builder</span></h1>
+        <p id="plan-subtitle">Your daily wellness routine and 3-day workout plan, ready to download as a PDF.</p>
+        <p id="today" class="plan-today">Today</p>
+        <p>Build a free daily routine, a walking plan from 6,000 to 12,000 steps, and a 3- or 4-day workout. The plan is created in your browser. This page is for ages 18 and over.</p>
+      </section>
+
+      <section class="plan-block plan-disclaimer" aria-labelledby="disclaimer-card-title">
+        <h2 id="disclaimer-card-title">Educational and medical disclaimer</h2>
+        <p>This plan gives general educational information about exercise, walking, nutrition, and healthy habits. It is not medical advice, does not create a doctor-patient relationship, and is not reviewed by a physician or other licensed professional.</p>
+        <p>Check with your physician before starting any exercise, walking, nutrition, or meal-timing change. This matters most if you are pregnant or nursing, or recently gave birth, are over 40 and have been inactive, take prescription medication, or have or are at risk for heart disease, high blood pressure, diabetes or insulin resistance, sleep apnea, joint or back problems, or any other medical condition. Your doctor can tell you what is safe and appropriate for you.</p>
+        <p>Call 911 for chest pain or pressure, fainting, confusion, or severe shortness of breath. Stop and contact your physician for dizziness, lightheadedness, unusual shortness of breath, an irregular heartbeat, sudden or severe pain, numbness, or nausea. In heat, walk early or indoors. Very hot body, confusion, or stopped sweating means call 911.</p>
+        <p>Exercise carries a risk of injury, and you take part at your own risk. The full disclaimer is on this page and at the end of your PDF.</p>
+        <p><a href="#disclaimer">Read the full disclaimer</a></p>
+      </section>
+
+      <section class="plan-block" id="builder">
+        <h2>Build your plan</h2>
+        <form id="builder-form">
+          <label class="plan-check" id="age18-label" for="age18">
+            <input id="age18" name="age18" type="checkbox" required>
+            <span>I am 18 or older</span>
+          </label>
+          <div class="plan-grid">
+            <div class="plan-field">
+              <label for="goal">Goal</label>
+              <select id="goal" name="goal">
+                <option value="tone">Fat loss and toning</option>
+                <option value="build">Build strength</option>
+              </select>
+            </div>
+            <div class="plan-field">
+              <label for="level">Experience</label>
+              <select id="level" name="level">
+                <option value="b">Beginner</option>
+                <option value="i">Intermediate</option>
+              </select>
+            </div>
+            <div class="plan-field">
+              <label for="days">Workout days per week</label>
+              <select id="days" name="days">
+                <option value="3">3 days</option>
+                <option value="4">4 days</option>
+              </select>
+            </div>
+            <div class="plan-field">
+              <label for="steps">Daily step goal</label>
+              <select id="steps" name="steps">
+                <option value="6000">6000</option>
+                <option value="8000">8000</option>
+                <option value="10000">10000</option>
+                <option value="12000">12000</option>
+              </select>
+            </div>
+            <div class="plan-field">
+              <label for="weight">Body weight (lb)</label>
+              <input id="weight" name="weight" type="number" min="80" max="500" inputmode="decimal">
+            </div>
+            <div class="plan-field">
+              <label for="sex">Sex</label>
+              <select id="sex" name="sex">
+                <option value="">Select</option>
+                <option value="f">Female</option>
+                <option value="m">Male</option>
+              </select>
+            </div>
+            <div class="plan-field">
+              <label for="age">Age</label>
+              <input id="age" name="age" type="number" min="18" max="100" inputmode="numeric" required aria-describedby="age-help">
+              <p id="age-help" class="plan-help">Ages 18 and over.</p>
+            </div>
+            <div class="plan-field">
+              <label for="height-ft">Height (ft)</label>
+              <input id="height-ft" name="height-ft" type="number" min="3" max="8" inputmode="numeric">
+            </div>
+            <div class="plan-field">
+              <label for="height-in">Height (in)</label>
+              <input id="height-in" name="height-in" type="number" min="0" max="11" inputmode="numeric">
+            </div>
+            <div class="plan-field">
+              <label for="waist">Waist at navel (in)</label>
+              <input id="waist" name="waist" type="number" min="20" max="80" step="0.1" inputmode="decimal">
+            </div>
+            <div class="plan-field">
+              <label for="wake">Wake up</label>
+              <input id="wake" name="wake" type="time" value="06:00" required>
+            </div>
+            <div class="plan-field">
+              <label for="work-start">Work starts</label>
+              <input id="work-start" name="work-start" type="time" value="08:00" required>
+            </div>
+            <div class="plan-field">
+              <label for="work-end">Work ends</label>
+              <input id="work-end" name="work-end" type="time" value="16:30" required>
+            </div>
+            <div class="plan-field">
+              <label for="bed">Bedtime</label>
+              <input id="bed" name="bed" type="time" value="22:00" required>
+            </div>
+            <div class="plan-field plan-wide">
+              <label for="eat-start">Eating window starts (optional)</label>
+              <input id="eat-start" name="eat-start" type="time" aria-describedby="eat-help eat-preview">
+              <p id="eat-preview" class="plan-window">Eating window: optional</p>
+              <p id="eat-help" class="plan-help">The end time is 10 hours after the start. Shown as a 14:10 eating window.</p>
+            </div>
+          </div>
+          <fieldset class="plan-equipment">
+            <legend>Equipment you have (walking is always included)</legend>
+            <div class="plan-eq">
+              <label for="eq-d"><input id="eq-d" name="equipment" type="checkbox" value="d" checked> Dumbbells</label>
+              <label for="eq-k"><input id="eq-k" name="equipment" type="checkbox" value="k" checked> Kettlebell</label>
+              <label for="eq-b"><input id="eq-b" name="equipment" type="checkbox" value="b" checked> Bands / tubes</label>
+              <label for="eq-w"><input id="eq-w" name="equipment" type="checkbox" value="w" checked> Bodyweight</label>
+            </div>
+          </fieldset>
+          <p class="plan-note">Weight, height, age, sex, and waist stay in this browser. They are not saved or sent.</p>
+          <div class="plan-actions">
+            <button class="button button-primary" id="build" type="submit">Build my plan</button>
+          </div>
+          <div id="build-status"></div>
+        </form>
+      </section>
+
+      <div id="plan-output"></div>
+
+      <section class="plan-block" id="download-card">
+        <h2>Download your free plan</h2>
+        <p id="download-rule">The PDF download needs your first name, email, the 18 or older confirmation, and the disclaimer acknowledgment. Marketing email is optional.</p>
+        <form id="download-form">
+          <div class="plan-grid">
+            <div class="plan-field">
+              <label for="first-name">First name</label>
+              <input id="first-name" name="first-name" type="text" autocomplete="given-name" required maxlength="100">
+            </div>
+            <div class="plan-field">
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" autocomplete="email" required maxlength="255">
+            </div>
+          </div>
+          <!-- TODO: No privacy policy page exists in this repo. When one is published, link the words "Privacy Policy" below. -->
+          <label class="plan-check" id="marketing-label" for="marketing">
+            <input id="marketing" name="marketing" type="checkbox">
+            <span>Yes, email me my plan and occasional tips and offers from LoadLine Fitness &amp; Wellness. Unsubscribe anytime. See our Privacy Policy.</span>
+          </label>
+          <p id="privacy-note">Your weight, height, age, sex, and waist are used only to build your plan in your browser and are not saved or sent to us.</p>
+          <label class="plan-check" id="ack-label" for="ack">
+            <input id="ack" name="ack" type="checkbox" required>
+            <span>I have read and understand <a href="#disclaimer">this disclaimer</a>, and I will check with my physician before starting.</span>
+          </label>
+          <div id="status" role="status" aria-live="polite"></div>
+          <div class="plan-actions">
+            <button class="button button-primary" id="download" type="submit">Download PDF</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="plan-block" id="thanks" hidden>
+        <h2>Your free plan is downloading.</h2>
+        <p>This plan is free. When you want a next step, join a free challenge at No Excuses Challenges.</p>
+        <p><a class="button button-outline" id="next-step-link" href="https://noexcuseschallenges.com">No Excuses Challenges</a></p>
+      </section>
+
+      <section class="plan-block" id="disclaimer" aria-labelledby="disclaimer-title">
+        <h2 id="disclaimer-title">Important disclaimer</h2>
+        <p>Educational and medical information from LoadLine Fitness &amp; Wellness. Please read before you begin.</p>
+        <article class="disclaimer-section">
+          <h3>Educational purposes only</h3>
+          <p>This plan and the information in it are provided by LoadLine Fitness &amp; Wellness for general educational and informational purposes only. The plan was generated automatically from the answers you entered. It has not been reviewed or customized by a physician, dietitian, or other licensed health professional.</p>
+        </article>
+        <article class="disclaimer-section">
+          <h3>Not medical advice</h3>
+          <p>Nothing in this document is medical advice, diagnosis, or treatment, and it does not create a doctor-patient relationship. It is not a substitute for advice from your physician or other qualified health provider. Never disregard professional medical advice or delay seeking it because of something in this plan.</p>
+        </article>
+        <article class="disclaimer-section">
+          <h3>Talk to your doctor first</h3>
+          <p>Check with your physician before starting any exercise, walking, nutrition, or meal-timing change. This matters most if you are pregnant or nursing, or recently gave birth, are over 40 and have been inactive, take prescription medication, or have or are at risk for heart disease, high blood pressure, diabetes or insulin resistance, sleep apnea, joint or back problems, or any other medical condition. Your doctor can tell you what is safe and appropriate for you.</p>
+        </article>
+        <article class="disclaimer-section">
+          <h3>Stop and get help</h3>
+          <p>Call 911 for chest pain or pressure, fainting, confusion, or severe shortness of breath. Stop and contact your physician for dizziness, lightheadedness, unusual shortness of breath, an irregular heartbeat, sudden or severe pain, numbness, or nausea. In heat, walk early or indoors. Very hot body, confusion, or stopped sweating means call 911.</p>
+        </article>
+        <article class="disclaimer-section">
+          <h3>Exercise risks</h3>
+          <p>All exercise carries some risk of injury, including strains, sprains, falls, and in rare cases serious medical events. You are responsible for using proper form, choosing weights and band resistance that are right for you, checking that your equipment is in good condition and anchored safely, and exercising in a clear, safe space. Start light, progress gradually, and modify or skip any exercise that does not feel right. Photos are for illustration and may not show ideal form for every body.</p>
+        </article>
+        <article class="disclaimer-section">
+          <h3>Nutrition, hydration and eating windows</h3>
+          <p>Food, water, and meal timing suggestions are general guidelines, and individual needs vary. Stopping eating at a set time or using a time-restricted eating window may not be appropriate for people with diabetes or low blood sugar, people taking glucose-lowering medication, pregnant or nursing women, people with a history of disordered eating, and others. Water targets may not suit people with kidney, heart, or other conditions that call for fluid limits. Ask your doctor or a registered dietitian before making changes.</p>
+        </article>
+        <article class="disclaimer-section">
+          <h3>Results vary</h3>
+          <p>Weight, fitness, and health results differ from person to person. LoadLine Fitness &amp; Wellness does not promise or guarantee any specific result.</p>
+        </article>
+        <article class="disclaimer-section">
+          <h3>Limitation of liability</h3>
+          <p>By using this plan you choose to participate at your own risk. To the fullest extent allowed by law, LoadLine Fitness &amp; Wellness and its owners, coaches, and affiliates are not responsible for any injury, loss, or damage that results from using this plan.</p>
+        </article>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div>
+        <img src="assets/loadline-fitness-logo.jpg" alt="LoadLine Fitness logo" class="footer-logo">
+        <p>LoadLine Fitness &amp; Wellness</p>
+        <p class="tagline">Load the Standard. Live the Life.</p>
+      </div>
+      <div class="socials">
+        <a href="https://x.com/LoadLineFitness" target="_blank" rel="noopener">X</a>
+      </div>
+    </div>
+    <div class="container copyright">
+      <p class="disclaimer">LoadLine Fitness &amp; Wellness provides fitness education. This plan is not medical advice.</p>
+      <span>© 2026 LoadLine Fitness. All rights reserved.</span>
+    </div>
+  </footer>
+
+  <script src="vendor/jspdf.umd.min.js"></script>
+  <script type="module" src="plan-builder.js"></script>
+</body>
+</html>
