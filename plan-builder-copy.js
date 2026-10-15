@@ -2,8 +2,7 @@
  * User-facing copy for the LoadLine Plan Builder.
  * The page and the PDF both use these strings so they stay the same.
  *
- * TODO: No privacy policy page exists in this repo. The marketing checkbox
- * says "See our Privacy Policy." Link those words when a policy page is published.
+ * The marketing checkbox links the words "Privacy Policy" to /privacy.
  */
 
 export const MARKETING_LABEL = 'Yes, email me my plan and occasional tips and offers from LoadLine Fitness & Wellness. Unsubscribe anytime. See our Privacy Policy.';

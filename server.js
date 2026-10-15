@@ -83,6 +83,7 @@ function cleanPage(urlPath, file) {
 cleanPage('/papers', 'papers.html');
 cleanPage('/apps', 'apps.html');
 cleanPage('/plan-builder', 'plan-builder.html');
+cleanPage('/privacy', 'privacy.html');
 
 // The guide sits under the app directory. Register it before static files so
 // both /apps/walkingout/help and the trailing-slash URL render this page

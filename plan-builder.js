@@ -331,6 +331,13 @@ function assertCopyLocks() {
   if ($('next-step-link').getAttribute('href') !== NEXT_STEP.url) throw new Error('Next step link drifted.');
 }
 
+const privacyPolicyLink = document.querySelector('#marketing-label a[href="/privacy"]');
+if (privacyPolicyLink) {
+  privacyPolicyLink.addEventListener('click', (event) => {
+    event.stopPropagation();
+  });
+}
+
 syncToday();
 syncSubtitle();
 syncWindow();
