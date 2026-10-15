@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { existsSync, readFileSync } from 'fs';
 import { applySiteNav } from './partials/site-nav.js';
+import { escapeHtml, planBuilderLeadError, planBuilderLeadRecord } from './lib/plan-builder-lead.js';
 import pkg from 'pg';
 import axios from 'axios';
 import bcrypt from 'bcryptjs';
@@ -81,6 +82,7 @@ function cleanPage(urlPath, file) {
 
 cleanPage('/papers', 'papers.html');
 cleanPage('/apps', 'apps.html');
+cleanPage('/plan-builder', 'plan-builder.html');
 
 // The guide sits under the app directory. Register it before static files so
 // both /apps/walkingout/help and the trailing-slash URL render this page
@@ -302,9 +304,52 @@ app.get('/api/tracker/data', authenticateToken, async (req, res) => {
   }
 });
 
-// Submit lead (contact form)
+// Submit lead (contact form, or the plan builder's name/email/consent only)
 app.post('/api/leads', async (req, res) => {
-  const { type, name, email, phone, message } = req.body;
+  const body = req.body || {};
+  if (body.source === 'plan-builder') {
+    const leadError = planBuilderLeadError(body);
+    if (leadError) return res.status(400).json({ error: leadError });
+    const lead = planBuilderLeadRecord(body);
+    try {
+      const result = await pool.query(
+        `INSERT INTO leads (type, name, email, phone, message)
+         VALUES ($1, $2, $3, $4, $5)
+         RETURNING id, created_at`,
+        [lead.type, lead.name, lead.email, lead.phone, lead.message]
+      );
+      const leadId = result.rows[0].id;
+      if (process.env.NOTIFY_EMAIL) {
+        try {
+          await sendEmail(
+            process.env.NOTIFY_EMAIL,
+            `[LoadLine] New plan-builder Lead: ${lead.name}`,
+            `
+              <h2>New Plan Builder Lead</h2>
+              <p><strong>Name:</strong> ${escapeHtml(lead.name)}</p>
+              <p><strong>Email:</strong> ${escapeHtml(lead.email)}</p>
+              <p><strong>Type:</strong> plan-builder</p>
+              <p>${escapeHtml(lead.message).replace(/\n/g, '<br>')}</p>
+              <hr>
+              <p>View in dashboard: <a href="${process.env.DASHBOARD_URL || 'https://loadlinefitness.com'}/admin">Lead #${leadId}</a></p>
+            `
+          );
+        } catch (emailError) {
+          console.error('Email send error (non-blocking):', emailError.message);
+        }
+      }
+      return res.json({
+        success: true,
+        message: 'Thank you. Your plan is ready to download.',
+        leadId
+      });
+    } catch (error) {
+      console.error('Lead submission error:', error);
+      return res.status(500).json({ error: 'Failed to submit lead' });
+    }
+  }
+
+  const { type, name, email, phone, message } = body;
 
   if (!name || !email || !message) {
     return res.status(400).json({ error: 'Missing required fields (name, email, message)' });

@@ -14,6 +14,7 @@ const LINKS = {
   books: { href: '/books.html', label: 'Books' },
   papers: { href: '/papers.html', label: 'Papers' },
   apps: { href: '/apps', label: 'Apps' },
+  plan: { href: '/plan-builder', label: 'Plan Builder' },
   shop: { href: '/shop.html', label: 'Shop' },
   book: { href: '/#consultation', label: 'Book Now', cta: true },
 };
@@ -43,7 +44,7 @@ function section(label, ids, current) {
 export function renderSiteNav(current = '') {
   const about = ['story', 'coach'];
   const program = ['system', 'pricing', 'faq', 'metabolic'];
-  const resources = ['books', 'papers', 'apps'];
+  const resources = ['books', 'papers', 'apps', 'plan'];
   return `<nav class="nav container" aria-label="Main navigation" data-site-nav>
       <a class="brand" href="/#top" aria-label="LoadLine Fitness home">
         <img src="/assets/loadline-fitness-logo.jpg" alt="LoadLine Fitness logo">
