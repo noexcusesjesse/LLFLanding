@@ -1644,6 +1644,17 @@ p { font-size: 1.08rem; color: var(--text-primary); }
   border-top: 1px solid var(--border-color);
 }
 
+.shop-group {
+  margin: 36px 0 20px;
+  padding-top: 28px;
+  border-top: 1px solid var(--border-color);
+  font-size: .82rem;
+  font-weight: 900;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--green);
+}
+
 .shop-item .book-meta { margin: 0 0 8px; }
 .shop-item .book-actions { margin-bottom: 0; }
 .shop-item p + .book-actions { margin-top: 16px; }
