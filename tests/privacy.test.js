@@ -25,16 +25,23 @@ const FOOTERS = [
 describe('privacy policy', () => {
   const page = read('privacy.html');
 
-  test('the page states the contact, the host, and the effective date', () => {
+  test('the page states the contact, the host, and the email service', () => {
     assert.match(page, /LoadLine Fitness &amp; Wellness/);
     assert.match(page, /noexcusesjesse@gmail\.com/);
-    assert.match(page, /Effective: \[pending\]/);
+    assert.match(page, /Effective:/);
     assert.match(page, /do not have a mailing address/);
-    assert.match(page, /hosted on Railway/);
-    assert.match(page, /PostgreSQL/);
-    assert.match(page, /before any vendor is added/);
+    assert.match(page, /Railway hosts the website and the PostgreSQL database/);
+    assert.match(page, /Google, through Gmail/);
+    assert.match(page, /Google receives the names and email addresses/);
+    assert.match(page, /before any other vendor is added/);
     assert.match(page, /not for people under 18/);
     assert.match(page, /unsubscribe link/);
+    assert.match(page, /deleted after 12 months/);
+    assert.match(page, /reply to deletion requests within 30 days/);
+    assert.match(page, /removes its logs from our database/);
+    assert.match(page, /never used for marketing, never sold or shared/);
+    assert.match(page, /not a medical provider/);
+    assert.match(page, /not medical records/);
     assert.doesNotMatch(page, /SendGrid|gtag|Google Analytics|Plausible|Hotjar/);
     assert.doesNotMatch(page, /\b\d{1,5}\s+[A-Z][a-z]+ (Street|St|Avenue|Ave|Road|Rd|Drive|Dr|Boulevard|Blvd)\b/);
   });
@@ -54,7 +61,9 @@ describe('privacy policy', () => {
   test('the route and the footer links point at /privacy', () => {
     assert.match(read('server.js'), /cleanPage\('\/privacy', 'privacy\.html'\)/);
     FOOTERS.forEach((file) => {
-      assert.match(read(file), /href="\/privacy"/, file);
+      const html = read(file);
+      assert.match(html, /href="\/privacy"/, file);
+      assert.match(html, /LoadLine Fitness &amp; Wellness\. All rights reserved\./, file);
     });
   });
 });

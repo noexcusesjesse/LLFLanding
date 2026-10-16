@@ -6,6 +6,7 @@ import { dirname, join } from 'path';
 import { existsSync, readFileSync } from 'fs';
 import { applySiteNav } from './partials/site-nav.js';
 import { escapeHtml, planBuilderLeadError, planBuilderLeadRecord } from './lib/plan-builder-lead.js';
+import { age18ConfirmedError } from './lib/tracker-age.js';
 import pkg from 'pg';
 import axios from 'axios';
 import bcrypt from 'bcryptjs';
@@ -158,6 +159,7 @@ async function initDB() {
     `);
     // Ensure status column exists (for upgrades)
     await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS status VARCHAR(20) DEFAULT 'active'`).catch(() => {});
+    await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS age18_confirmed BOOLEAN NOT NULL DEFAULT false`).catch(() => {});
 
     await pool.query(`
       CREATE TABLE IF NOT EXISTS tracker_data (
@@ -181,6 +183,7 @@ async function initDB() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
+    await pool.query(`ALTER TABLE access_requests ADD COLUMN IF NOT EXISTS age18_confirmed BOOLEAN NOT NULL DEFAULT false`).catch(() => {});
 
     console.log('✅ Database initialized');
   } catch (error) {
@@ -216,6 +219,8 @@ app.post('/api/auth/register', async (req, res) => {
   if (password.length < 6) {
     return res.status(400).json({ error: 'Password must be at least 6 characters' });
   }
+  const ageError = age18ConfirmedError(req.body);
+  if (ageError) return res.status(400).json({ error: ageError });
   try {
     const existing = await pool.query('SELECT id FROM users WHERE username = $1 OR email = $2', [username, email]);
     if (existing.rows.length > 0) {
@@ -223,8 +228,8 @@ app.post('/api/auth/register', async (req, res) => {
     }
     const hash = await bcrypt.hash(password, 10);
     const result = await pool.query(
-      'INSERT INTO users (username, email, password_hash, display_name) VALUES ($1, $2, $3, $4) RETURNING id, username, display_name',
-      [username, email, hash, displayName || username]
+      'INSERT INTO users (username, email, password_hash, display_name, age18_confirmed) VALUES ($1, $2, $3, $4, $5) RETURNING id, username, display_name',
+      [username, email, hash, displayName || username, true]
     );
     const user = result.rows[0];
     // Create empty tracker data
@@ -473,11 +478,13 @@ function authenticateAdmin(req, res, next) {
 app.post('/api/access-request', async (req, res) => {
   const { name, email, phone } = req.body;
   if (!name || !email) return res.status(400).json({ error: 'Name and email required' });
+  const ageError = age18ConfirmedError(req.body);
+  if (ageError) return res.status(400).json({ error: ageError });
   try {
     // Check if already requested
     const existing = await pool.query("SELECT id FROM access_requests WHERE email = $1 AND status = 'pending'", [email]);
     if (existing.rows.length > 0) return res.json({ success: true, message: 'Request already submitted' });
-    await pool.query('INSERT INTO access_requests (name, email, phone) VALUES ($1, $2, $3)', [name, email, phone || null]);
+    await pool.query('INSERT INTO access_requests (name, email, phone, age18_confirmed) VALUES ($1, $2, $3, $4)', [name, email, phone || null, true]);
     res.json({ success: true, message: 'Access request submitted' });
   } catch (error) {
     res.status(500).json({ error: 'Failed to submit request' });
@@ -500,11 +507,13 @@ app.get('/api/admin/users', authenticateAdmin, async (req, res) => {
 app.post('/api/admin/users', authenticateAdmin, async (req, res) => {
   const { username, email, password, displayName } = req.body;
   if (!username || !email || !password) return res.status(400).json({ error: 'Username, email, and password required' });
+  const ageError = age18ConfirmedError(req.body);
+  if (ageError) return res.status(400).json({ error: ageError });
   try {
     const hash = await bcrypt.hash(password, 10);
     const result = await pool.query(
-      'INSERT INTO users (username, email, password_hash, display_name) VALUES ($1, $2, $3, $4) RETURNING id, username, email, display_name, status, created_at',
-      [username, email, hash, displayName || username]
+      'INSERT INTO users (username, email, password_hash, display_name, age18_confirmed) VALUES ($1, $2, $3, $4, $5) RETURNING id, username, email, display_name, status, created_at',
+      [username, email, hash, displayName || username, true]
     );
     await pool.query('INSERT INTO tracker_data (user_id, data) VALUES ($1, $2) ON CONFLICT DO NOTHING', [result.rows[0].id, '{}']);
     res.json(result.rows[0]);
@@ -590,8 +599,8 @@ app.post('/api/admin/access-requests/:id/approve', authenticateAdmin, async (req
     const request = reqResult.rows[0];
     const hash = await bcrypt.hash(password, 10);
     const userResult = await pool.query(
-      'INSERT INTO users (username, email, password_hash, display_name) VALUES ($1, $2, $3, $4) RETURNING id, username, display_name',
-      [username, request.email, hash, request.name]
+      'INSERT INTO users (username, email, password_hash, display_name, age18_confirmed) VALUES ($1, $2, $3, $4, $5) RETURNING id, username, display_name',
+      [username, request.email, hash, request.name, true]
     );
     await pool.query('INSERT INTO tracker_data (user_id, data) VALUES ($1, $2) ON CONFLICT DO NOTHING', [userResult.rows[0].id, '{}']);
     await pool.query("UPDATE access_requests SET status = 'approved' WHERE id = $1", [id]);

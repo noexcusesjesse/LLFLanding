@@ -34,6 +34,7 @@ body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color
 .disclaimer-box h4 { color: var(--green-light); margin-bottom: 6px; font-size: 0.85rem; }
 .disclaimer-check { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: var(--text); cursor: pointer; margin-bottom: 14px; }
 .disclaimer-check input { accent-color: var(--green); width: 18px; height: 18px; }
+.disclaimer-check input:focus-visible { outline: 2px solid var(--green-light); outline-offset: 3px; }
 .thankyou-screen { text-align: center; }
 .thankyou-icon { font-size: 3rem; color: var(--green-light); margin-bottom: 8px; }
 .thankyou-message { text-align: left; font-size: 0.9rem; color: var(--text2); line-height: 1.7; margin-bottom: 20px; background: var(--bg3); border-radius: 10px; padding: 16px; }

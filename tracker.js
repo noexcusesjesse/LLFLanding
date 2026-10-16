@@ -40,15 +40,17 @@ async function submitAccessRequest() {
   const email = document.getElementById('reqEmail').value.trim();
   const phone = document.getElementById('reqPhone').value.trim();
   const agreed = document.getElementById('reqDisclaimer').checked;
+  const age18Confirmed = document.getElementById('reqAge18').checked;
   const errEl = document.getElementById('reqError');
   errEl.textContent = '';
   if (!name || !email) { errEl.textContent = 'Name and email are required'; return; }
+  if (!age18Confirmed) { errEl.textContent = 'Confirm that you are 18 or older.'; return; }
   if (!agreed) { errEl.textContent = 'You must accept the disclaimer to continue'; return; }
   const btn = document.getElementById('reqSubmitBtn');
   btn.textContent = 'Submitting...';
   btn.disabled = true;
   try {
-    const res = await fetch('/api/access-request', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name, email, phone }) });
+    const res = await fetch('/api/access-request', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name, email, phone, age18Confirmed: true }) });
     const data = await res.json();
     if (!res.ok) { errEl.textContent = data.error || 'Request failed'; btn.textContent = 'Request Access'; btn.disabled = false; return; }
     document.getElementById('thankYouName').textContent = name.split(' ')[0];

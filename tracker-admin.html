@@ -40,6 +40,9 @@
     .form-group label { display: block; font-size: 0.75rem; color: var(--text2); font-weight: 700; text-transform: uppercase; margin-bottom: 4px; }
     .form-group input { width: 100%; padding: 10px 12px; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.9rem; }
     .form-group input:focus { outline: none; border-color: var(--green); }
+    .age-check { display: flex; align-items: center; gap: 10px; margin: 4px 0 14px; color: var(--text); font-weight: 700; cursor: pointer; }
+    .age-check input { width: 18px; height: 18px; accent-color: var(--green); }
+    .age-check input:focus-visible { outline: 2px solid var(--green-light); outline-offset: 3px; }
     .actions { display: flex; gap: 6px; }
     .msg { padding: 10px 14px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 12px; display: none; }
     .msg-ok { background: rgba(22,163,74,0.1); border: 1px solid rgba(22,163,74,0.3); color: var(--green-light); }
@@ -100,6 +103,10 @@
         <div class="form-group"><label>Display Name</label><input type="text" id="newDisplayName" placeholder="Name"></div>
         <div class="form-group"><label>Password</label><input type="password" id="newPassword" placeholder="Min 6 chars"></div>
       </div>
+      <label class="age-check" id="new-age18-label" for="newAge18">
+        <input type="checkbox" id="newAge18" name="age18">
+        <span>I am 18 or older</span>
+      </label>
       <button class="btn-green" onclick="createUser()">Create User</button>
     </div>
 
@@ -234,14 +241,17 @@ async function createUser() {
   const email = document.getElementById('newEmail').value.trim();
   const displayName = document.getElementById('newDisplayName').value.trim();
   const password = document.getElementById('newPassword').value;
+  const age18Confirmed = document.getElementById('newAge18').checked;
   if (!username || !email || !password) { showMsg('All fields required', false); return; }
-  const res = await api('POST', '/users', { username, email, password, displayName });
+  if (!age18Confirmed) { showMsg('Confirm that you are 18 or older.', false); return; }
+  const res = await api('POST', '/users', { username, email, password, displayName, age18Confirmed: true });
   if (res.error) { showMsg(res.error, false); return; }
   showMsg('User ' + res.username + ' created!', true);
   document.getElementById('newUsername').value = '';
   document.getElementById('newEmail').value = '';
   document.getElementById('newDisplayName').value = '';
   document.getElementById('newPassword').value = '';
+  document.getElementById('newAge18').checked = false;
   loadUsers();
 }
 
