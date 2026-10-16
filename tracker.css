@@ -34,6 +34,7 @@ body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color
 .disclaimer-box h4 { color: var(--green-light); margin-bottom: 6px; font-size: 0.85rem; }
 .disclaimer-check { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: var(--text); cursor: pointer; margin-bottom: 14px; }
 .disclaimer-check input { accent-color: var(--green); width: 18px; height: 18px; }
+.disclaimer-check input:focus-visible { outline: 2px solid var(--green-light); outline-offset: 3px; }
 .thankyou-screen { text-align: center; }
 .thankyou-icon { font-size: 3rem; color: var(--green-light); margin-bottom: 8px; }
 .thankyou-message { text-align: left; font-size: 0.9rem; color: var(--text2); line-height: 1.7; margin-bottom: 20px; background: var(--bg3); border-radius: 10px; padding: 16px; }
@@ -325,6 +326,16 @@ body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color
 .footer-links { display: flex; justify-content: center; gap: 24px; margin-bottom: 16px; flex-wrap: wrap; }
 .footer-links a { color: var(--text2); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
 .footer-links a:hover { color: var(--green-light); }
+.footer-links a[href="/privacy"] {
+  color: var(--green-light);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.footer-links a[href="/privacy"]:focus-visible {
+  outline: 2px solid var(--green-light);
+  outline-offset: 3px;
+}
 .footer-copy { font-size: 0.75rem; color: var(--text2); }
 
 /* BACK TO TOP */

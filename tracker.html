@@ -38,7 +38,11 @@
         <p><strong>LoadLine Fitness provides fitness, movement, education, coaching, and accountability. This is not medical advice.</strong></p>
         <p style="margin-top:6px;">This tracker is an educational and organizational tool. It does not diagnose, treat, or replace professional medical guidance. By requesting access, you acknowledge that LoadLine Fitness is not a medical provider and you accept full responsibility for your own health decisions.</p>
       </div>
-      <label class="disclaimer-check"><input type="checkbox" id="reqDisclaimer"> I understand and accept these terms</label>
+      <label class="disclaimer-check" id="req-age18-label" for="reqAge18">
+        <input type="checkbox" id="reqAge18" name="age18">
+        <span>I am 18 or older</span>
+      </label>
+      <label class="disclaimer-check" for="reqDisclaimer"><input type="checkbox" id="reqDisclaimer"> I understand and accept these terms</label>
       <div class="auth-error" id="reqError"></div>
       <button class="btn-start" id="reqSubmitBtn" onclick="submitAccessRequest()">Request Access</button>
     </div>
@@ -171,6 +175,7 @@
         <a href="https://www.loadlinefitness.com" target="_blank">Home</a>
         <a href="https://www.loadlinefitness.com/pricing.html" target="_blank">Programs</a>
         <a href="https://www.facebook.com/groups/metabolicresetwithjesse" target="_blank">Community</a>
+        <a href="/privacy">Privacy Policy</a>
       </div>
       <div class="footer-copy">&copy; 2026 LoadLine Fitness &amp; Wellness. All rights reserved.</div>
     </div>

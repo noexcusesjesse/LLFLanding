@@ -307,7 +307,7 @@ describe('page source', () => {
     assert.doesNotMatch(sources, /\$85|LoadLine Solo|\bSolo\b/);
   });
 
-  test('form labels, the optional marketing box, and the privacy TODO', () => {
+  test('form labels, the optional marketing box, and the privacy link', () => {
     const ids = [...read('plan-builder.html').matchAll(/<(?:input|select)\b[^>]*\bid="([^"]+)"/g)].map((match) => match[1]);
     assert.ok(ids.length > 10);
     ids.forEach((id) => assert.match(read('plan-builder.html'), new RegExp(`for="${id}"`), id));
@@ -316,8 +316,10 @@ describe('page source', () => {
     assert.match(read('plan-builder.html'), /id="marketing" name="marketing" type="checkbox"/);
     assert.doesNotMatch(read('plan-builder.html'), /id="marketing"[^>]*required/);
     assert.match(html, /Marketing email is optional/);
-    assert.match(html, /See our Privacy Policy/);
-    assert.match(read('plan-builder.html'), /TODO: No privacy policy page exists/);
+    assert.match(html.replace(/<[^>]+>/g, ''), /See our Privacy Policy/);
+    assert.match(read('plan-builder.html'), /<a href="\/privacy">Privacy Policy<\/a>/);
+    assert.doesNotMatch(read('plan-builder.html'), /TODO: No privacy policy page exists/);
+    assert.doesNotMatch(read('plan-builder-copy.js'), /TODO: No privacy policy page exists/);
     assert.equal(html.includes('https://noexcuseschallenges.com'), true);
     assert.match(read('plan-builder.js'), /addEventListener\('change', syncSubtitle\)/);
     assert.doesNotMatch(sources, /toISOString|localStorage|claude\.use/);
