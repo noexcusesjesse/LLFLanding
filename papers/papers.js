@@ -11,17 +11,28 @@
  *      and dashes only. It becomes the read-online link: paper.html?p=<slug>
  *   3. Remove "comingSoon: true" (or set it to false) once the PDF is live.
  *
+ *   An HTML article (no PDF) uses html instead of pdf and cover. Put the page
+ *   at papers/<slug>.html and link it with html: 'papers/<slug>.html'.
+ *
  *   {
  *     slug: 'my-new-paper',
  *     title: 'My New Paper: The Fact-Check',
  *     summary: 'Two or three plain-English sentences about what the paper covers.',
- *     date: '2026-11-01',                       // YYYY-MM-DD, shown as "November 2026"
+ *     date: '2026-11-01',                       // YYYY-MM-DD, shown as "November 1, 2026"
  *     pdf: 'papers/my-new-paper.pdf',
  *     cover: 'papers/my-new-paper-cover.png',
  *     comingSoon: false
  *   },
  */
 window.LOADLINE_PAPERS = [
+  {
+    slug: 'barefoot-shoes',
+    title: 'Barefoot Shoes: A No Excuses Guide to Stronger Feet',
+    summary: 'Learn what barefoot shoes are, which options fit your budget, and how to transition slowly so your feet can get stronger over time instead of sore.',
+    date: '2026-10-19',
+    html: 'papers/barefoot-shoes.html',
+    label: 'Paper'
+  },
   {
     slug: 'losing-weight-vs-losing-fat',
     title: 'Losing Weight vs. Losing Fat',

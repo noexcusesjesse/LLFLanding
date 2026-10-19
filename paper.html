@@ -103,10 +103,17 @@
         return;
       }
 
+      if (paper.html) {
+        window.location.replace(paper.html);
+        return;
+      }
+
       document.title = paper.title + ' | LoadLine Fitness';
       titleEl.textContent = paper.title;
       var parts = String(paper.date || '').split('-');
-      if (parts[1]) dateEl.textContent = months[parseInt(parts[1], 10) - 1] + ' ' + parts[0];
+      var month = parseInt(parts[1], 10);
+      var day = parseInt(parts[2], 10);
+      if (month) dateEl.textContent = day ? months[month - 1] + ' ' + day + ', ' + parts[0] : months[month - 1] + ' ' + parts[0];
 
       document.getElementById('paper-download').href = paper.pdf;
       document.getElementById('paper-open').href = paper.pdf;

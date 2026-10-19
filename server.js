@@ -100,6 +100,22 @@ function walkingoutHelp(req, res) {
 
 app.get(['/apps/walkingout/help', '/apps/walkingout/help/', '/apps/walkingout/help/index.html'], walkingoutHelp);
 
+// HTML articles live next to the PDFs. Serve them through sendHtml so the
+// shared nav is filled in. /papers/<slug> redirects to the .html file when
+// that article exists. PDF slugs have no .html file, so they fall through
+// to the viewer redirect below.
+app.get(/^\/papers\/([a-z0-9]+(?:-[a-z0-9]+)*)(?:\.html)?\/?$/, (req, res, next) => {
+  const slug = req.params[0];
+  const file = join(__dirname, 'papers', `${slug}.html`);
+  if (!existsSync(file)) return next();
+  const [path, query] = req.originalUrl.split('?');
+  const canonical = `/papers/${slug}.html`;
+  if (path !== canonical) {
+    return res.redirect(301, canonical + (query ? '?' + query : ''));
+  }
+  sendHtml(res, `papers/${slug}.html`);
+});
+
 // WalkQuest is a static app, same as Walkingout. Canonical URL keeps the
 // trailing slash. Express treats /apps/walkquest and /apps/walkquest/ as the
 // same route unless we look at the original path, so the slash form must fall
