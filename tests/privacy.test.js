@@ -13,6 +13,7 @@ const FOOTERS = [
   'books.html',
   'papers.html',
   'paper.html',
+  'papers/barefoot-shoes.html',
   'apps.html',
   'metabolic-health.html',
   'loadline-solo.html',

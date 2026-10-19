@@ -54,6 +54,15 @@
           <div class="papers-grid">
             <article class="paper-card">
               <div class="paper-card-body">
+                <time class="paper-date" datetime="2026-10-19">October 19, 2026</time>
+                <h2 class="paper-title">Barefoot Shoes: A No Excuses Guide to Stronger Feet</h2>
+                <div class="book-actions">
+                  <a class="button button-primary" href="papers/barefoot-shoes.html">Read online</a>
+                </div>
+              </div>
+            </article>
+            <article class="paper-card">
+              <div class="paper-card-body">
                 <h2 class="paper-title">Losing Weight vs. Losing Fat</h2>
                 <div class="book-actions">
                   <a class="button button-primary" href="papers/losing-weight-vs-losing-fat.pdf" target="_blank" rel="noopener">Read online</a>
@@ -126,7 +135,10 @@
       function formatDate(iso) {
         var parts = String(iso || '').split('-');
         var m = parseInt(parts[1], 10);
-        return parts[0] && m ? months[m - 1] + ' ' + parts[0] : '';
+        var d = parseInt(parts[2], 10);
+        if (!parts[0] || !m) return '';
+        if (d) return months[m - 1] + ' ' + d + ', ' + parts[0];
+        return months[m - 1] + ' ' + parts[0];
       }
 
       function coverFallback(paper) {
@@ -134,7 +146,7 @@
         box.setAttribute('aria-hidden', 'true');
         box.appendChild(el('span', 'paper-cover-brand', 'LoadLine Fitness'));
         box.appendChild(el('span', 'paper-cover-title', paper.title));
-        box.appendChild(el('span', 'paper-cover-tag', 'Fact-Check Paper'));
+        box.appendChild(el('span', 'paper-cover-tag', paper.label || 'Fact-Check Paper'));
         return box;
       }
 
@@ -178,12 +190,16 @@
         article.id = paper.slug;
 
         var coverWrap = el('div', 'paper-cover-wrap');
-        var img = el('img', 'paper-cover');
-        img.src = paper.cover;
-        img.alt = 'Cover of ' + paper.title;
-        img.loading = 'lazy';
-        img.addEventListener('error', function () { coverWrap.replaceChild(coverFallback(paper), img); });
-        coverWrap.appendChild(img);
+        if (paper.cover) {
+          var img = el('img', 'paper-cover');
+          img.src = paper.cover;
+          img.alt = 'Cover of ' + paper.title;
+          img.loading = 'lazy';
+          img.addEventListener('error', function () { coverWrap.replaceChild(coverFallback(paper), img); });
+          coverWrap.appendChild(img);
+        } else {
+          coverWrap.appendChild(coverFallback(paper));
+        }
         if (paper.comingSoon) coverWrap.appendChild(el('span', 'paper-badge', 'Coming soon'));
         article.appendChild(coverWrap);
 
@@ -195,10 +211,12 @@
         body.appendChild(el('p', 'paper-summary', paper.summary));
 
         var actions = el('div', 'book-actions paper-actions');
-        actions.appendChild(link('button button-primary', 'paper.html?p=' + encodeURIComponent(paper.slug), 'Read online'));
-        var dl = link('button button-outline', paper.pdf, 'Download PDF');
-        dl.setAttribute('download', '');
-        actions.appendChild(dl);
+        actions.appendChild(link('button button-primary', paper.html || ('paper.html?p=' + encodeURIComponent(paper.slug)), 'Read online'));
+        if (paper.pdf) {
+          var dl = link('button button-outline', paper.pdf, 'Download PDF');
+          dl.setAttribute('download', '');
+          actions.appendChild(dl);
+        }
         body.appendChild(actions);
 
         body.appendChild(shareRow(paper));
