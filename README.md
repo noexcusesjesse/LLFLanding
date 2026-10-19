@@ -6,7 +6,7 @@ A clean, responsive, GitHub Pages-ready landing page for **LoadLine Fitness** an
 
 ### Brand
 
-- **Company:** LoadLine Fitness (the center)
+- **Company:** LoadLine Fitness (digital programs, plus an optional virtual coach)
 - **System:** LoadLine 365 (12-month transformation and independence system)
 - **Tagline:** Load the Standard. Live the Life.
 - **Promise:** We don't want to own your fitness. We want to teach you how to own it.

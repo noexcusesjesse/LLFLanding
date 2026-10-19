@@ -58,7 +58,7 @@ function header(doc, title, subtitle, logo) {
     }
   }
   text(doc, 'LOADLINE', 582, 36, 14, true, WHITE, { align: 'right' });
-  text(doc, 'FITNESS & WELLNESS', 582, 52, 8, false, GREEN, { align: 'right' });
+  text(doc, 'FITNESS', 582, 52, 8, false, GREEN, { align: 'right' });
   text(doc, 'LOAD THE STANDARD. LIVE THE LIFE.', 582, 66, 7, false, [200, 210, 225], { align: 'right' });
 }
 
