@@ -5,7 +5,7 @@
  * The marketing checkbox links the words "Privacy Policy" to /privacy.
  */
 
-export const MARKETING_LABEL = 'Yes, email me my plan and occasional tips and offers from LoadLine Fitness & Wellness. Unsubscribe anytime. See our Privacy Policy.';
+export const MARKETING_LABEL = 'Yes, email me my plan and occasional tips and offers from LoadLine Fitness. Unsubscribe anytime. See our Privacy Policy.';
 
 export const PRIVACY_NOTE = 'Your weight, height, age, sex, and waist are used only to build your plan in your browser and are not saved or sent to us.';
 
@@ -66,7 +66,7 @@ export const PDF_ACK = 'I have read and understand this disclaimer. I will consu
 export const DISCLAIMER = [
   {
     title: 'Educational purposes only',
-    body: 'This plan and the information in it are provided by LoadLine Fitness & Wellness for general educational and informational purposes only. The plan was generated automatically from the answers you entered. It has not been reviewed or customized by a physician, dietitian, or other licensed health professional.',
+    body: 'This plan and the information in it are provided by LoadLine Fitness for general educational and informational purposes only. The plan was generated automatically from the answers you entered. It has not been reviewed or customized by a physician, dietitian, or other licensed health professional.',
   },
   {
     title: 'Not medical advice',
@@ -90,11 +90,11 @@ export const DISCLAIMER = [
   },
   {
     title: 'Results vary',
-    body: 'Weight, fitness, and health results differ from person to person. LoadLine Fitness & Wellness does not promise or guarantee any specific result.',
+    body: 'Weight, fitness, and health results differ from person to person. LoadLine Fitness does not promise or guarantee any specific result.',
   },
   {
     title: 'Limitation of liability',
-    body: 'By using this plan you choose to participate at your own risk. To the fullest extent allowed by law, LoadLine Fitness & Wellness and its owners, coaches, and affiliates are not responsible for any injury, loss, or damage that results from using this plan.',
+    body: 'By using this plan you choose to participate at your own risk. To the fullest extent allowed by law, LoadLine Fitness and its owners, coaches, and affiliates are not responsible for any injury, loss, or damage that results from using this plan.',
   },
 ];
 

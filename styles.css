@@ -1518,8 +1518,7 @@ p { font-size: 1.08rem; color: var(--text-primary); }
 }
 
 .comparison-solo,
-.comparison-365,
-.comparison-studio {
+.comparison-365 {
   text-align: center;
   font-size: 1.1rem;
   font-weight: 800;
@@ -1531,11 +1530,6 @@ p { font-size: 1.08rem; color: var(--text-primary); }
 
 .comparison-365 {
   color: var(--green-light);
-}
-
-.comparison-studio {
-  color: #93c5fd;
-  font-size: 0.8rem;
 }
 
 .comparison-legend {

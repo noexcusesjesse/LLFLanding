@@ -26,7 +26,10 @@ describe('privacy policy', () => {
   const page = read('privacy.html');
 
   test('the page states the contact, the host, and the email service', () => {
-    assert.match(page, /LoadLine Fitness &amp; Wellness/);
+    assert.match(page, /LoadLine Fitness/);
+    assert.doesNotMatch(page, /Wellness/);
+    assert.match(page, /Effective: October 15, 2026/);
+    assert.match(page, /Last updated: October 19, 2026 \(business name change only\)/);
     assert.match(page, /noexcusesjesse@gmail\.com/);
     assert.match(page, /Effective:/);
     assert.match(page, /do not have a mailing address/);
@@ -63,7 +66,7 @@ describe('privacy policy', () => {
     FOOTERS.forEach((file) => {
       const html = read(file);
       assert.match(html, /href="\/privacy"/, file);
-      assert.match(html, /LoadLine Fitness &amp; Wellness\. All rights reserved\./, file);
+      assert.match(html, /LoadLine Fitness\. All rights reserved\./, file);
     });
   });
 });
