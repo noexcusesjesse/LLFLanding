@@ -306,7 +306,7 @@ function drawDisclaimer(doc, logo) {
   const pages = layoutFlow(items, { startY: 112, bottom: 746 });
   pages.forEach((page) => {
     doc.addPage();
-    header(doc, 'IMPORTANT DISCLAIMER', 'Educational and medical information. Please read before you begin.', logo);
+    header(doc, 'IMPORTANT DISCLAIMER', 'Educational information and important health notices. Please read before you begin.', logo);
     page.forEach((item) => {
       if (item.kind === 'section') {
         text(doc, item.title.toUpperCase(), 30, item.y, 9.5, true, NAVY);
