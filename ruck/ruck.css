@@ -196,6 +196,15 @@ a:visited {
   color: var(--sand);
 }
 
+.acronym {
+  margin: 0.45rem 0 0;
+  color: var(--sand);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+}
+
 .tagline {
   margin: 0.8rem 0 0;
   max-width: 20em;
