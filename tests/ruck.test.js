@@ -50,6 +50,19 @@ describe('R.U.C.K. Foundation pages', () => {
       assert.doesNotMatch(readFileSync(robotsPath, 'utf8'), /disallow:\s*\/ruck/i);
     }
     assert.doesNotMatch(read('server.js'), /X-Robots-Tag/i);
+    for (const file of PAGES) {
+      const html = read(file);
+      assert.match(html, /<meta name="theme-color" content="#1B2A4A">/, file);
+      assert.match(html, /href="\/ruck\/icons\/favicon\.ico"/, file);
+      assert.match(html, /href="\/ruck\/icons\/favicon\.svg"/, file);
+      assert.match(html, /href="\/ruck\/icons\/apple-touch-icon\.png"/, file);
+      assert.equal(html.includes('assets/icons/favicon'), false, file);
+    }
+    assert.match(read('index.html'), /href="assets\/icons\/favicon\.ico"/);
+    const ico = readFileSync(new URL('../ruck/icons/favicon.ico', import.meta.url));
+    assert.equal(ico.readUInt16LE(0), 0);
+    assert.equal(ico.readUInt16LE(2), 1);
+    assert.equal(ico.readUInt16LE(4), 3);
     assert.match(read('ruck/index.html'), /Talk to your doctor before starting a new exercise routine\./);
     const privacy = read('ruck/privacy.html');
     assert.equal(privacy.includes('Talk to your doctor'), false);
