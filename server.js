@@ -1,11 +1,12 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import { dirname, join } from 'path';
 import { existsSync, readFileSync } from 'fs';
 import { applySiteNav } from './partials/site-nav.js';
 import { escapeHtml, planBuilderLeadError, planBuilderLeadRecord } from './lib/plan-builder-lead.js';
+import { DELETION_REQUEST_CONFIRMATION, logRuckDeletionRequest, ruckDeletionRequestError, ruckDeletionRequestRecord, ruckInterestError, ruckInterestRecord, ruckNoticeHtml } from './lib/ruck-interest.js';
 import { age18ConfirmedError } from './lib/tracker-age.js';
 import pkg from 'pg';
 import axios from 'axios';
@@ -57,6 +58,7 @@ const sendEmail = async (to, subject, html) => {
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 function sendHtml(res, filename) {
   try {
@@ -85,6 +87,11 @@ cleanPage('/papers', 'papers.html');
 cleanPage('/apps', 'apps.html');
 cleanPage('/plan-builder', 'plan-builder.html');
 cleanPage('/privacy', 'privacy.html');
+cleanPage('/ruck', 'ruck/index.html');
+cleanPage('/ruck/privacy', 'ruck/privacy.html');
+app.get(['/ruck/index.html', '/ruck/privacy.html'], (req, res) => {
+  res.redirect(301, req.path.endsWith('privacy.html') ? '/ruck/privacy' : '/ruck');
+});
 
 // The guide sits under the app directory. Register it before static files so
 // both /apps/walkingout/help and the trailing-slash URL render this page
@@ -200,6 +207,27 @@ async function initDB() {
       );
     `);
     await pool.query(`ALTER TABLE access_requests ADD COLUMN IF NOT EXISTS age18_confirmed BOOLEAN NOT NULL DEFAULT false`).catch(() => {});
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS ruck_interest (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        email VARCHAR(255) NOT NULL,
+        zip VARCHAR(10) NOT NULL,
+        interests TEXT[] NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+      CREATE INDEX IF NOT EXISTS idx_ruck_interest_email ON ruck_interest(email);
+    `);
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS ruck_deletion_requests (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        email VARCHAR(255) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
 
     console.log('✅ Database initialized');
   } catch (error) {
@@ -329,6 +357,9 @@ app.get('/api/tracker/data', authenticateToken, async (req, res) => {
 // Submit lead (contact form, or the plan builder's name/email/consent only)
 app.post('/api/leads', async (req, res) => {
   const body = req.body || {};
+  if (body.type === 'ruck' || body.source === 'ruck' || body.table === 'ruck_interest' || body.table === 'ruck_deletion_requests') {
+    return res.status(400).json({ error: 'Foundation interest is not stored with leads.' });
+  }
   if (body.source === 'plan-builder') {
     const leadError = planBuilderLeadError(body);
     if (leadError) return res.status(400).json({ error: leadError });
@@ -637,6 +668,45 @@ app.patch('/api/admin/access-requests/:id/deny', authenticateAdmin, async (req, 
   }
 });
 
+function ruckRespond(req, res, status, payload) {
+  if (req.is('json')) return res.status(status).json(payload);
+  return res.status(status).type('html').send(ruckNoticeHtml({
+    title: payload.error ? 'Check the form' : 'R.U.C.K. Foundation',
+    message: payload.error || payload.message,
+  }));
+}
+
+// Foundation interest list. Rows stay in ruck_interest and are not emailed.
+app.post('/api/ruck/interest', async (req, res) => {
+  const error = ruckInterestError(req.body);
+  if (error) return ruckRespond(req, res, 400, { error });
+  const row = ruckInterestRecord(req.body);
+  try {
+    await pool.query(
+      `INSERT INTO ruck_interest (name, email, zip, interests)
+       VALUES ($1, $2, $3, $4::text[])`,
+      [row.name, row.email, row.zip, row.interests]
+    );
+    return ruckRespond(req, res, 200, { success: true, message: "You're on the list. We'll be in touch when a program launches." });
+  } catch (err) {
+    console.error('Ruck interest error:', err.message);
+    return ruckRespond(req, res, 500, { error: 'The list could not be saved. Try again later.' });
+  }
+});
+
+app.post('/api/ruck/deletion-request', async (req, res) => {
+  const error = ruckDeletionRequestError(req.body);
+  if (error) return ruckRespond(req, res, 400, { error });
+  const row = ruckDeletionRequestRecord(req.body);
+  try {
+    await logRuckDeletionRequest((text, params) => pool.query(text, params), row);
+    return ruckRespond(req, res, 200, { success: true, message: DELETION_REQUEST_CONFIRMATION });
+  } catch (err) {
+    console.error('Ruck deletion request error:', err.message);
+    return ruckRespond(req, res, 500, { error: 'The request could not be saved. Try again later.' });
+  }
+});
+
 // Serve admin dashboard
 app.get('/admin', (req, res) => {
   res.sendFile(join(__dirname, 'admin.html'));
@@ -672,8 +742,13 @@ async function start() {
   });
 }
 
-start().catch(error => {
-  console.error('Startup error:', error);
-  process.exit(1);
-});
+const isDirectRun = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+if (isDirectRun) {
+  start().catch(error => {
+    console.error('Startup error:', error);
+    process.exit(1);
+  });
+}
+
+export { app };
 

@@ -1,0 +1,268 @@
+:root {
+  --ink: #1c1917;
+  --muted: #44403c;
+  --paper: #f6f3ee;
+  --card: #fffcf8;
+  --line: #e4dcd0;
+  --accent: #7c2d12;
+  --focus: #9a3412;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  background: var(--ink);
+  color: #fff;
+  padding: 0.5rem 0.75rem;
+  z-index: 2;
+}
+
+.skip-link:focus {
+  top: 0.5rem;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.wrap {
+  width: min(42rem, calc(100% - 2rem));
+  margin-inline: auto;
+}
+
+.site-header {
+  border-bottom: 1px solid var(--line);
+  background: var(--card);
+}
+
+.header-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  padding: 1.1rem 0;
+}
+
+.brand {
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+}
+
+.formation-flag {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1.1rem;
+  width: 100%;
+  padding-bottom: 0.2rem;
+}
+
+.nav a {
+  color: var(--ink);
+}
+
+main {
+  padding: 2.5rem 0 3.5rem;
+}
+
+h1,
+h2,
+h3 {
+  font-family: Georgia, "Iowan Old Style", serif;
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+h1 {
+  margin: 0 0 0.75rem;
+  font-size: clamp(2rem, 5vw, 2.75rem);
+}
+
+h2 {
+  margin: 2.75rem 0 0.75rem;
+  font-size: 1.55rem;
+}
+
+h3 {
+  margin: 1.5rem 0 0.35rem;
+  font-size: 1.2rem;
+}
+
+p {
+  margin: 0.75rem 0;
+}
+
+.lede,
+.formation {
+  font-size: 1.15rem;
+}
+
+.formation {
+  padding: 1rem 1.1rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+}
+
+.program {
+  padding-top: 0.25rem;
+}
+
+.kicker {
+  margin: 0;
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.safety {
+  padding: 0.9rem 1rem;
+  background: #fff7ed;
+  border: 1px solid #fdba74;
+}
+
+.form-card,
+.delete-card {
+  margin-top: 1rem;
+  padding: 1.25rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 0 0 1rem;
+}
+
+.field span,
+legend {
+  font-weight: 700;
+}
+
+input[type="text"],
+input[type="email"] {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid #a8a29e;
+  border-radius: 4px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+}
+
+.checks {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem 0.25rem;
+  border: 1px solid var(--line);
+}
+
+.checks label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin: 0 0 0.75rem;
+  font-weight: 450;
+}
+
+.checks input {
+  width: 1.15rem;
+  height: 1.15rem;
+  margin-top: 0.2rem;
+  accent-color: var(--accent);
+}
+
+button {
+  min-height: 2.75rem;
+  padding: 0.55rem 1.1rem;
+  border: 0;
+  border-radius: 4px;
+  background: var(--ink);
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #292524;
+}
+
+.form-note,
+.fine {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.form-error {
+  margin: 0 0 1rem;
+  color: #7f1d1d;
+  font-weight: 700;
+}
+
+.form-error:empty {
+  display: none;
+}
+
+.thanks {
+  padding: 1rem;
+  background: #ecfdf3;
+  border: 1px solid #86efac;
+}
+
+.site-footer {
+  border-top: 1px solid var(--line);
+  background: var(--card);
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.site-footer .wrap {
+  padding: 1.25rem 0 1.75rem;
+}
+
+.site-footer p {
+  margin: 0.25rem 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

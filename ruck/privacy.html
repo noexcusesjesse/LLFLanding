@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="How the R.U.C.K. Foundation interest list uses your name, email, ZIP code, and interests, and how to ask for deletion.">
+  <title>Privacy | R.U.C.K. Foundation (in formation)</title>
+  <link rel="stylesheet" href="/ruck/ruck.css">
+</head>
+<body>
+  <a class="skip-link" href="#content">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="/ruck">R.U.C.K. Foundation</a>
+      <p class="formation-flag">In formation</p>
+      <nav class="nav" aria-label="Foundation">
+        <a href="/ruck#mission">Mission</a>
+        <a href="/ruck#programs">Programs</a>
+        <a href="/ruck#board">Board</a>
+        <a href="/ruck#interest">Interest list</a>
+        <a href="/ruck/privacy" aria-current="page">Privacy</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="content" class="wrap">
+    <h1>Privacy</h1>
+    <p class="formation">The R.U.C.K. Foundation is being formed as an Arizona nonprofit. 501(c)(3) status has not been applied for or granted.</p>
+    <p>This notice covers the interest list on the foundation page. The contact path, while the foundation is in formation, is that form.</p>
+
+    <h2>What the form collects</h2>
+    <p>The interest form collects only your name, email, ZIP code, and the interests you check: walks, board, scholarships, and the gear program. It does not ask health questions.</p>
+
+    <h2>How the foundation uses it</h2>
+    <p>The data is used only to tell you about the R.U.C.K. Foundation. Until the foundation's own site launches, it is stored in a separate list on the same hosting service the LoadLine Fitness website uses. LoadLine Fitness and No Excuses do not use it for marketing or any other purpose, and it will move to the foundation's own system at launch.</p>
+    <p>Until the foundation is formed, this list is kept by Jesse Collins on its behalf and will be transferred to the foundation once it is formed.</p>
+    <p>If the foundation is not formed, the list will be deleted.</p>
+
+    <h2>Deletion</h2>
+    <p>Use this form to request deletion. It collects your name and email only.</p>
+    <p>Deletion requests are handled manually within 30 days after we confirm your identity.</p>
+    <div class="delete-card">
+      <p class="thanks" tabindex="-1" hidden></p>
+      <form id="delete-form" data-ruck="deletion-request" action="/api/ruck/deletion-request" method="post">
+        <p id="delete-error" class="form-error" role="alert" tabindex="-1"></p>
+        <div class="field">
+          <label for="delete-name">Name</label>
+          <input id="delete-name" name="name" type="text" autocomplete="name" maxlength="100" required>
+        </div>
+        <div class="field">
+          <label for="delete-email">Email</label>
+          <input id="delete-email" name="email" type="email" autocomplete="email" maxlength="255" required>
+        </div>
+        <button type="submit">Request deletion</button>
+      </form>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>R.U.C.K. Foundation (in formation)</p>
+      <p>Temporarily hosted on loadlinefitness.com until the foundation's own site launches.</p>
+      <p><a href="/ruck">Foundation page</a></p>
+    </div>
+  </footer>
+  <script src="/ruck/ruck.js"></script>
+</body>
+</html>
