@@ -10,7 +10,7 @@ function bind(form, url, successText) {
     const error = form.querySelector('.form-error');
     error.textContent = '';
     const data = new FormData(form);
-    const payload = form.dataset.ruck === 'delete'
+    const payload = form.dataset.ruck === 'deletion-request'
       ? { name: data.get('name'), email: data.get('email') }
       : {
           name: data.get('name'),
@@ -47,5 +47,5 @@ if (interest) {
 
 const deletion = document.getElementById('delete-form');
 if (deletion) {
-  bind(deletion, '/api/ruck/delete', 'If we had a matching name and email, those rows are deleted.');
+  bind(deletion, '/api/ruck/deletion-request', "We received your request. Jesse will confirm it's you and delete your information within 30 days.");
 }

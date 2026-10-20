@@ -1,12 +1,12 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import { dirname, join } from 'path';
 import { existsSync, readFileSync } from 'fs';
 import { applySiteNav } from './partials/site-nav.js';
 import { escapeHtml, planBuilderLeadError, planBuilderLeadRecord } from './lib/plan-builder-lead.js';
-import { ruckDeleteError, ruckDeleteRecord, ruckInterestError, ruckInterestRecord, ruckNoticeHtml } from './lib/ruck-interest.js';
+import { DELETION_REQUEST_CONFIRMATION, logRuckDeletionRequest, ruckDeletionRequestError, ruckDeletionRequestRecord, ruckInterestError, ruckInterestRecord, ruckNoticeHtml } from './lib/ruck-interest.js';
 import { age18ConfirmedError } from './lib/tracker-age.js';
 import pkg from 'pg';
 import axios from 'axios';
@@ -220,6 +220,15 @@ async function initDB() {
       CREATE INDEX IF NOT EXISTS idx_ruck_interest_email ON ruck_interest(email);
     `);
 
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS ruck_deletion_requests (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        email VARCHAR(255) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
     console.log('✅ Database initialized');
   } catch (error) {
     console.error('❌ Database init error:', error.message);
@@ -348,7 +357,7 @@ app.get('/api/tracker/data', authenticateToken, async (req, res) => {
 // Submit lead (contact form, or the plan builder's name/email/consent only)
 app.post('/api/leads', async (req, res) => {
   const body = req.body || {};
-  if (body.type === 'ruck' || body.source === 'ruck' || body.table === 'ruck_interest') {
+  if (body.type === 'ruck' || body.source === 'ruck' || body.table === 'ruck_interest' || body.table === 'ruck_deletion_requests') {
     return res.status(400).json({ error: 'Foundation interest is not stored with leads.' });
   }
   if (body.source === 'plan-builder') {
@@ -685,19 +694,15 @@ app.post('/api/ruck/interest', async (req, res) => {
   }
 });
 
-app.post('/api/ruck/delete', async (req, res) => {
-  const error = ruckDeleteError(req.body);
+app.post('/api/ruck/deletion-request', async (req, res) => {
+  const error = ruckDeletionRequestError(req.body);
   if (error) return ruckRespond(req, res, 400, { error });
-  const row = ruckDeleteRecord(req.body);
+  const row = ruckDeletionRequestRecord(req.body);
   try {
-    await pool.query(
-      `DELETE FROM ruck_interest
-       WHERE lower(email) = lower($1) AND lower(name) = lower($2)`,
-      [row.email, row.name]
-    );
-    return ruckRespond(req, res, 200, { success: true, message: 'If we had a matching name and email, those rows are deleted.' });
+    await logRuckDeletionRequest((text, params) => pool.query(text, params), row);
+    return ruckRespond(req, res, 200, { success: true, message: DELETION_REQUEST_CONFIRMATION });
   } catch (err) {
-    console.error('Ruck delete error:', err.message);
+    console.error('Ruck deletion request error:', err.message);
     return ruckRespond(req, res, 500, { error: 'The request could not be saved. Try again later.' });
   }
 });
@@ -737,8 +742,13 @@ async function start() {
   });
 }
 
-start().catch(error => {
-  console.error('Startup error:', error);
-  process.exit(1);
-});
+const isDirectRun = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+if (isDirectRun) {
+  start().catch(error => {
+    console.error('Startup error:', error);
+    process.exit(1);
+  });
+}
+
+export { app };
 

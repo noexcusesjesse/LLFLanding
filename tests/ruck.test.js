@@ -1,11 +1,18 @@
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { describe, test } from 'node:test';
+import { app } from '../server.js';
 import {
   BOARD_SENTENCE,
+  CUSTODY_SENTENCE,
+  DATA_USE_PARAGRAPH,
+  DELETION_HANDLING_SENTENCE,
+  DELETION_REQUEST_CONFIRMATION,
   FORMATION_SENTENCE,
   HOSTING_LINE,
-  ruckDeleteError,
+  UNFORMED_DELETION_SENTENCE,
+  logRuckDeletionRequest,
+  ruckDeletionRequestError,
   ruckInterestError,
   ruckInterestRecord,
   ruckNoticeHtml,
@@ -42,16 +49,20 @@ describe('R.U.C.K. Foundation pages', () => {
     assert.equal(privacy.includes('Talk to your doctor'), false);
   });
 
-  test('the public page does not promote LoadLine and the privacy page names it only to refuse sharing', () => {
+  test('the public page does not promote LoadLine and the privacy page uses the hosting explanation', () => {
     const page = read('ruck/index.html');
     const privacy = read('ruck/privacy.html');
     assert.equal(page.includes('LoadLine'), false);
     assert.equal(page.includes('No Excuses'), false);
     assert.equal(page.includes('loadline-fitness-logo'), false);
-    assert.equal((privacy.match(/LoadLine/g) || []).length, 1);
-    assert.match(privacy, /never shared with or used by LoadLine or No Excuses/);
+    assert.equal((privacy.match(/LoadLine/g) || []).length, 2);
+    assert.equal(privacy.includes(DATA_USE_PARAGRAPH), true);
+    assert.equal(privacy.includes(CUSTODY_SENTENCE), true);
+    assert.equal(privacy.includes(UNFORMED_DELETION_SENTENCE), true);
+    assert.equal(privacy.includes(DELETION_HANDLING_SENTENCE), true);
     assert.equal(privacy.includes('Powered by'), false);
     assert.doesNotMatch(page + privacy, /SITE-NAV|nav-cta|Book Now/);
+    assert.match(page, /Free and paid community walks are planned\./);
   });
 
   test('the required formation, board, safety, and working-name lines are present', () => {
@@ -79,7 +90,14 @@ describe('R.U.C.K. Foundation pages', () => {
     }
     assert.equal(page.includes('<textarea'), false);
     assert.equal(page.includes('type="tel"'), false);
-    assert.match(read('ruck/privacy.html'), /id="delete-form"/);
+    const privacy = read('ruck/privacy.html');
+    assert.match(privacy, /id="delete-form"/);
+    assert.match(privacy, /action="\/api\/ruck\/deletion-request"/);
+    assert.equal(privacy.includes('/api/ruck/delete'), false);
+    assert.equal(privacy.includes('name="zip"'), false);
+    const script = read('ruck/ruck.js');
+    assert.equal(script.includes(DELETION_REQUEST_CONFIRMATION), true);
+    assert.equal(script.includes('/api/ruck/delete'), false);
   });
 
   test('LoadLine pages and the nav do not link to the foundation', () => {
@@ -106,15 +124,75 @@ describe('R.U.C.K. Foundation pages', () => {
     assert.match(server, /cleanPage\('\/ruck', 'ruck\/index\.html'\)/);
     assert.match(server, /cleanPage\('\/ruck\/privacy', 'ruck\/privacy\.html'\)/);
     assert.match(server, /CREATE TABLE IF NOT EXISTS ruck_interest/);
+    assert.match(server, /CREATE TABLE IF NOT EXISTS ruck_deletion_requests \([\s\S]*created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP/);
     const interestStart = server.indexOf("app.post('/api/ruck/interest'");
-    const deleteStart = server.indexOf("app.post('/api/ruck/delete'");
-    const interestHandler = server.slice(interestStart, deleteStart);
+    const requestStart = server.indexOf("app.post('/api/ruck/deletion-request'");
+    const interestHandler = server.slice(interestStart, requestStart);
     assert.match(interestHandler, /INSERT INTO ruck_interest/);
     assert.doesNotMatch(interestHandler, /INSERT INTO leads|sendEmail|NOTIFY_EMAIL/);
-    const deleteHandler = server.slice(deleteStart, server.indexOf('// Serve admin dashboard'));
-    assert.match(deleteHandler, /DELETE FROM ruck_interest/);
-    assert.doesNotMatch(deleteHandler, /INSERT INTO leads|sendEmail/);
+    const requestHandler = server.slice(requestStart, server.indexOf('// Serve admin dashboard'));
+    assert.match(requestHandler, /logRuckDeletionRequest/);
+    assert.match(requestHandler, /DELETION_REQUEST_CONFIRMATION/);
+    assert.equal(DELETION_REQUEST_CONFIRMATION, "We received your request. Jesse will confirm it's you and delete your information within 30 days.");
+    assert.doesNotMatch(requestHandler, /DELETE FROM|INSERT INTO leads|sendEmail|NOTIFY_EMAIL/);
+    assert.equal(server.includes("app.post('/api/ruck/delete'"), false);
     assert.match(server, /Foundation interest is not stored with leads/);
+  });
+
+  test('public copy does not name the interest table', () => {
+    for (const file of [...PAGES, 'ruck/ruck.js']) {
+      assert.equal(read(file).includes('ruck_interest'), false, file);
+    }
+    const html = ruckNoticeHtml({ title: 'Received', message: DELETION_REQUEST_CONFIRMATION });
+    assert.equal(html.includes('ruck_interest'), false);
+  });
+
+  test('a deletion request is logged with a timestamp and does not email or touch leads', async () => {
+    const calls = [];
+    await logRuckDeletionRequest(async (sql, params) => {
+      calls.push({ sql, params });
+    }, { name: 'Ada Walker', email: 'ada@example.com' });
+    assert.equal(calls.length, 1);
+    assert.match(calls[0].sql, /INSERT INTO ruck_deletion_requests \(name, email, created_at\)/);
+    assert.match(calls[0].sql, /CURRENT_TIMESTAMP/);
+    assert.deepEqual(calls[0].params, ['Ada Walker', 'ada@example.com']);
+    assert.doesNotMatch(calls[0].sql, /DELETE|leads|sendEmail/);
+  });
+
+  test('POST /api/ruck/delete returns 404', async () => {
+    const server = await new Promise((resolve) => {
+      const listening = app.listen(0, '127.0.0.1', () => resolve(listening));
+    });
+    try {
+      const { port } = server.address();
+      const response = await fetch(`http://127.0.0.1:${port}/api/ruck/delete`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ name: 'Ada Walker', email: 'ada@example.com' }),
+      });
+      assert.equal(response.status, 404);
+    } finally {
+      await new Promise((resolve, reject) => server.close((err) => (err ? reject(err) : resolve())));
+    }
+  });
+
+  test('the lead dashboard and lead endpoints never read foundation tables', () => {
+    const server = read('server.js');
+    const admin = read('admin.html');
+    const leadsGet = server.slice(server.indexOf("app.get('/api/leads'"), server.indexOf("app.patch('/api/leads/:id'"));
+    const leadsPatch = server.slice(server.indexOf("app.patch('/api/leads/:id'"), server.indexOf('function authenticateAdmin'));
+    const leadsPost = server.slice(server.indexOf("app.post('/api/leads'"), server.indexOf("app.get('/api/leads'"));
+    for (const source of [leadsGet, leadsPatch, admin]) {
+      assert.equal(source.includes('ruck_interest'), false);
+      assert.equal(source.includes('ruck_deletion_requests'), false);
+    }
+    assert.match(leadsGet, /SELECT \* FROM leads/);
+    assert.match(leadsPatch, /UPDATE leads SET/);
+    assert.match(leadsPost, /ruck_deletion_requests/);
+    assert.match(leadsPost, /Foundation interest is not stored with leads/);
+    assert.equal(server.includes('/api/leads/export'), false);
+    assert.equal(admin.includes('text/csv'), false);
+    assert.equal(admin.toLowerCase().includes('export'), false);
   });
 
   test('interest submissions reject health fields and keep only the four interests', () => {
@@ -130,8 +208,8 @@ describe('R.U.C.K. Foundation pages', () => {
     assert.match(ruckInterestError({ ...valid, interests: [] }), /at least one interest/);
     assert.match(ruckInterestError({ ...valid, interests: ['board', 'health'] }), /at least one interest/);
     assert.match(ruckInterestError({ ...valid, zip: 'Mesa' }), /ZIP code/);
-    assert.equal(ruckDeleteError({ name: 'Ada Walker', email: 'ada@example.com' }), null);
-    assert.match(ruckDeleteError({ name: 'Ada Walker', email: 'ada@example.com', zip: '85212' }), /name and email/);
+    assert.equal(ruckDeletionRequestError({ name: 'Ada Walker', email: 'ada@example.com' }), null);
+    assert.match(ruckDeletionRequestError({ name: 'Ada Walker', email: 'ada@example.com', zip: '85212' }), /name and email/);
   });
 
   test('the plain response page is also noindex and does not promote LoadLine', () => {
