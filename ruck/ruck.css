@@ -2,7 +2,8 @@
    Navy #1B2A4A on sand #F7F3EC is 12.86. Charcoal #2E3440 on sand is 11.29, on white 12.49.
    White on navy is 14.22. Sand on navy is 12.86. Orange #E8742A on navy is 4.72.
    Navy on orange #E8742A is 4.72 (button labels). White on that orange is 3.02 and is not used for text.
-   Green #3DAE5B on navy is 5.01. Teal #14A3A3 on navy is 4.60. Logo orange #D2601A on sand is 3.50 (mark only).
+   Green #3DAE5B on navy is 5.01. Teal #14A3A3 on navy is 4.60.
+   Logo orange #D2601A on white is 3.87 and is only the in-formation pill border.
 */
 :root {
   --navy: #1B2A4A;
@@ -112,11 +113,30 @@ a:visited {
   color: var(--navy);
 }
 
-.brand-ruck {
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  line-height: 1.1;
-  border-bottom: 3px solid var(--logo-orange);
+.logo-tile {
+  display: block;
+  width: 4.5rem;
+  height: 4.5rem;
+  overflow: hidden;
+  background: var(--white);
+  border-radius: 0.95rem;
+  line-height: 0;
+  box-shadow: 0 8px 20px rgba(27, 42, 74, 0.14);
+}
+
+.logo-tile img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-logo {
+  width: min(13.5rem, 58vw);
+  height: auto;
+  aspect-ratio: 1;
+  margin: 0 0 1.35rem;
+  border-radius: 1.6rem;
 }
 
 .formation-flag {
