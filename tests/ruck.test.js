@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { describe, test } from 'node:test';
 import { app } from '../server.js';
 import {
@@ -36,14 +36,20 @@ const BANNED = [
 ];
 
 describe('R.U.C.K. Foundation pages', () => {
-  test('both pages stay out of search results and use the foundation footer', () => {
+  test('both pages are indexable and use the foundation footer', () => {
     for (const file of PAGES) {
       const html = read(file);
-      assert.match(html, /<meta name="robots" content="noindex, nofollow">/, file);
+      assert.doesNotMatch(html, /noindex|nofollow/i, file);
+      assert.doesNotMatch(html, /<meta[^>]*name="robots"/i, file);
       assert.match(html, /R\.U\.C\.K\. Foundation \(in formation\)/, file);
       assert.match(html, new RegExp(HOSTING_LINE.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), file);
       for (const pattern of BANNED) assert.doesNotMatch(html, pattern, file);
     }
+    const robotsPath = new URL('../robots.txt', import.meta.url);
+    if (existsSync(robotsPath)) {
+      assert.doesNotMatch(readFileSync(robotsPath, 'utf8'), /disallow:\s*\/ruck/i);
+    }
+    assert.doesNotMatch(read('server.js'), /X-Robots-Tag/i);
     assert.match(read('ruck/index.html'), /Talk to your doctor before starting a new exercise routine\./);
     const privacy = read('ruck/privacy.html');
     assert.equal(privacy.includes('Talk to your doctor'), false);
