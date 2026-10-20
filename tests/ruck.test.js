@@ -81,6 +81,10 @@ describe('R.U.C.K. Foundation pages', () => {
     assert.match(page, /Planned, not active/);
     assert.match(page, /Signal Butte Park/);
     assert.match(page, /Join the list to hear when we launch\./);
+    assert.match(page, /Lace up\. Rise up\. Keep walking\./);
+    assert.match(page, /alt="R\.U\.C\.K\. Foundation logo"/);
+    assert.match(read('ruck/privacy.html'), /alt="R\.U\.C\.K\. Foundation logo"/);
+    assert.equal(page.includes('brand-ruck'), false);
     assert.match(page, /5 volunteer seats/);
     assert.match(page, /href="\/ruck\/privacy"/);
     assert.match(read('ruck/privacy.html'), new RegExp(FORMATION_SENTENCE.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
