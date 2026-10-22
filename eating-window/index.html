@@ -1,0 +1,256 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>LoadLine Eating Window</title>
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#16213e"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/icon-180.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="LoadLine Window"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{--nv:#16213e;--gd:#d4a72c;--bg:#f6f7f9;--cd:#fff;--tx:#262a30;--mu:#4f5866;--ac:#16213e;--on:#fff;--ac2:#fbf7ec;--bd:#d9dce1;--wa:#8a4b00;--ok:#1e6b3a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+header{background:var(--nv);color:#fff;border-bottom:4px solid var(--gd)}header .in{padding:14px 16px 10px;max-width:760px;margin:auto;display:flex;gap:12px;align-items:center}
+h1{margin:0;font-size:21px;color:var(--gd)}.tag{color:#e6e9ef;font-size:13px}
+nav{display:flex;gap:6px;overflow-x:auto;padding:10px 16px;max-width:760px;margin:auto}
+nav button{flex:0 0 auto;border:1px solid var(--bd);background:var(--cd);color:var(--tx);padding:10px 14px;min-height:44px;border-radius:22px;font:inherit;cursor:pointer}
+nav button.on{background:var(--nv);color:#fff;border-color:var(--gd);box-shadow:inset 0 -3px 0 var(--gd)}
+main{max-width:760px;margin:auto;padding:4px 16px 40px}
+.c{background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:14px;margin:10px 0}.c h2{margin:0 0 8px;font-size:17px;color:var(--nv)}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}.k{background:var(--ac2);border-left:4px solid var(--gd);border-radius:10px;padding:10px}.k b{display:block;font-size:20px;color:var(--nv)}.k span{font-size:12px;color:var(--mu)}
+label{display:block;font-size:13px;color:var(--mu);margin:8px 0 2px}input,select{width:100%;padding:9px;min-height:44px;border:1px solid #8a919c;border-radius:8px;background:#fff;color:var(--tx);font:inherit}
+input[type=checkbox],input[type=radio]{flex:0 0 auto;width:22px;height:22px;min-height:0;vertical-align:middle;accent-color:var(--nv)}.ck{display:inline-flex;gap:6px;align-items:center;margin:4px 10px 4px 0;color:var(--tx);font-size:15px}
+fieldset{border:1px solid var(--bd);border-radius:10px;margin:10px 0;padding:8px 10px}legend{font-size:13px;color:var(--mu);padding:0 4px}
+.r{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap}.r>*{flex:1;min-width:120px}
+button.p{background:var(--nv);color:#fff;border:2px solid var(--gd);padding:11px 16px;min-height:44px;border-radius:8px;font:inherit;cursor:pointer;margin-top:10px}button.q{background:#fff;border:1px solid #8a919c;color:var(--tx);padding:9px 12px;min-height:44px;border-radius:8px;font:inherit;cursor:pointer;margin:3px 3px 3px 0}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
+.n{color:var(--mu);font-size:13.5px}.w{color:var(--wa);font-size:14px}.ok{color:var(--ok);font-size:14px}.call{background:var(--ac2);border-left:4px solid var(--gd);padding:10px;border-radius:8px;font-size:14px}
+.tl{display:grid;grid-template-columns:86px 1fr auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--bd)}.tl .t{font-weight:600;color:var(--nv)}.tl .x{font-size:12.5px;color:var(--mu)}
+.tl.sn .t,.tl.sn b{font-weight:500}.pill{font-size:12px;border:1px solid var(--gd);background:var(--ac2);color:var(--nv);border-radius:12px;padding:2px 8px}
+table{border-collapse:collapse;width:100%}td,th{padding:7px 5px;border-bottom:1px solid var(--bd);text-align:left;font-size:14px}tr[aria-current] td{background:var(--ac2);font-weight:600}
+.big{font-size:26px;font-weight:700;color:var(--nv)}
+footer{max-width:760px;margin:0 auto;padding:16px 16px 28px;border-top:1px solid var(--bd);text-align:center;color:var(--mu);font-size:13px}
+a{color:var(--nv)}.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media print{nav,.np{display:none}body{background:#fff}.c{break-inside:avoid}}
+</style></head><body>
+<header><div class="in"><img src="icons/icon-192.png" alt="LoadLine Fitness logo" width="48" height="48" style="border-radius:10px"><div><h1>LoadLine Eating Window</h1><div class="tag">LoadLine Fitness. Plan your meals around your real day.</div></div></div></header>
+<nav id="nav" aria-label="Main"></nav><main id="v"></main>
+<footer>Free from LoadLine Fitness. Wellness education, not medical advice.</footer>
+<script>
+const K='loadline_eatwin_v1',T=['Today','Week','Modes','Targets','Setup','About'],DN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MODES=[['off','Off','Flexible. No fasting window, just be done eating by kitchen close.',0],['12:12','12:12','12 hours eating, 12 hours overnight. A gentle starting point.',12],['14:10','14:10','10-hour eating window.',10],['16:8','16:8','8-hour eating window.',8],['18:6','18:6','6-hour eating window.',6],['20:4','20:4','4-hour eating window.',4],['omad','OMAD','One meal a day, eaten in the hour before kitchen close.',1]];
+const LONG=['16:8','18:6','20:4','omad'],DOK=['20:4','omad'],MAXFAST=23*60,GATE_DAYS=90;
+const STOP='Stop fasting and eat if you feel dizzy, shaky, sweaty, confused, very weak or faint, or have other signs of low blood sugar. Call 911 for chest pain, fainting, trouble breathing, severe confusion or any emergency.';
+const CLIN='Talk with your clinician or dietitian first.';
+const DISC='This app is general wellness education, not medical advice, diagnosis or treatment. Talk with your doctor before changing how or when you eat, especially if you have a health condition or take medicine.';
+const MEDLINE='If you have any medical condition or take any prescription medicine, talk with your doctor before starting any eating window.';
+const NO24='Fasts of 24 hours or longer are not offered in this app.';
+const DOKTXT='I have talked with my doctor and they said this length of fast is OK for me';
+const OMADC='Caution: OMAD is a long daily fast. It is hard to meet protein, fiber and nutrient needs in one meal. Use it only with your doctor\u2019s OK, and stop if you feel unwell.';
+const LONGMSG='Your wake time and kitchen close make a long overnight fast. Eat within an hour of waking, or set a later kitchen close.';
+const BLOCKMSG='Your wake time and kitchen close leave too short an eating window to plan safely. Set a later kitchen close in Setup. If you are fasting this long on purpose, talk with your doctor first.';
+const SCHEDMSG='Your schedule needs an update: your wake time and kitchen close leave too short an eating window.';
+const SCHED10='Your schedule needs an update: kitchen close must be at least 10 hours after you wake.';
+const NOSUP='This app does not yet support night shifts or wake times after 10 AM with a 5-8 PM kitchen close. Talk with your clinician or dietitian about meal timing.';
+const ENTER='Enter your details in Targets to see estimates.';
+const MINOR='Calorie targets are for adults. Talk with your clinician or dietitian about your needs.';
+const U13='This app is for ages 13 and up.';
+const BED='Many people find an earlier kitchen close helps them feel better at bedtime.';
+const SEXN='Female and Male here only choose which BMR equation is used. If neither fits you, choose the one your clinician suggests; the estimate may be less accurate.';
+const GQ=[['u18','I am under 18'],['preg','I am pregnant or breastfeeding'],['ed','I have a history of disordered eating'],['t1','I have type 1 diabetes'],['dmed','I take diabetes medicine, including sulfonylureas (glipizide, glyburide) or insulin, or other glucose-lowering medicine'],['food','I take a medicine that must be taken with food or at set times'],['hypo','I have a history of low blood sugar'],['cond','I have kidney, liver or heart disease or another ongoing condition'],['uw','I am underweight or have unexplained weight loss'],['tkw','I have trouble keeping weight on'],['gout','I have gout'],['surg','I have had recent surgery or illness'],['adv','A clinician has advised me against fasting']];
+function dflt(){return{v:2,tab:'Setup',onb:0,mode:'off',sec:null,
+s:{wake:'06:00',bed:'22:00',wd:[1,2,3,4,5],ws:'08:00',we:'16:30',lunL:30,lun:'12:00',nb:2,br:['10:00','15:00','14:00'],close:'19:00',days:[0,1,2,3,4,5,6],goal:'loss',wo:''},
+g:{done:0,ts:0,none:0,dok:0,frail:0},p:{age:null,sex:'F',ft:5,inch:6,w:200,gw:'',act:1.2,care:0,saved:0}}}
+let S=null;try{S=JSON.parse(localStorage.getItem(K))}catch(e){}
+if(S&&S.v===1){S.v=2;S.p.saved=0;S.p.age=null;S.g={done:0,ts:0,none:0,dok:0,frail:0};S.onb=0}
+if(!S||S.v!==2)S=dflt();
+function sv(){try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}
+const $=id=>document.getElementById(id),num=x=>x===''||x==null||isNaN(x)?null:+x,f=(x,d=0)=>x==null||isNaN(x)?'n/a':(+x).toFixed(d);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const mm=t=>{if(!t)return null;const[a,b]=t.split(':');return +a*60+ +b},hm=x=>String(Math.floor(x/60)).padStart(2,'0')+':'+String(x%60).padStart(2,'0');
+function fmt(x){x=((x%1440)+1440)%1440;const h=Math.floor(x/60),m=x%60;return((h+11)%12+1)+':'+String(m).padStart(2,'0')+(h<12?' AM':' PM')}
+const r15=x=>Math.round(x/15)*15,hrs=x=>{const h=x/60;return Number.isInteger(h)?String(h):h.toFixed(1).replace(/\.0$/,'')};
+const dur=x=>{x=Math.max(0,Math.round(x));const h=Math.floor(x/60),m=x%60;return(h?h+' h ':'')+m+' min'};
+
+/* ---------- safety ---------- */
+const age=()=>num(S.p.age),minor=()=>age()!=null&&age()<18,under13=()=>age()!=null&&age()<13;
+function gateValid(){return!!(S.g.done&&S.g.ts&&Date.now()-S.g.ts<GATE_DAYS*864e5)}
+function gateExpired(){return!!(S.g.done&&!gateValid())}
+function flagged(){const g=S.g;return!!(GQ.some(q=>g[q[0]])||S.p.care||minor())}
+function older(){return(age()!=null&&age()>=65)||!!S.g.frail}
+/* a mode whose real fast stays too long after the pull-back is blocked on any active day (Off and 12:12 included) */
+function blockedMode(id){return S.s.days.some(d=>plan(d,id).blocked)}
+function allowed(id){if(under13())return false;if(blockedMode(id))return false;if(id=='off'||id=='12:12')return true;if(minor())return false;if(!gateValid())return false;
+if(LONG.includes(id)&&flagged())return false;if(DOK.includes(id)&&!S.g.dok)return false;if(LONG.includes(id)&&older()&&!S.g.dok)return false;if(!S.g.dok&&needsDok(id))return false;return true}
+/* a mode whose real (break-friendly) fast reaches 20h on any active day needs the doctor-OK tick, like 20:4 */
+function needsDok(id){return id!='off'&&S.s.days.some(d=>plan(d,id,1).fast>=1200)}
+/* saved schedule must also meet the 10h wake-to-close rule for minors/flagged users (legacy v2/v3 data, flagged or aged under 18 after Setup) */
+/* mirrors plan() for Off without calling it: start wake+60 (not past close-60); if the fast is over the cap (14h minor/flagged, 16h adult), pull back to the latest start that fits, never before wake */
+function offBad(){const w=mm(S.s.wake),c=mm(S.s.close),cap=minor()||flagged()?840:960;let st=Math.min(w+60,c-60);if(1440-(c-st)>cap)st=Math.min(st,Math.max(w,c-(1440-cap)));return 1440-(c-st)>=1200}
+function sched10(){return(minor()||flagged())&&mm(S.s.close)<mm(S.s.wake)+600}
+function schedWhy(){return!S.onb?'':offBad()?SCHEDMSG:sched10()?SCHED10:''}
+function schedBad(){return!!schedWhy()}
+function eff(){return allowed(S.mode)?S.mode:(allowed('12:12')?'12:12':'off')}
+function showNums(){return!!(S.p.saved&&!minor())}
+
+/* ---------- calculator (Mifflin-St Jeor, guards from reference calc()) ---------- */
+function calc(p=S.p,mode=S.s.goal=='maint'||minor()?'maintenance':'weightloss',care=p.care||flagged()){const h=(+p.ft||0)*12+(+p.inch||0),kg=p.w*.45359,cm=h*2.54,bmr=10*kg+6.25*cm-5*p.age+(p.sex=='M'?5:-161),tdee=bmr*p.act,bmi=kg/(cm/100)**2;
+const fl=p.sex=='M'?1500:1200,lowBmi=bmi<18.5,low=tdee<fl,noDef=care||lowBmi||mode=='maintenance',tgt=Math.round((noDef?tdee:Math.max(tdee-400,Math.min(fl,tdee)))/10)*10;
+const gk=(num(p.gw)||p.w)*.45359;let pr=Math.round(Math.min(1.6*gk,2*kg)),fat=Math.round(tgt*.3/9),capped=0;
+if(pr*4+fat*9>tgt){capped=1;fat=Math.max(0,Math.floor((tgt-pr*4)/9));if(pr*4>tgt){pr=Math.floor(tgt/4);fat=0}}
+const fib=Math.round(tgt/1000*14),carb=Math.max(0,Math.round((tgt-pr*4-fat*9)/4)),def=noDef||low?0:Math.round(tdee-tgt);
+return{bmr,tdee,bmi,tgt,pr,fat,fib,carb,def,noDef,fl,low,lowBmi,capped}}
+
+/* ---------- planner ---------- */
+function slots(dow){const s=S.s;if(!s.wd.includes(dow))return[];const o=[];for(let i=0;i<s.nb;i++)if(s.br[i])o.push({t:mm(s.br[i]),l:'15-minute break',b:1});if(s.lun)o.push({t:mm(s.lun),l:(s.lunL==60?'60':'30')+'-minute lunch',b:0});
+const a=mm(s.ws),e=mm(s.we);return o.filter(x=>x.t>=a&&x.t<=e).sort((x,y)=>x.t-y.t)}
+function plan(dow,mode,ignoreDok){const s=S.s,close=mm(s.close),wake=mm(s.wake);let bed=mm(s.bed);if(bed<=wake)bed+=1440;
+const act=s.days.includes(dow),md=mode||(act?eff():'off'),work=s.wd.includes(dow),M=MODES.find(x=>x[0]==md),E=M[3],sl=slots(dow),latest=close-(1440-MAXFAST);
+const hold=minor()||flagged(),dok=!!S.g.dok&&!hold||!!ignoreDok,nom=md=='off'?null:1440-E*60,lim=hold?840:960,fOf=t=>1440-(close-t);
+/* snap is skipped when the real fast would pass nominal+2h, 20h+ without doctor OK, or (minor/flagged) 14h */
+const okSnap=t=>{const f=fOf(t);return t<=Math.min(close-90,latest)&&f<=nom+120&&(f<1200||dok)&&(!hold||f<=lim)};
+let start,ideal,note='',snapped=null,longMsg=0;
+if(md=='off'){ideal=start=Math.min(wake+60,close-60)}
+else{ideal=start=close-E*60;if(start<wake){start=wake;note='The window starts at your wake time, so it is shorter than '+M[1]+'.'}
+if(work&&['14:10','16:8','18:6'].includes(md)){const c=sl.filter(x=>x.t>=ideal&&okSnap(x.t));if(c.length&&c[0].t!=ideal){snapped=c[0];start=c[0].t}}
+if(work&&md=='20:4'){const c=sl.filter(x=>okSnap(x.t)).sort((a,b)=>Math.abs(a.t-ideal)-Math.abs(b.t-ideal));if(c.length&&c[0].t!=ideal){snapped=c[0];start=c[0].t}}}
+start=Math.min(start,latest);
+/* gate on the actual fast: cap = 14h (minor/flagged) or 16h (adult), never below the mode's own nominal/snapped fast; doctor-OK 20h+ is covered */
+{const f=fOf(start),covered=md!='off'&&!hold&&S.g.dok&&(DOK.includes(md)||f>=1200),cap=Math.max(lim,hold?(nom||0):(snapped?f:(nom||0)));
+if(!covered&&f>cap){start=Math.min(start,wake+60);if(fOf(start)>cap)start=Math.min(start,Math.max(wake,close-(1440-cap)));if(snapped&&start!=snapped.t)snapped=null;longMsg=1}}
+/* block instead of warn: over 14h (minor/flagged), or 20h+ unless doctor-OK covers a non-Off mode within nominal+2h */
+const fB=fOf(start),blocked=(hold&&fB>lim)||(fB>=1200&&!(md!='off'&&md!='12:12'&&!hold&&S.g.dok&&fB<=nom+120))||schedBad();
+const eat=close-start,fast=1440-eat,ratio=hrs(fast)+':'+hrs(eat);
+if(longMsg)note=LONGMSG;else if(snapped)note='Break-friendly start: your first meal moves from '+fmt(ideal)+' to your '+snapped.l+' at '+fmt(snapped.t)+', so today runs '+ratio+' instead of '+M[1]+'.';
+let it=[];
+if(md=='omad')it.push({t:close-60,k:'m',l:'One meal (finish by kitchen close)'});
+else{const last=close-30,span=last-start;let n=span<60?1:Math.min(3,Math.max(2,Math.floor(span/240)+1));const ts=n==1?[start]:Array.from({length:n},(_,i)=>i==0?start:i==n-1?last:r15(start+span*i/(n-1)));
+if(n==3&&work&&s.lun){const L=mm(s.lun);if(L>start&&L<last&&L-start>=240&&L-start<=360&&last-L>=240&&last-L<=360)ts[1]=L}
+ts.forEach((t,i)=>it.push({t,k:'m',l:i==ts.length-1&&n>1?'Last meal (finish by kitchen close)':'Meal '+(i+1)}));
+for(let i=0;i<ts.length-1;i++){const a=ts[i],b=ts[i+1];if(b-a>300){const mid=(a+b)/2,c=slots(dow).filter(x=>x.t>=a+90&&x.t<=b-90).sort((x,y)=>Math.abs(x.t-mid)-Math.abs(y.t-mid));
+it.push(c.length?{t:c[0].t,k:'s',l:'Small snack on your '+c[0].l,why:'More than 5 hours between meals. Pick protein, fiber or healthy fat.'}:{t:r15(mid),k:'s',l:'Small snack',why:'More than 5 hours between meals. Pick protein, fiber or healthy fat.'})}}}
+it.sort((a,b)=>a.t-b.t);
+const fm=it[0];if(snapped&&snapped.b&&fm)fm.x='A 15-minute break is short, so keep this first meal simple.';
+const c=calc(),ns=it.filter(x=>x.k=='s').length,nm=it.length-ns,sf=.12,mf=nm?(1-sf*ns)/nm:0;it.forEach(x=>{const q=x.k=='s'?sf:mf;x.kc=Math.round(c.tgt*q/10)*10;x.pr=Math.round(c.pr*q);x.cb=Math.round(c.carb*q);x.ft=Math.round(c.fat*q);x.fb=Math.round(c.fib*q)});
+const W=[],ms=it.filter(x=>x.k=='m');for(let i=0;i<ms.length-1;i++){const g=ms[i+1].t-ms[i].t;if(g<240)W.push(['n','Meals '+(i+1)+' and '+(i+2)+' are '+dur(g)+' apart, under the 4-5 h target. That is normal in a short window.']);else if(g>360)W.push(['n','Meals '+(i+1)+' and '+(i+2)+' are '+dur(g)+' apart; a small snack is added.'])}
+const gap=bed-close;if(gap<120)W.push(['w','Your kitchen closes '+dur(gap)+' before bedtime. Aim for at least 2 h, ideally 3 h.']);else if(gap<180)W.push(['n','Kitchen close is '+dur(gap)+' before bed. Aim for about 3 h. '+BED]);else W.push(['o','Kitchen close is '+dur(gap)+' before bed. '+BED]);
+const wo=mm(s.wo);if(wo!=null){it.forEach(x=>{const d=wo-x.t;if(x.k=='m'&&d>=0&&d<60)W.push(['w','Workout at '+fmt(wo)+' is '+dur(d)+' after '+x.l.toLowerCase()+'. Allow 1-2 h after a moderate meal.']);if(x.k=='s'&&d>=0&&d<30)W.push(['w','Workout at '+fmt(wo)+' is '+dur(d)+' after a snack. Allow about 30 min.'])});}
+if(blocked){it=[];note=BLOCKMSG}
+return{dow,act,md,M,work,start,end:close,ideal,ratio,fast,nom,note,longMsg,blocked,it,W,gap,wo}}
+
+/* ---------- UI helpers ---------- */
+function nav(){$('nav').innerHTML=under13()||!S.onb?'':T.map(t=>`<button class="${S.tab==t?'on':''}"${S.tab==t?' aria-current="page"':''} onclick="go('${t}')">${t}</button>`).join('')}
+function go(t){S.tab=t;sv();nav();if(schedBad()&&t!='Setup'&&!under13()){S.tab=t='Setup';sv();nav()}$('v').innerHTML=under13()?Under13():!S.onb?Setup():{Today,Week,Modes,Targets,Setup,About}[t]();tick();scrollTo(0,0)}
+function fld(id,l,v,t='number',x=''){return`<label for="${id}">${l}</label><input id="${id}" type="${t}" value="${esc(v??'')}" ${x}>`}
+function opt(id,l,v,o,x=''){return`<label for="${id}">${l}</label><select id="${id}" ${x}>${o.map(([a,b])=>`<option value="${a}" ${a==v?'selected':''}>${b}</option>`).join('')}</select>`}
+function cb(id,l,on,x=''){return`<label class="ck" for="${id}"><input type="checkbox" id="${id}" ${on?'checked':''} ${x}> ${l}</label>`}
+function bar(p,l){const v=Math.round(Math.max(0,Math.min(100,p||0)));return`<div role="progressbar" aria-valuenow="${v}" aria-valuemin="0" aria-valuemax="100" aria-label="${esc(l||'Progress')}" style="background:var(--bd);border-radius:6px;height:10px;margin:4px 0 8px"><div style="width:${v}%;background:var(--gd);height:10px;border-radius:6px;border-right:2px solid var(--nv)"></div></div>`}
+const k=(a,b)=>`<div class="k"><b>${a}</b><span>${b}</span></div>`;
+const goalOpts=()=>minor()?[['maint','Maintenance']]:[['loss','Weight loss'],['maint','Maintenance']];
+function nowM(){const d=new Date();return d.getHours()*60+d.getMinutes()+d.getSeconds()/60}
+function timeline(P,showT){return P.it.map(x=>`<div class="tl${x.k=='s'?' sn':''}"><span class="t">${fmt(x.t)}</span><div><b>${esc(x.l)}</b>${showT?`<div class="x">About ${x.kc} kcal: protein ${x.pr} g, carbs ${x.cb} g, fat ${x.ft} g, fiber ${x.fb} g</div>`:''}${x.why?`<div class="x">${x.why}</div>`:''}${x.x?`<div class="x">${x.x}</div>`:''}</div><span class="pill">${x.k=='s'?'Snack':'Meal'}</span></div>`).join('')}
+function warns(P){return P.W.map(w=>`<p class="${w[0]=='w'?'w':w[0]=='o'?'ok':'n'}">${w[0]=='w'?'Heads up: ':''}${w[1]}</p>`).join('')}
+const numMsg=()=>minor()?`<p class="w" id="minormsg">${MINOR}</p>`:`<p class="call" id="entermsg">${ENTER}</p>`;
+function Under13(){return`<div class="c"><h2>Sorry</h2><p class="big" role="alert">${U13}</p><p class="n">${DISC}</p><button class="q" onclick="S.p.age=null;sv();go('Setup')">I entered my age wrong</button></div>`}
+
+/* ---------- Today ---------- */
+function Today(){const d=new Date(),P=plan(d.getDay()),c=calc(),sn=showNums();
+if(P.blocked)return`<div class="c"><h2>Today, ${DN[P.dow]}</h2><p class="w" id="blockmsg">${BLOCKMSG}</p><button class="p" onclick="go('Setup')">Go to Setup</button><p class="w">${STOP}</p></div>`;
+let h=`<div class="c"><h2>Today, ${DN[P.dow]}: ${P.M[1]}${P.md=='off'?'':' ('+P.ratio+')'}</h2>
+<p class="n">${P.act?'':'Your plan is not set for today, so this is a flexible day. '}${P.work?'Work day.':'Day off.'} Eating window ${fmt(P.start)} to ${fmt(P.end)}.</p>
+<p id="st" class="big" aria-live="polite"></p>${bar(0,'Eating window progress').replace('role=','id="wbar" role=')}
+${P.note?`<p class="call">${P.note}</p>`:''}${P.md=='omad'?`<p class="w">${OMADC}</p>`:''}${gateExpired()?'<p class="w">Your safety check is more than 90 days old. Review it in Modes to keep longer windows.</p>':''}</div>
+<div class="c"><h2>Today's timeline</h2>${timeline(P,sn)}<div class="tl"><span class="t">${fmt(P.end)}</span><div><b>Kitchen closes</b></div><span class="pill">Close</span></div>${P.wo!=null?`<div class="tl"><span class="t">${fmt(P.wo)}</span><div><b>Workout</b></div><span class="pill">Move</span></div>`:''}
+${warns(P)}${sn?`<p class="n">Daily ${c.low&&!c.noDef?'estimated maintenance':'estimate'} about ${c.tgt} kcal, split across these meals and snacks (snacks about 12% each). Estimates only.</p>`:numMsg()}<p class="w">${STOP}</p></div>
+<div class="c"><h2>Seconds?</h2><p class="n">Fullness signals can take a while to arrive. Wait 15-20 minutes, then check in with your hunger before a second helping.</p>
+<p id="sect" class="big" role="timer" aria-live="off">${S.sec?'':'Not running'}</p>${bar(0,'Seconds timer progress').replace('role=','id="sbar" role=')}
+<button class="p" onclick="secStart(15)">Start 15 min</button> <button class="q" onclick="secStart(20)">Start 20 min</button> <button class="q" onclick="S.sec=null;sv();go('Today')">Reset</button></div>`;return h}
+function secStart(m){S.sec={e:Date.now()+m*6e4,m};sv();go('Today')}
+function tick(){const st=$('st');if(st){const d=new Date(),P=plan(d.getDay()),n=nowM();let t,p=0;
+if(n<P.start)t='Window opens in '+dur(P.start-n);else if(n<P.end){t='Window open. Closes in '+dur(P.end-n);p=(n-P.start)/(P.end-P.start)*100}else{const nx=plan((d.getDay()+1)%7);t='Kitchen closed. Opens tomorrow at '+fmt(nx.start);p=100}
+st.textContent=t;const b=$('wbar');if(b){const v=Math.round(p);b.setAttribute('aria-valuenow',v);b.firstElementChild.style.width=v+'%'}}
+const se=$('sect');if(se&&S.sec){const left=Math.max(0,S.sec.e-Date.now()),s=Math.ceil(left/1000);se.textContent=left?Math.floor(s/60)+':'+String(s%60).padStart(2,'0')+' left':'Time is up. Still hungry? Have a modest second helping.';
+const b=$('sbar'),v=Math.round(100-left/(S.sec.m*6e4)*100);b.setAttribute('aria-valuenow',v);b.firstElementChild.style.width=v+'%'}}
+setInterval(tick,1000);
+
+/* ---------- Week ---------- */
+function Week(){const td=new Date().getDay();let h=`<div class="c"><h2>Your week</h2><table><caption class="sr">Weekly eating windows</caption><thead><tr><th scope="col">Day</th><th scope="col">Plan</th><th scope="col">Window</th><th scope="col">Meals</th></tr></thead><tbody>`;
+[1,2,3,4,5,6,0].forEach(d=>{const P=plan(d);h+=`<tr${d==td?' aria-current="date"':''}><td>${DN[d]}${P.work?' (work)':''}</td><td>${P.act?'Active: '+P.M[1]:'Not active (flexible)'}${P.md!='off'&&P.ratio!=P.M[1]?' runs '+P.ratio:''}</td><td>${P.blocked?'Not planned':fmt(P.start)+' - '+fmt(P.end)}</td><td>${P.it.filter(x=>x.k=='m').length} meals, ${P.it.filter(x=>x.k=='s').length} snacks</td></tr>`});
+return h+`</tbody></table><p class="n">Active days follow your chosen mode. Other days are flexible, done by kitchen close. Change active days in Setup.</p></div>`}
+
+/* ---------- Modes + safety gate ---------- */
+function Modes(){const g=S.g,fl=flagged(),cur=eff(),mi=minor();
+let h=`<div class="c"><h2>Safety check</h2><p class="n">${MEDLINE}</p>`;
+if(mi)h+=`<p class="w"><b>${CLIN}</b> Ages 13-17 can use Off and 12:12 only.</p>`;
+else{h+=`${gateExpired()?'<p class="w" id="gexp">Your safety check is more than 90 days old. Please answer it again.</p>':''}<p class="n">Complete this before any window longer than 12:12. We will ask again every 90 days.</p><fieldset><legend>Do any of these apply?</legend>
+${GQ.filter(q=>q[0]!='u18').map(q=>cb('g_'+q[0],q[1],g[q[0]])).join('<br>')}<br>${cb('g_none','None of these apply to me',g.none)}</fieldset>
+<fieldset><legend>Extra check for longer fasts</legend>${cb('g_frail','I am frail',g.frail)}<br>${cb('g_dok',DOKTXT,g.dok)}<p class="n">Required for 20:4 and OMAD, for any day your real fast reaches 20 hours, and for 16:8 and longer if you are 65 or older or frail.</p></fieldset>
+<button class="p" onclick="gate()">${g.done?'Update my answers':'Save my answers'}</button><p id="gerr" class="w" role="alert"></p>
+${gateValid()&&fl?`<p class="w"><b>${CLIN}</b> Longer windows (16:8 and up) and the calorie deficit are turned off for you.</p>`:''}${gateValid()&&!fl?'<p class="ok">Saved. You can change these answers any time.</p>':''}`}
+h+=`<p class="w">${STOP}</p></div><div class="c"><h2>Choose a mode</h2><p class="n">Every window ends at your kitchen close (${fmt(mm(S.s.close))}). On work days, 14:10, 16:8 and 18:6 start at your first break or lunch at or after the ideal time; 20:4 uses the break nearest its start. The fast is never longer than 23 hours. A break start is skipped if it would make your fast too long.</p><p class="n" id="no24">${NO24}</p>
+<fieldset><legend>Mode</legend>`;
+MODES.forEach(m=>{if(mi&&!['off','12:12'].includes(m[0]))return;if(LONG.includes(m[0])&&gateValid()&&fl)return;const ok=allowed(m[0]),wd=S.s.wd.find(d=>S.s.days.includes(d)),P=plan(wd??1,m[0]),why=!gateValid()?'Complete the safety check first.':(DOK.includes(m[0])||older()||needsDok(m[0]))&&!g.dok?'Needs your doctor\u2019s OK (tick it in the safety check).':'';
+h+=`<label class="ck" for="m_${m[0].replace(':','_')}" style="display:flex;align-items:flex-start"><input type="radio" name="mode" id="m_${m[0].replace(':','_')}" ${cur==m[0]?'checked':''} ${ok?'':'disabled'} onchange="S.mode='${m[0]}';sv();go('Modes')"><span><b>${m[1]}</b> ${m[2]}${m[0]!='off'&&ok&&P.ratio!=m[1]?' <span class="n">Work days: '+P.ratio+', starting '+fmt(P.start)+'.</span>':''}${ok?'':' <span class="n">('+why+')</span>'}${m[0]=='omad'?'<br><span class="w">'+OMADC+'</span>':''}</span></label>`});
+h+=`</fieldset><p class="n">Eating windows are optional. No window is required, and results vary.</p></div>`;
+const P=plan(new Date().getDay());return h+`<div class="c"><h2>Preview: today with ${P.M[1]}</h2>${P.note?`<p class="call">${P.note}</p>`:''}${timeline(P,0)}</div>`}
+function gate(){const g=S.g,any=GQ.filter(q=>q[0]!='u18').some(q=>$('g_'+q[0]).checked),none=$('g_none').checked;
+if(!any&&!none)return $('gerr').textContent='Tick "None of these apply to me", or tick each item that applies.';
+if(any&&none)return $('gerr').textContent='You ticked "None of these apply to me" and also an item. Please fix one.';
+GQ.forEach(q=>{if(q[0]!='u18')g[q[0]]=$('g_'+q[0]).checked?1:0});g.none=none?1:0;g.frail=$('g_frail').checked?1:0;g.dok=$('g_dok').checked?1:0;g.done=1;g.ts=Date.now();if(!allowed(S.mode))S.mode=eff();sv();go(schedBad()?'Setup':'Modes')}
+
+/* ---------- Targets ---------- */
+function Targets(){const p=S.p;return`<div class="c"><h2>Your targets</h2><p class="n">Imperial units. Data stays in this browser only.</p>
+<div class="r"><div>${fld('age','Age',p.age)}</div><div>${opt('sex','Sex for BMR equation',p.sex,[['F','Female'],['M','Male']])}</div></div><p class="n" id="sexn">${SEXN}</p>
+<div class="r"><div>${fld('ft','Height (ft)',p.ft)}</div><div>${fld('inch','Height (in)',p.inch)}</div><div>${fld('w','Weight (lb)',p.w)}</div><div>${fld('gw','Goal weight (lb, optional, for protein)',p.gw)}</div></div>
+${opt('act','Activity level',p.act,[[1.2,'Sedentary (1.2)'],[1.375,'Light (1.375)'],[1.55,'Moderate (1.55)'],[1.725,'Very active (1.725)']])}
+${opt('goal','Goal',minor()?'maint':S.s.goal,goalOpts())}
+${cb('care','History of disordered eating, pregnant/breastfeeding, or advised by a clinician not to diet (no deficit applied)',p.care)}
+<button class="p" onclick="saveT()">Save and calculate</button><p id="terr" class="w" role="alert"></p></div>${nums()}`}
+function saveT(){const p=S.p,e=m=>{$('terr').textContent=m},ag=num($('age').value),ft=num($('ft').value),inch=num($('inch').value)??0,w=num($('w').value),act=num($('act').value);
+if(ag==null||ag<1||ag>110)return e('Enter your age.');if(ag<13){p.age=ag;sv();return go('Setup')}
+if(ft==null||inch<0||inch>=12)return e('Enter height in feet and inches (0-11).');const h=ft*12+inch;if(h<48||h>90)return e('Height must be between 4\'0" and 7\'6".');
+if(w==null||w<70||w>700)return e('Weight must be between 70 and 700 lb.');
+const gw=num($('gw').value);if($('gw').value!==''&&(gw==null||gw<70||gw>700))return e('Goal weight must be between 70 and 700 lb, or left blank.');
+Object.assign(p,{age:ag,ft,inch,w,act,gw:$('gw').value,sex:$('sex').value,care:$('care').checked?1:0,saved:1});S.s.goal=ag<18?'maint':$('goal').value;if(!allowed(S.mode))S.mode=eff();sv();go(schedBad()?'Setup':'Targets')}
+function nums(){if(!showNums())return`<div class="c"><h2>Your numbers</h2>${numMsg()}</div>`;
+const c=calc(),p=S.p,ca=(p.age>50&&p.sex=='F')||p.age>70?1200:1000,mg=p.sex=='M'?(p.age>30?420:400):(p.age>30?320:310),P=plan(new Date().getDay());
+return`<div class="c"><h2>Your numbers (estimates)</h2><div class="g">${k(f(c.bmr),'BMR kcal (Mifflin-St Jeor)')}${k(f(c.tdee),'Est. maintenance kcal')}${k(f(c.bmi,1),'BMI (screening only)')}${k(c.tgt,c.low&&!c.noDef?'Estimated maintenance':'Daily calorie estimate')}${c.def>0?k(f(c.def),'Est. daily deficit'):''}</div>
+<p class="n">Macros: protein ${c.pr} g, carbs ${c.carb} g, fat ${c.fat} g, fiber ${c.fib} g.</p>${c.capped?'<p class="w" id="capmsg">Protein and fat were reduced to fit your calories. This estimate is too low to plan from. Talk with your clinician or dietitian first.</p>':''}
+${c.lowBmi?`<p class="w" id="bmimsg">Your BMI is under 18.5, so no deficit is applied. ${CLIN}</p>`:''}
+${c.noDef&&!c.lowBmi?'<p class="w">No deficit applied (maintenance mode or care flag). Work with your clinician or dietitian on any weight change.</p>':''}
+${!c.noDef&&c.low?`<p class="w" id="lowmsg">Your estimated maintenance is under ${c.fl} kcal, so no deficit is applied. ${CLIN}</p>`:''}
+${c.def>0?'<p class="n" id="defmsg">This estimate starts about 400 kcal below maintenance and won\u2019t go below '+c.fl+' kcal. Results vary. Expected change is roughly 0.5-1 lb per week with wide individual variation, no promises.</p>':''}
+${flagged()?`<p class="w">${CLIN}</p>`:''}
+<p class="n">General adult reference intakes (food first, ask a clinician before supplements): calcium ${ca} mg, magnesium ~${mg} mg, potassium ${p.sex=='M'?3400:2600} mg, sodium under 2300 mg, iron ${p.sex=='M'||p.age>50?8:18} mg, vitamin D ${p.age>70?800:600} IU, B12 2.4 mcg, folate 400 mcg DFE. Never restrict vitamins or minerals to lose weight.</p></div>
+<div class="c"><h2>Per meal today (${P.M[1]})</h2><table><thead><tr><th scope="col">Time</th><th scope="col">Slot</th><th scope="col">kcal</th><th scope="col">Protein</th><th scope="col">Carbs</th><th scope="col">Fat</th><th scope="col">Fiber</th></tr></thead><tbody>${P.it.map(x=>`<tr><td>${fmt(x.t)}</td><td>${x.k=='s'?'Snack':esc(x.l.replace(' (finish by kitchen close)',''))}</td><td>${x.kc}</td><td>${x.pr} g</td><td>${x.cb} g</td><td>${x.ft} g</td><td>${x.fb} g</td></tr>`).join('')}</tbody></table><p class="n">Snacks get about 12% each; meals split the rest evenly.</p></div>`}
+
+/* ---------- Setup ---------- */
+function Setup(){const s=S.s,cl=[];for(let t=1020;t<=1200;t+=30)cl.push([hm(t),fmt(t)]);
+if(!S.onb&&age()==null)return`<div class="c"><h2>Welcome to LoadLine Eating Window</h2><p class="call" id="disc1">${DISC}</p>${fld('age0','First, how old are you?',S.p.age,'number','min="1" max="110"')}<button class="p" onclick="saveAge()">Continue</button><p id="aerr" class="w" role="alert"></p></div>`;
+return`${S.onb?'':`<div class="c"><h2>Welcome to LoadLine Eating Window</h2><p>Tell us about your day once. We will build an eating window that ends at your kitchen close and fits your real breaks. You can change everything later.</p><p class="call">${DISC}</p></div>`}
+${schedBad()?`<p class="w c" id="schedmsg" role="alert">${schedWhy()}</p>`:''}<div class="c"><h2>Your day</h2><div class="r"><div>${fld('wake','Wake time',s.wake,'time')}</div><div>${fld('bed','Bedtime',s.bed,'time')}</div></div>
+<fieldset><legend>Work days</legend>${DN.map((d,i)=>cb('wd'+i,d,s.wd.includes(i))).join('')}</fieldset>
+<div class="r"><div>${fld('ws','Work starts',s.ws,'time')}</div><div>${fld('we','Work ends',s.we,'time')}</div></div>
+<div class="r"><div>${opt('lunL','Lunch break length',s.lunL,[[30,'30 minutes'],[60,'60 minutes']])}</div><div>${fld('lun','Lunch time',s.lun,'time')}</div></div>
+${opt('nb','Number of 15-minute breaks',s.nb,[[0,'0'],[1,'1'],[2,'2'],[3,'3']],'onchange="keep();go(\'Setup\')"')}
+<div class="r">${[0,1,2].slice(0,s.nb).map(i=>`<div>${fld('br'+i,'Break '+(i+1)+' time',s.br[i],'time')}</div>`).join('')}</div>
+${opt('close','Kitchen close (last meal)',s.close,cl)}
+<fieldset><legend>Days your plan applies</legend><button class="q" onclick="pre([0,1,2,3,4,5,6])">All week</button><button class="q" onclick="pre([1,2,3,4,5])">Weekdays</button><button class="q" onclick="pre([0,6])">Weekends</button><br>${DN.map((d,i)=>cb('dy'+i,d,s.days.includes(i))).join('')}</fieldset>
+${opt('goalS','Goal',minor()?'maint':s.goal,goalOpts())}
+${fld('wo','Workout time (optional)',s.wo,'time')}<p class="n">We will flag a workout that comes less than 1-2 h after a meal or 30 min after a snack.</p>
+<button class="p" onclick="saveS()">Save my day</button><p id="serr" class="w" role="alert"></p></div>
+${S.onb?`<div class="c np"><h2>Your data</h2><p class="n">Everything is stored only in this browser. No account.</p><p class="n" id="privn">Your answers, including health answers from the safety check, are stored unencrypted on this device and in any export file. Anyone with access to this device or the file can read them. The website host may keep standard server logs (such as IP address and pages requested); the app itself sends none of your answers anywhere.</p><button class="q" onclick="ex()">Export my data (JSON)</button> <button class="q" onclick="if(confirm('Delete all data?')){localStorage.removeItem(K);location.reload()}">Delete all my data</button></div>`:''}`}
+function saveAge(){const a=num($('age0').value);if(a==null||a<1||a>110)return $('aerr').textContent='Enter your age.';S.p.age=a;if(a<18)S.s.goal='maint';sv();go('Setup')}
+function keep(){const s=S.s;['wake','bed','ws','we','lun','close','wo'].forEach(x=>{if($(x))s[x]=$(x).value});s.lunL=+$('lunL').value;[0,1,2].forEach(i=>{if($('br'+i))s.br[i]=$('br'+i).value});s.nb=+$('nb').value;
+s.wd=DN.map((d,i)=>$('wd'+i).checked?i:-1).filter(i=>i>=0);s.days=DN.map((d,i)=>$('dy'+i).checked?i:-1).filter(i=>i>=0);s.goal=minor()?'maint':$('goalS').value}
+function pre(a){keep();S.s.days=a;go('Setup')}
+function saveS(){keep();const s=S.s,w=mm(s.wake),c=mm(s.close);let b=mm(s.bed);if(b<=w)b+=1440;
+if(!s.wake||!s.bed||!s.close)return $('serr').textContent='Please enter wake time, bedtime and kitchen close.';
+if(c<=w+60)return $('serr').textContent='Kitchen close must be more than an hour after you wake. '+NOSUP;if((minor()||flagged())&&c<w+600)return $('serr').textContent='Kitchen close must be at least 10 hours after you wake. '+NOSUP;if(b<=c)return $('serr').textContent='Bedtime must be after kitchen close.';if(!allowed('off'))return $('serr').textContent=BLOCKMSG+' '+NOSUP;
+const fresh=!S.onb;S.onb=1;sv();go(fresh?'Today':'Setup');if(!fresh&&$('serr')){$('serr').className='ok';$('serr').textContent='Saved.'}}
+function ex(){const a=document.createElement('a');a.href='data:application/json,'+encodeURIComponent(JSON.stringify(S,null,1));a.download='loadline-eating-window-data.json';a.click()}
+
+/* ---------- About ---------- */
+function About(){return`<div class="c"><h2>About</h2><p class="call" id="disc2">${DISC}</p><p>LoadLine Eating Window helps you plan when to eat around your real work day, with every window ending at your kitchen close. Eating windows are optional.</p>
+<ul><li>4-5 hours between main meals is the target; 4-6 is fine.</li><li>More than 5 hours between meals? Add a small snack with protein, fiber or healthy fat.</li><li>Finish your last meal at least 2-3 hours before bed (3 h is ideal). ${BED}</li><li>Exercise 1-2 hours after a moderate meal, or about 30 minutes after a snack.</li><li>Before seconds, wait 15-20 minutes to let fullness catch up.</li></ul>
+<p class="w">${STOP}</p><p class="n">${MEDLINE}</p><p class="n">${NO24}</p>
+<p class="n">Calorie numbers are estimates from the Mifflin-St Jeor equation and vary from person to person.</p></div>
+<div class="c"><h2>Further reading</h2><p class="n">General articles on meal timing, waiting before seconds and exercising after eating. They are not evidence for fasting or any eating window.</p><ul><li>Northwestern Medicine, <a href="https://www.nm.org/healthbeat/healthy-tips/nutrition/best-times-to-eat" rel="noopener" target="_blank">The Best Times to Eat</a></li><li>Healthy Food Guide, <a href="https://www.healthyfood.com/ask-the-experts/how-long-should-i-wait-before-eating-seconds/" rel="noopener" target="_blank">How long should I wait before eating seconds?</a></li><li>Healthline, <a href="https://www.healthline.com/nutrition/exercise-after-eating" rel="noopener" target="_blank">Exercising After Eating</a></li></ul></div>`}
+
+nav();go(S.onb?S.tab:'Setup');
+</script><script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))</script></body></html>

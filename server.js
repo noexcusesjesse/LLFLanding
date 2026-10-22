@@ -7,6 +7,7 @@ import { existsSync, readFileSync } from 'fs';
 import { applySiteNav } from './partials/site-nav.js';
 import { escapeHtml, planBuilderLeadError, planBuilderLeadRecord } from './lib/plan-builder-lead.js';
 import { DELETION_REQUEST_CONFIRMATION, logRuckDeletionRequest, ruckDeletionRequestError, ruckDeletionRequestRecord, ruckInterestError, ruckInterestRecord, ruckNoticeHtml } from './lib/ruck-interest.js';
+import { noindexHeader } from './lib/noindex.js';
 import { age18ConfirmedError } from './lib/tracker-age.js';
 import pkg from 'pg';
 import axios from 'axios';
@@ -134,6 +135,16 @@ app.get(['/apps/walkquest', '/apps/walkquest/index.html'], (req, res, next) => {
     return res.redirect(301, '/apps/walkquest/' + (query ? '?' + query : ''));
   }
   return next();
+});
+
+// Eating Window is a static PWA, hidden from search. Canonical URL keeps the
+// trailing slash so its relative paths, service worker scope and manifest
+// start_url all resolve under /eating-window/. Served as-is (no site nav).
+app.use('/eating-window', noindexHeader);
+app.get(['/eating-window', '/eating-window/index.html'], (req, res, next) => {
+  const [path, query] = req.originalUrl.split('?');
+  if (path === '/eating-window/') return next();
+  return res.redirect(301, '/eating-window/' + (query ? '?' + query : ''));
 });
 
 const STATIC_HTML = new Set(['admin.html', 'tracker-admin.html', 'tracker.html']);
