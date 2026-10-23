@@ -1,3 +1,4 @@
+import http from 'node:http';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { describe, test, before, after } from 'node:test';
@@ -9,12 +10,19 @@ let server, base;
 before(async () => { server = app.listen(0); await new Promise(r => server.once('listening', r)); base = `http://127.0.0.1:${server.address().port}`; });
 after(() => server.close());
 
+// fetch() drops a custom Host header, so host-specific checks use http.get.
+const hget = (path, host = 'www.loadlinefitness.com') => new Promise((resolve, reject) => {
+  http.get(base + path, { headers: { Host: host } }, (res) => {
+    let body = ''; res.on('data', (c) => { body += c; });
+    res.on('end', () => resolve({ status: res.statusCode, headers: { get: (k) => res.headers[k.toLowerCase()] }, text: async () => body }));
+  }).on('error', reject);
+});
 const GATE = "To join a challenge fast, you must have finished Basic Training and your doctor must have cleared you for fasting.";
 
 describe('v5 site', () => {
   test('public pages are indexable; legal outlines are noindex and out of the sitemap', async () => {
     for (const path of Object.keys(PAGES).concat(['/learn/barefoot-shoes', '/ruck', '/ruck/privacy', '/plan-builder', '/tracker.html', '/privacy'])) {
-      const r = await fetch(base + path);
+      const r = await hget(path);
       assert.equal(r.status, 200, path);
       const html = await r.text();
       const outline = Boolean(PAGES[path] && PAGES[path].noindex);
@@ -30,12 +38,21 @@ describe('v5 site', () => {
     assert.deepEqual(Object.keys(PAGES).filter((p) => PAGES[p].noindex), ['/terms', '/disclaimer', '/affiliate-disclosure']);
     const sm = await (await fetch(base + '/sitemap.xml')).text();
     assert.doesNotMatch(sm, /terms|disclaimer|affiliate-disclosure/);
-    const ew = await fetch(base + '/eating-window/');
+    const ew = await hget('/eating-window/');
     assert.match(ew.headers.get('x-robots-tag') || '', /noindex/);
     const robots = await (await fetch(base + '/robots.txt')).text();
     assert.doesNotMatch(robots, /Disallow: \/\n/);
     assert.match(robots, /Allow: \/\n/);
     assert.match(robots, /Sitemap: https?:\/\/.+\/sitemap\.xml/);
+  });
+  test('non-public hosts (railway test/prod domains) are noindex everywhere', async () => {
+    for (const path of ['/', '/about', '/ruck', '/plan-builder']) {
+      const r = await hget(path, 'llf-site-test-production.up.railway.app');
+      assert.match(r.headers.get('x-robots-tag') || '', /noindex/, path);
+      if (path === '/' || path === '/about') assert.match(await r.text(), /<meta name="robots" content="noindex, nofollow">/, path);
+    }
+    const apex = await hget('/', 'loadlinefitness.com');
+    assert.doesNotMatch(apex.headers.get('x-robots-tag') || '', /noindex/);
   });
   test('old URLs 301 to the new map', async () => {
     for (const [from, to] of Object.entries(REDIRECTS)) {
