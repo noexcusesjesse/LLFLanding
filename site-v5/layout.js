@@ -14,6 +14,24 @@ export const counsel = '<span class="flag" title="Legal review needed">COUNSEL</
 export const hold = (what) => `<span class="hold" role="note"><strong>On hold:</strong> ${what}</span>`;
 export const ext = (href, text, rel = 'noopener') => `<a href="${href}" target="_blank" rel="${rel}">${text}<span class="sr-only"> (opens in a new tab)</span></a>`;
 export const btn = (href, text, cls = '') => `<a class="btn${cls ? ' ' + cls : ''}" href="${href}">${text}</a>`;
+
+// Line icons (24px, stroke = currentColor). Decorative: aria-hidden.
+const svg = (d) => `<svg class="ic" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+export const ICONS = {
+  dumbbell: svg('<path d="M6 7v10M3 9.5v5M18 7v10M21 9.5v5M6 12h12"/>'),
+  walk: svg('<circle cx="13" cy="4.5" r="1.5"/><path d="M10 21l2-6 3 3v3M9 12l2-4 3 1 2 3M11 8l-2 7"/>'),
+  moon: svg('<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>'),
+  chart: svg('<path d="M4 20V4M4 20h16M8 16l4-5 3 3 5-6"/>'),
+  repeat: svg('<path d="M17 2l3 3-3 3M4 11V9a4 4 0 0 1 4-4h12M7 22l-3-3 3-3M20 13v2a4 4 0 0 1-4 4H4"/>'),
+  coach: svg('<rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4M10 9.5l4 2-4 2z"/>'),
+  home: svg('<path d="M3 11l9-7 9 7M5 10v10h14V10M10 20v-5h4v5"/>'),
+  clipboard: svg('<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9zM9 12h6M9 16h4"/>'),
+  map: svg('<path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14"/>'),
+  chev: svg('<path d="M6 9l6 6 6-6"/>'),
+  menu: svg('<path d="M4 7h16M4 12h16M4 17h16"/>'),
+  close: svg('<path d="M6 6l12 12M18 6L6 18"/>'),
+};
+
 export const BYLINE = 'Run by No Excuses Jesse · Powered by LoadLine Fitness';
 
 const NAV = [
@@ -35,7 +53,7 @@ function nav(current) {
   const parts = NAV.map((item) => {
     if (Array.isArray(item)) return `<li>${navLink(item, current)}</li>`;
     const active = item.items.some(([h]) => h === current) ? ' is-current' : '';
-    return `<li class="drop${active}"><details><summary>${item.group}</summary><ul id="${item.id}">${item.items.map((i) => `<li>${navLink(i, current)}</li>`).join('')}</ul></details></li>`;
+    return `<li class="drop${active}"><details><summary>${item.group}${ICONS.chev}</summary><ul id="${item.id}">${item.items.map((i) => `<li>${navLink(i, current)}</li>`).join('')}</ul></details></li>`;
   });
   parts.push(`<li><a class="btn" href="/contact"${current === '/contact' ? ' aria-current="page"' : ''}>Book a Free Call</a></li>`);
   return parts.join('');
@@ -45,7 +63,7 @@ const FOOTER = `
 <footer>
   <div class="w foot">
     <div>
-      <p class="logo-foot">LOAD<b>LINE</b> FITNESS</p>
+      <p class="logo-foot"><span class="mark" aria-hidden="true">LL</span>LOAD<b>LINE</b> FITNESS</p>
       <p>LoadLine Fitness · Load the Standard. Live the Life.</p>
       <p>Online coaching. No gym, no studio, no physical location.</p>
       <p>Call/text <a href="${PHONE_HREF}">${PHONE}</a> · X: ${ext(X_URL, '@LoadLineFitness')} · Community: ${ext(FB_GROUP, 'Metabolic Reset with Jesse (Facebook)')}</p>
@@ -76,15 +94,19 @@ export function layout({ path, title, meta, body }) {
 <meta name="description" content="${meta}">
 <meta name="theme-color" content="#0B1F3A">
 <link rel="icon" href="/assets/icons/favicon.ico">
+<link rel="preload" href="/site-v5/fonts/inter-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/site-v5/site.css">
+<script>document.documentElement.classList.add('js')</script>
+<script src="/site-v5/site.js" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <div class="banner" role="note">STAGING / TEST BUILD: not the live site. Hidden from search. Forms do not send.</div>
-<header>
+<header class="site-head">
   <div class="w bar">
-    <a class="logo" href="/" aria-label="LoadLine Fitness home">LOAD<b>LINE</b> FITNESS</a>
-    <nav aria-label="Main"><ul class="menu">${nav(path)}</ul></nav>
+    <a class="logo" href="/" aria-label="LoadLine Fitness home"><span class="mark" aria-hidden="true">LL</span>LOAD<b>LINE</b> FITNESS</a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-menu"><span class="open-ic">${ICONS.menu}</span><span class="close-ic">${ICONS.close}</span><span class="sr-only">Menu</span></button>
+    <nav aria-label="Main"><ul class="menu" id="site-menu">${nav(path)}</ul></nav>
   </div>
 </header>
 <main id="main">

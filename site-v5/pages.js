@@ -1,19 +1,22 @@
 // Page bodies for the v5 redo. Copy is taken word for word from
 // loadline-website/new-site-copy.md (FINAL v5). [REED]/[COUNSEL] flags render
 // as small badges so reviewers can see them on staging.
-import { BYLINE, FB_GROUP, FF_AMAZON, NEC, PHONE, PHONE_HREF, btn, counsel, ext, hold, reed } from './layout.js';
+import { ICONS, BYLINE, FB_GROUP, FF_AMAZON, NEC, PHONE, PHONE_HREF, btn, counsel, ext, hold, reed } from './layout.js';
 
-const sec = (inner, alt = false, id = '') => `<section${alt ? ' class="alt"' : ''}${id ? ` id="${id}"` : ''}><div class="w">${inner}</div></section>`;
-const hero = (inner) => `<section class="hero"><div class="w">${inner}</div></section>`;
+const sec = (inner, alt = false, id = '') => `<section class="sec${alt ? ' alt' : ''}"${id ? ` id="${id}"` : ''}><div class="w"><div class="panel reveal">${inner}</div></div></section>`;
+// Grid sections render their cards directly (no outer panel).
+const grid = (inner, alt = false, id = '') => `<section class="sec${alt ? ' alt' : ''}"${id ? ` id="${id}"` : ''}><div class="w reveal">${inner}</div></section>`;
+const SHAPES = `<svg class="hero-art" aria-hidden="true" focusable="false" viewBox="0 0 600 600"><defs><linearGradient id="hg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E0B15A" stop-opacity=".55"/><stop offset="1" stop-color="#E0B15A" stop-opacity="0"/></linearGradient></defs><circle cx="420" cy="180" r="170" fill="none" stroke="url(#hg)" stroke-width="2"/><circle cx="420" cy="180" r="110" fill="none" stroke="url(#hg)" stroke-width="1.5"/><path d="M60 520 L300 300 L380 380 L560 200" fill="none" stroke="url(#hg)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const hero = (inner, big = false) => `<section class="hero${big ? ' hero-xl' : ''}">${SHAPES}<div class="w hero-in">${inner}</div></section>`;
 
 const MEMBER_GATE = (program) => `${program} include${program.includes(' and ') ? '' : 's'} no fasting. Members can join any free No Excuses Challenge. To join a challenge fast, you must have finished Basic Training and your doctor must have cleared you for fasting. Clearance for exercise doesn't count. A 24-hour fast also needs your doctor's OK for that fast, and anything over 24 hours needs all three boxes of the doctor-cleared check-in.`;
 
-const FORMULA = `<div class="g">
-  <div class="c"><h3>Train</h3><p>Strength and skill work that makes you more capable, not more dependent.</p></div>
-  <div class="c"><h3>Move</h3><p>Daily movement that fits a life. Walking, mobility, and work you'll actually repeat.</p></div>
-  <div class="c"><h3>Recover</h3><p>Rest is part of the work, not a luxury add-on.</p></div>
-  <div class="c"><h3>Track</h3><p>Simple accountability so the next session is honest.</p></div>
-  <div class="c"><h3>Repeat</h3><p>Consistency is the product. You win the year by returning, not by a dramatic first week.</p></div>
+const FORMULA = `<div class="g g5">
+  <div class="c">${ICONS.dumbbell}<h3>Train</h3><p>Strength and skill work that makes you more capable, not more dependent.</p></div>
+  <div class="c">${ICONS.walk}<h3>Move</h3><p>Daily movement that fits a life. Walking, mobility, and work you'll actually repeat.</p></div>
+  <div class="c">${ICONS.moon}<h3>Recover</h3><p>Rest is part of the work, not a luxury add-on.</p></div>
+  <div class="c">${ICONS.chart}<h3>Track</h3><p>Simple accountability so the next session is honest.</p></div>
+  <div class="c">${ICONS.repeat}<h3>Repeat</h3><p>Consistency is the product. You win the year by returning, not by a dramatic first week.</p></div>
 </div>`;
 
 const CHECKIN = `<p><strong>The doctor-cleared check-in (all three boxes, required for anything over 24 hours):</strong></p>
@@ -41,17 +44,17 @@ export const PAGES = {
     body: hero(`<p class="eye">ONLINE COACHING · LOADLINE FITNESS</p>
 <h1>Load the Standard. Live the Life.</h1>
 <p class="sub">We don't want to own your fitness. We want to teach you how to own it. Online coaching from wherever you are, built to make you independent.</p>
-<div class="ctas">${btn('#programs', 'See the Programs')} ${btn('/challenges', 'Join a Free Challenge', 'ghost')}</div>`)
+<div class="ctas">${btn('#programs', 'See the Programs', 'lg')} ${btn('/challenges', 'Join a Free Challenge', 'ghost lg')}</div>`, true)
       + sec(`<h2>This is not a gym. It's a mission.</h2>
 <p>I spent years watching the same cycle: people start strong, burn out, and walk away thinking they failed. They didn't fail. The system failed them.</p>
 <p>Traditional fitness is built on dependency: the next program, the next challenge, the next coach telling you what to do. That's a lease on your body, not ownership.</p>
 <p>LoadLine teaches you to understand fitness, not just follow it, so the standard is something you carry for life.</p>
 <p>— Jesse Collins, founder · <a href="/about">Read My Story</a></p>`)
-      + sec(`<h2>Programs</h2><div class="g">
-<div class="c"><h3>LoadLine 365</h3><p class="price">$185/month</p><p>Digital program with a virtual coach. Basic Training, then LoadLine 30, 60, 90, 180, and 365. The year ends at NOMAD status.</p><a href="/loadline-365">Learn more<span class="sr-only"> about LoadLine 365</span></a></div>
-<div class="c"><h3>LoadLine Solo</h3><p class="price">$85/month</p><p>The self-guided digital program you run at home, starting with Basic Training.</p><a href="/solo">Learn more<span class="sr-only"> about LoadLine Solo</span></a></div>
+      + grid(`<h2>Programs</h2><div class="g tiers">
+<div class="c tier featured">${ICONS.coach}<h3>LoadLine 365</h3><p class="price">$185/month</p><p>Digital program with a virtual coach. Basic Training, then LoadLine 30, 60, 90, 180, and 365. The year ends at NOMAD status.</p><a href="/loadline-365">Learn more<span class="sr-only"> about LoadLine 365</span></a></div>
+<div class="c tier">${ICONS.home}<h3>LoadLine Solo</h3><p class="price">$85/month</p><p>The self-guided digital program you run at home, starting with Basic Training.</p><a href="/solo">Learn more<span class="sr-only"> about LoadLine Solo</span></a></div>
 </div>`, true, 'programs')
-      + sec(`<h2>The formula: Train. Move. Recover. Track. Repeat.</h2>${FORMULA}`)
+      + grid(`<h2>The formula: Train. Move. Recover. Track. Repeat.</h2>${FORMULA}`)
       + sec(`<h2>Safety first</h2><ul>
 <li>Before you start any LoadLine program (Solo or 365), confirm your doctor has cleared you for exercise. ${reed}</li>
 <li><strong>LoadLine never prescribes, doses, or adjusts medication.</strong> Your doctor handles anything medical. ${reed}</li>
@@ -94,8 +97,8 @@ export const PAGES = {
 </ul>`)
       + sec(`<h2>NOMAD: independence, not leaving</h2><p>NOMAD means you can carry the LoadLine standard anywhere: at home, in a hotel, or in a park. It doesn't mean you leave LoadLine. The program stays with you. The standard travels.</p>
 <p><em>Load the standard. Then live it, wherever you are.</em></p>`, true)
-      + sec(`<h2>Pricing</h2><p class="price">$185/month.</p><p>Billed monthly until you cancel, with no long-term contract. <span class="flag">COUNSEL: auto-renewal disclosure and cancellation method next to the button</span></p>
-<div class="ctas">${btn('/contact', 'Book a Free Call')} ${btn('/solo', 'Compare with Solo ($85)', 'ghost')}</div>
+      + sec(`<h2>Pricing</h2><div class="c tier featured solo-tier">${ICONS.coach}<p class="price">$185/month.</p><p>Billed monthly until you cancel, with no long-term contract. <span class="flag">COUNSEL: auto-renewal disclosure and cancellation method next to the button</span></p>
+<div class="ctas">${btn('/contact', 'Book a Free Call')} ${btn('/solo', 'Compare with Solo ($85)', 'ghost')}</div></div>
 <p class="note"><strong>Community challenges:</strong> ${MEMBER_GATE('LoadLine 365')} <a href="/fasting-safety">Fasting Safety</a> ${reed}</p>`, false, 'pricing'),
   },
 
@@ -113,7 +116,7 @@ export const PAGES = {
 <li>The plate method: a simple way to build a meal with vegetables, protein, slow carbs, and fats. It's general education, not an individual nutrition prescription. ${reed}</li>
 <li>The formula at home: a 3-day band and dumbbell split and a daily step floor</li>
 </ul>`, true, 'included')
-      + sec(`<h2>Solo vs 365</h2><table><caption class="sr-only">LoadLine Solo compared with LoadLine 365</caption>
+      + sec(`<h2>Solo vs 365</h2><div class="tbl"><table><caption class="sr-only">LoadLine Solo compared with LoadLine 365</caption>
 <thead><tr><th scope="col"><span class="sr-only">Feature</span></th><th scope="col">Solo $85</th><th scope="col">365 $185</th></tr></thead><tbody>
 <tr><th scope="row">Digital curriculum</th><td>${yes}</td><td>${yes}</td></tr>
 <tr><th scope="row">LoadLine OS tools</th><td>${yes}</td><td>${yes}</td></tr>
@@ -121,9 +124,9 @@ export const PAGES = {
 <tr><th scope="row">Virtual coaching with Jesse</th><td>${no()}</td><td>${yes}</td></tr>
 <tr><th scope="row">Weekly Sunday reviews</th><td>${no()}</td><td>${yes}</td></tr>
 <tr><th scope="row">Path to NOMAD</th><td>${no(' (self-guided)')}</td><td>${yes}</td></tr>
-</tbody></table>`)
-      + sec(`<h2>Pricing</h2><p class="price">$85/month.</p><p>Billed monthly until you cancel. ${counsel}</p>
-<div class="ctas">${btn('/contact', 'Book a Free Call')} ${btn('/loadline-365', 'See LoadLine 365', 'ghost')}</div>
+</tbody></table></div>`)
+      + sec(`<h2>Pricing</h2><div class="c tier featured solo-tier">${ICONS.home}<p class="price">$85/month.</p><p>Billed monthly until you cancel. ${counsel}</p>
+<div class="ctas">${btn('/contact', 'Book a Free Call')} ${btn('/loadline-365', 'See LoadLine 365', 'ghost')}</div></div>
 <p class="note"><strong>Community challenges:</strong> ${MEMBER_GATE('LoadLine Solo')} <a href="/fasting-safety">Fasting Safety</a> ${reed}</p>`, true),
   },
 
@@ -131,7 +134,7 @@ export const PAGES = {
     title: 'How LoadLine Works | LoadLine Fitness',
     meta: 'One formula. Honest tracking. Clear boundaries.',
     body: hero(`<h1>How LoadLine works</h1><p class="sub">One formula. Honest tracking. Clear boundaries.</p>`)
-      + sec(`<h2>The formula</h2>${FORMULA}`)
+      + grid(`<h2>The formula</h2>${FORMULA}`)
       + sec(`<h2>The 7-day trend, not the day</h2><p>Your scale number moves day to day with water, food, and heat. That's normal. LoadLine looks at a 7-day rolling average, so one day never defines a week. Missing a day is normal. Missing a week is a pattern. The standard is about returning. ${reed}</p>`, true)
       + sec(`<h2>What we track and what we don't</h2><p>You log habits: training sessions, steps, sleep, water, meals, and any measurements you choose. Labs and health numbers belong to your doctor. LoadLine doesn't interpret lab results. ${reed}</p>`)
       + sec(`<h2>Coaching boundaries</h2><p><strong>Coaches do:</strong> teach the formula, check your form, review your logs, and hold you accountable.</p>
@@ -148,12 +151,12 @@ export const PAGES = {
 <div class="ctas"><a class="btn" href="${NEC}" target="_blank" rel="noopener">Join Free at noexcuseschallenges.com<span class="sr-only"> (opens in a new tab)</span></a></div>`)
       + sec(`<h2>How it works</h2><ol><li>Create a free account.</li><li>Pick a current challenge.</li><li>Check in once a day, earn badges, and chat with the group.</li></ol>`)
       + sec(`<h2>2027 Quarterly Fasts ${reed}</h2><p>We fast together once a quarter. Every fast starts at <strong>7:00 PM Arizona time on a Thursday</strong>.</p>
-<table><caption class="sr-only">2027 quarterly fast dates and optional ceilings</caption><thead><tr><th scope="col">Quarter</th><th scope="col">Start</th><th scope="col">Optional ceiling</th></tr></thead><tbody>
+<div class="tbl"><table><caption class="sr-only">2027 quarterly fast dates and optional ceilings</caption><thead><tr><th scope="col">Quarter</th><th scope="col">Start</th><th scope="col">Optional ceiling</th></tr></thead><tbody>
 <tr><th scope="row">Q1</th><td>Thu, Jan 14, 2027</td><td>24 hours</td></tr>
 <tr><th scope="row">Q2</th><td>Thu, Apr 8, 2027</td><td>28 hours</td></tr>
 <tr><th scope="row">Q3</th><td>Thu, Jul 8, 2027</td><td>32 hours</td></tr>
 <tr><th scope="row">Q4</th><td>Thu, Oct 14, 2027</td><td>36 hours</td></tr>
-</tbody></table>
+</tbody></table></div>
 <p>12, 16, or 20 hours: talk to your doctor before you fast. <strong>24 hours</strong> requires your doctor's OK. <strong>Anything over 24 hours</strong> (28h, 32h, or 36h, where the quarter's ceiling allows) requires all three boxes of the doctor-cleared check-in. The ceiling is an option, not a dare. A 12-hour window done right counts the same as anything longer. Any early stop counts as complete. ${reed}</p>
 ${CHECKIN}
 <p class="note"><strong>In Basic Training?</strong> Skip all challenge fasts, at every length. Fasting is not part of Basic Training. ${reed}</p>
@@ -231,11 +234,11 @@ ${CHECKIN}
     title: 'Free Tools | LoadLine Fitness',
     meta: 'Free LoadLine tools: Plan Builder, Walkingout, WalkQuest, and the Free Tracker.',
     body: hero(`<h1>Free Tools</h1>`)
-      + sec(`<div class="g">
-<div class="c"><h2><a href="/plan-builder">Plan Builder</a></h2><p>A free daily routine, a walking plan (6,000–12,000 steps), and a 3- or 4-day workout as a PDF. Ages 18+. Goal options: "Build a routine" · "Build strength". ${reed}</p></div>
-<div class="c"><h2><a href="/apps/walkingout/">Walkingout</a></h2><p>Walks built around your day. Saved on your device.</p></div>
-<div class="c"><h2><a href="/apps/walkquest/">WalkQuest</a></h2><p>Turn everyday walks into a journey across a map.</p></div>
-<div class="c"><h2><a href="/tracker.html">Free Tracker (LoadLine Core)</a></h2><p>Log workouts, steps, water, sleep, meals, and daily check-ins. Saved on your device. Free for book readers and challenge members. Paid member tools are in LoadLine OS. ${reed}</p></div>
+      + grid(`<div class="g">
+<div class="c">${ICONS.clipboard}<h2><a href="/plan-builder">Plan Builder</a></h2><p>A free daily routine, a walking plan (6,000–12,000 steps), and a 3- or 4-day workout as a PDF. Ages 18+. Goal options: "Build a routine" · "Build strength". ${reed}</p></div>
+<div class="c">${ICONS.walk}<h2><a href="/apps/walkingout/">Walkingout</a></h2><p>Walks built around your day. Saved on your device.</p></div>
+<div class="c">${ICONS.map}<h2><a href="/apps/walkquest/">WalkQuest</a></h2><p>Turn everyday walks into a journey across a map.</p></div>
+<div class="c">${ICONS.chart}<h2><a href="/tracker.html">Free Tracker (LoadLine Core)</a></h2><p>Log workouts, steps, water, sleep, meals, and daily check-ins. Saved on your device. Free for book readers and challenge members. Paid member tools are in LoadLine OS. ${reed}</p></div>
 </div>
 <p><em>Education only. Not medical advice.</em></p>`),
   },
@@ -266,20 +269,20 @@ ${CHECKIN}
     title: 'FAQ | LoadLine Fitness',
     meta: 'Answers about LoadLine Fitness programs, NOMAD, doctor clearance, medication, billing, equipment, and free challenges.',
     body: hero(`<h1>FAQ</h1>`)
-      + sec(`<dl class="faq">
-<dt>Is LoadLine in person?</dt><dd>No. LoadLine Fitness is online only, with no gym, studio, or office.</dd>
-<dt>What programs do you offer?</dt><dd>Two memberships, both starting with 14 days of Basic Training: LoadLine Solo ($85/month, self-guided) and LoadLine 365 ($185/month, with a virtual coach).</dd>
-<dt>Is fasting part of the programs?</dt><dd>No. LoadLine Solo and LoadLine 365 include no fasting. ${reed}</dd>
-<dt>Can members join the community challenges?</dt><dd>Yes. ${MEMBER_GATE('LoadLine Solo and LoadLine 365')} <a href="/fasting-safety">Fasting Safety</a> ${reed}</dd>
-<dt>What is NOMAD?</dt><dd>The final stage of LoadLine 365. You can carry the standard anywhere without being owned by a coach or a program. It doesn't mean leaving LoadLine.</dd>
-<dt>Do I need to be fit to start?</dt><dd>No. Basic Training teaches the system first, and the training scales to your level.</dd>
-<dt>Do I need my doctor's OK?</dt><dd>Yes. Before you start any LoadLine program (Solo or 365), confirm your doctor has cleared you for exercise. ${reed}</dd>
-<dt>Will you adjust my medication?</dt><dd>Never. LoadLine never prescribes, doses, or adjusts medication. ${reed}</dd>
-<dt>What if I miss a day?</dt><dd>Missing a day is normal. We use a 7-day rolling average. The standard is about returning.</dd>
-<dt>Is it a contract?</dt><dd>No long-term contract. Monthly billing continues until you cancel. ${counsel}</dd>
-<dt>What equipment do I need?</dt><dd>Bands, adjustable dumbbells, a bench, and a safe place to walk. See the <a href="/shop">Shop</a>.</dd>
-<dt>Are challenges free?</dt><dd>Yes. ${BYLINE}.</dd>
-</dl>`),
+      + sec(`<div class="faq">
+<details><summary>Is LoadLine in person?${ICONS.chev}</summary><div class="ans">No. LoadLine Fitness is online only, with no gym, studio, or office.</div></details>
+<details><summary>What programs do you offer?${ICONS.chev}</summary><div class="ans">Two memberships, both starting with 14 days of Basic Training: LoadLine Solo ($85/month, self-guided) and LoadLine 365 ($185/month, with a virtual coach).</div></details>
+<details><summary>Is fasting part of the programs?${ICONS.chev}</summary><div class="ans">No. LoadLine Solo and LoadLine 365 include no fasting. ${reed}</div></details>
+<details><summary>Can members join the community challenges?${ICONS.chev}</summary><div class="ans">Yes. ${MEMBER_GATE('LoadLine Solo and LoadLine 365')} <a href="/fasting-safety">Fasting Safety</a> ${reed}</div></details>
+<details><summary>What is NOMAD?${ICONS.chev}</summary><div class="ans">The final stage of LoadLine 365. You can carry the standard anywhere without being owned by a coach or a program. It doesn't mean leaving LoadLine.</div></details>
+<details><summary>Do I need to be fit to start?${ICONS.chev}</summary><div class="ans">No. Basic Training teaches the system first, and the training scales to your level.</div></details>
+<details><summary>Do I need my doctor's OK?${ICONS.chev}</summary><div class="ans">Yes. Before you start any LoadLine program (Solo or 365), confirm your doctor has cleared you for exercise. ${reed}</div></details>
+<details><summary>Will you adjust my medication?${ICONS.chev}</summary><div class="ans">Never. LoadLine never prescribes, doses, or adjusts medication. ${reed}</div></details>
+<details><summary>What if I miss a day?${ICONS.chev}</summary><div class="ans">Missing a day is normal. We use a 7-day rolling average. The standard is about returning.</div></details>
+<details><summary>Is it a contract?${ICONS.chev}</summary><div class="ans">No long-term contract. Monthly billing continues until you cancel. ${counsel}</div></details>
+<details><summary>What equipment do I need?${ICONS.chev}</summary><div class="ans">Bands, adjustable dumbbells, a bench, and a safe place to walk. See the <a href="/shop">Shop</a>.</div></details>
+<details><summary>Are challenges free?${ICONS.chev}</summary><div class="ans">Yes. ${BYLINE}.</div></details>
+</div>`),
   },
 
   '/contact': {
