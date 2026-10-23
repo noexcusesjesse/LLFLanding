@@ -1,13 +1,15 @@
 // Page bodies for the v5 redo. Copy is taken word for word from
 // loadline-website/new-site-copy.md (FINAL v5). [REED]/[COUNSEL] flags render
 // as small badges so reviewers can see them on staging.
-import { ICONS, BYLINE, FB_GROUP, FF_AMAZON, NEC, PHONE, PHONE_HREF, btn, counsel, ext, hold, reed } from './layout.js';
+import { HERO_BG, HERO_PRELOAD, photo, ICONS, BYLINE, FB_GROUP, FF_AMAZON, NEC, PHONE, PHONE_HREF, btn, counsel, ext, hold, reed } from './layout.js';
 
+const media = (n) => `<div class="media">${photo(n, [640, 1024], 1024, 576, { sizes: '(min-width: 1180px) 1100px, 100vw' })}</div>`;
+const JESSE = (cls) => photo('jesse', [320, 540], 540, 675, { alt: 'No Excuses Jesse', cls, sizes: '(min-width: 768px) 280px, 70vw' });
 const sec = (inner, alt = false, id = '') => `<section class="sec${alt ? ' alt' : ''}"${id ? ` id="${id}"` : ''}><div class="w"><div class="panel reveal">${inner}</div></div></section>`;
 // Grid sections render their cards directly (no outer panel).
 const grid = (inner, alt = false, id = '') => `<section class="sec${alt ? ' alt' : ''}"${id ? ` id="${id}"` : ''}><div class="w reveal">${inner}</div></section>`;
 const SHAPES = `<svg class="hero-art" aria-hidden="true" focusable="false" viewBox="0 0 600 600"><defs><linearGradient id="hg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E0B15A" stop-opacity=".55"/><stop offset="1" stop-color="#E0B15A" stop-opacity="0"/></linearGradient></defs><circle cx="420" cy="180" r="170" fill="none" stroke="url(#hg)" stroke-width="2"/><circle cx="420" cy="180" r="110" fill="none" stroke="url(#hg)" stroke-width="1.5"/><path d="M60 520 L300 300 L380 380 L560 200" fill="none" stroke="url(#hg)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-const hero = (inner, big = false) => `<section class="hero${big ? ' hero-xl' : ''}">${SHAPES}<div class="w hero-in">${inner}</div></section>`;
+const hero = (inner, big = false, bg = '') => `<section class="hero${big ? ' hero-xl' : ''}${bg ? ' has-bg' : ''}">${bg || SHAPES}<div class="w hero-in">${inner}</div></section>`;
 
 const MEMBER_GATE = (program) => `${program} include${program.includes(' and ') ? '' : 's'} no fasting. Members can join any free No Excuses Challenge. To join a challenge fast, you must have finished Basic Training and your doctor must have cleared you for fasting. Clearance for exercise doesn't count. A 24-hour fast also needs your doctor's OK for that fast, and anything over 24 hours needs all three boxes of the doctor-cleared check-in.`;
 
@@ -41,16 +43,17 @@ export const PAGES = {
   '/': {
     title: 'LoadLine Fitness | Online Coaching. Load the Standard.',
     meta: 'LoadLine Fitness is online coaching that teaches you to own your fitness. LoadLine 365 ($185/mo) and LoadLine Solo ($85/mo).',
+    head: HERO_PRELOAD,
     body: hero(`<p class="eye">ONLINE COACHING · LOADLINE FITNESS</p>
 <h1>Load the Standard. Live the Life.</h1>
 <p class="sub">We don't want to own your fitness. We want to teach you how to own it. Online coaching from wherever you are, built to make you independent.</p>
-<div class="ctas">${btn('#programs', 'See the Programs', 'lg')} ${btn('/challenges', 'Join a Free Challenge', 'ghost lg')}</div>`, true)
-      + sec(`<h2>This is not a gym. It's a mission.</h2>
+<div class="ctas">${btn('#programs', 'See the Programs', 'lg')} ${btn('/challenges', 'Join a Free Challenge', 'ghost lg')}</div>`, true, HERO_BG)
+      + sec(`<div class="founder"><figure class="portrait">${JESSE('')}</figure><div><h2>This is not a gym. It's a mission.</h2>
 <p>I spent years watching the same cycle: people start strong, burn out, and walk away thinking they failed. They didn't fail. The system failed them.</p>
 <p>Traditional fitness is built on dependency: the next program, the next challenge, the next coach telling you what to do. That's a lease on your body, not ownership.</p>
 <p>LoadLine teaches you to understand fitness, not just follow it, so the standard is something you carry for life.</p>
-<p>— Jesse Collins, founder · <a href="/about">Read My Story</a></p>`)
-      + grid(`<h2>Programs</h2><div class="g tiers">
+<p>— Jesse Collins, founder · <a href="/about">Read My Story</a></p></div></div>`)
+      + grid(`<h2>Programs</h2>${media('program')}<div class="g tiers">
 <div class="c tier featured">${ICONS.coach}<h3>LoadLine 365</h3><p class="price">$185/month</p><p>Digital program with a virtual coach. Basic Training, then LoadLine 30, 60, 90, 180, and 365. The year ends at NOMAD status.</p><a href="/loadline-365">Learn more<span class="sr-only"> about LoadLine 365</span></a></div>
 <div class="c tier">${ICONS.home}<h3>LoadLine Solo</h3><p class="price">$85/month</p><p>The self-guided digital program you run at home, starting with Basic Training.</p><a href="/solo">Learn more<span class="sr-only"> about LoadLine Solo</span></a></div>
 </div>`, true, 'programs')
@@ -60,12 +63,12 @@ export const PAGES = {
 <li><strong>LoadLine never prescribes, doses, or adjusts medication.</strong> Your doctor handles anything medical. ${reed}</li>
 </ul><p><a href="/how-it-works">How it works</a></p>`, true)
       + sec(`<h2>Free challenges</h2><p><strong>No Excuses Challenges</strong>: ${BYLINE}.</p>
-<p>Free community challenges with check-ins, streaks, and badges. <a href="/challenges">See current challenges</a></p>
+<p>Free community challenges with check-ins, streaks, and badges. <a href="/challenges">See current challenges</a></p>${media('challenges')}
 <div class="ctas">${ext(NEC, 'Join free at noexcuseschallenges.com')}</div>`)
       + sec(`<h2>Books</h2>
 <p><strong>Financially Fit</strong>: train your money like you train your body. ${ext(FF_AMAZON, 'Buy on Amazon<span class="sr-only">: Financially Fit</span>')}</p>
 <p><strong>NO EXCUSES</strong>: a real person's guide to metabolic health. <a href="/books">See the books</a></p>`, true)
-      + sec(`<h2>Free tools</h2><p>Plan Builder · Walkingout · WalkQuest · Free Tracker → <a href="/tools">Explore tools</a></p>`)
+      + sec(`<h2>Free tools</h2><p>Plan Builder · Walkingout · WalkQuest · Free Tracker → <a href="/tools">Explore tools</a></p>${media('tools')}`)
       + sec(`<h2>Start with a conversation.</h2>
 <p>Book a free 30-minute video call. We'll talk about your goals, your schedule, and which program fits. No commitment, no pressure. This is not a medical evaluation. ${reed}</p>
 <div class="ctas">${btn('/contact', 'Book a Free Call')} <span>Or call/text <a href="${PHONE_HREF}">${PHONE}</a></span></div>`, true),
@@ -149,6 +152,7 @@ export const PAGES = {
     body: hero(`<h1>No Excuses Challenges</h1><p><strong>${BYLINE}</strong></p>
 <p class="sub">Free community challenges for the Metabolic Reset with Jesse group. Join, check in, and keep your word to yourself.</p>
 <div class="ctas"><a class="btn" href="${NEC}" target="_blank" rel="noopener">Join Free at noexcuseschallenges.com<span class="sr-only"> (opens in a new tab)</span></a></div>`)
+      + `<div class="w media-top">${photo('challenges', [640, 1024], 1024, 576, { sizes: '(min-width: 1180px) 1100px, 100vw' })}</div>`
       + sec(`<h2>How it works</h2><ol><li>Create a free account.</li><li>Pick a current challenge.</li><li>Check in once a day, earn badges, and chat with the group.</li></ol>`)
       + sec(`<h2>2027 Quarterly Fasts ${reed}</h2><p>We fast together once a quarter. Every fast starts at <strong>7:00 PM Arizona time on a Thursday</strong>.</p>
 <div class="tbl"><table><caption class="sr-only">2027 quarterly fast dates and optional ceilings</caption><thead><tr><th scope="col">Quarter</th><th scope="col">Start</th><th scope="col">Optional ceiling</th></tr></thead><tbody>
@@ -188,7 +192,7 @@ ${CHECKIN}
   '/about': {
     title: 'About Jesse Collins | LoadLine Fitness',
     meta: 'Jesse Collins, founder and architect of LoadLine Fitness, an online coaching company.',
-    body: hero(`<h1>Jesse Collins</h1><p class="sub">Founder and architect of LoadLine Fitness.</p>`)
+    body: hero(`<div class="founder hero-founder"><figure class="portrait">${photo('jesse', [320, 540], 540, 675, { alt: 'No Excuses Jesse', sizes: '(min-width: 768px) 280px, 70vw', eager: true })}</figure><div><h1>Jesse Collins</h1><p class="sub">Founder and architect of LoadLine Fitness.</p></div></div>`)
       + sec(`<p>Jesse Collins founded LoadLine Fitness, an online coaching company: digital programs plus an optional virtual coach. Jesse built LoadLine from years of training himself and coaching others. With a passion for long-term health, he built LoadLine on one principle: fitness should teach you to own your body, not rent it from a coach.</p>
 <p class="hold">[JESSE DECISION: credential line placeholder. Confirm "coaching others" is accurate before launch.]</p>
 <p>Jesse is also the first LoadLine client. He lives the standard every day. This is practice, not theory.</p>
@@ -234,6 +238,7 @@ ${CHECKIN}
     title: 'Free Tools | LoadLine Fitness',
     meta: 'Free LoadLine tools: Plan Builder, Walkingout, WalkQuest, and the Free Tracker.',
     body: hero(`<h1>Free Tools</h1>`)
+      + `<div class="w media-top">${photo('tools', [640, 1024], 1024, 576, { sizes: '(min-width: 1180px) 1100px, 100vw' })}</div>`
       + grid(`<div class="g">
 <div class="c">${ICONS.clipboard}<h2><a href="/plan-builder">Plan Builder</a></h2><p>A free daily routine, a walking plan (6,000–12,000 steps), and a 3- or 4-day workout as a PDF. Ages 18+. Goal options: "Build a routine" · "Build strength". ${reed}</p></div>
 <div class="c">${ICONS.walk}<h2><a href="/apps/walkingout/">Walkingout</a></h2><p>Walks built around your day. Saved on your device.</p></div>

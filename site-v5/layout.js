@@ -83,7 +83,7 @@ const FOOTER = `
   </div>
 </footer>`;
 
-export function layout({ path, title, meta, body }) {
+export function layout({ path, title, meta, body, head = '' }) {
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -99,7 +99,7 @@ export function layout({ path, title, meta, body }) {
 <link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
 <meta property="og:image" content="${process.env.PUBLIC_URL || ''}/assets/brand/og-default.png">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
-<link rel="preload" href="/site-v5/fonts/inter-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/site-v5/fonts/inter-latin-wght.woff2" as="font" type="font/woff2" crossorigin>${head}
 <link rel="stylesheet" href="/site-v5/site.css">
 <script>document.documentElement.classList.add('js')</script>
 <script src="/site-v5/site.js" defer></script>
@@ -121,3 +121,16 @@ ${FOOTER}
 </body>
 </html>`;
 }
+
+// Responsive photo. name-<w>.{avif,webp,jpg} live in /assets/photos.
+const P = '/assets/photos/';
+export function photo(name, widths, w, h, { alt = '', cls = '', sizes = '100vw', eager = false } = {}) {
+  const set = (ext) => widths.map((x) => `${P}${name}-${x}.${ext} ${x}w`).join(', ');
+  const big = widths[widths.length - 1];
+  return `<picture><source type="image/avif" srcset="${set('avif')}" sizes="${sizes}"><source type="image/webp" srcset="${set('webp')}" sizes="${sizes}"><img${cls ? ` class="${cls}"` : ''} src="${P}${name}-${big}.jpg" srcset="${set('jpg')}" sizes="${sizes}" width="${w}" height="${h}" alt="${alt}" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async"></picture>`;
+}
+// Full-bleed hero background: mobile crop below 700px, wide banner above.
+export const HERO_BG = `<picture class="hero-bg"><source media="(max-width: 699px)" type="image/avif" srcset="${P}hero-m800.avif"><source media="(max-width: 699px)" type="image/webp" srcset="${P}hero-m800.webp"><source media="(max-width: 699px)" srcset="${P}hero-m800.jpg"><source type="image/avif" srcset="${P}hero-1600.avif 1600w, ${P}hero-1983.avif 1983w" sizes="100vw"><source type="image/webp" srcset="${P}hero-1600.webp 1600w, ${P}hero-1983.webp 1983w" sizes="100vw"><img src="${P}hero-1600.jpg" srcset="${P}hero-1600.jpg 1600w, ${P}hero-1983.jpg 1983w" sizes="100vw" width="1600" height="640" alt="" fetchpriority="high" decoding="async"></picture>`;
+export const HERO_PRELOAD = `
+<link rel="preload" as="image" type="image/avif" media="(max-width: 699px)" href="${P}hero-m800.avif">
+<link rel="preload" as="image" type="image/avif" media="(min-width: 700px)" imagesrcset="${P}hero-1600.avif 1600w, ${P}hero-1983.avif 1983w" imagesizes="100vw">`;
