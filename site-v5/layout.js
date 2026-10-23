@@ -63,7 +63,7 @@ const FOOTER = `
 <footer>
   <div class="w foot">
     <div>
-      <p class="logo-foot"><span class="mark" aria-hidden="true">LL</span>LOAD<b>LINE</b> FITNESS</p>
+      <p class="logo-foot"><picture><source type="image/webp" srcset="/assets/brand/loadline-lockup-h64.webp 1x, /assets/brand/loadline-lockup-h128.webp 2x"><img class="foot-img" src="/assets/brand/loadline-lockup-h64.png" srcset="/assets/brand/loadline-lockup-h64.png 1x, /assets/brand/loadline-lockup-h128.png 2x" width="180" height="64" alt="LoadLine Fitness"></picture></p>
       <p>LoadLine Fitness · Load the Standard. Live the Life.</p>
       <p>Online coaching. No gym, no studio, no physical location.</p>
       <p>Call/text <a href="${PHONE_HREF}">${PHONE}</a> · X: ${ext(X_URL, '@LoadLineFitness')} · Community: ${ext(FB_GROUP, 'Metabolic Reset with Jesse (Facebook)')}</p>
@@ -93,7 +93,12 @@ export function layout({ path, title, meta, body }) {
 <title>${title}</title>
 <meta name="description" content="${meta}">
 <meta name="theme-color" content="#0B1F3A">
-<link rel="icon" href="/assets/icons/favicon.ico">
+<link rel="icon" href="/assets/brand/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/brand/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/brand/favicon-16.png">
+<link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
+<meta property="og:image" content="${process.env.PUBLIC_URL || ''}/assets/brand/og-default.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <link rel="preload" href="/site-v5/fonts/inter-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/site-v5/site.css">
 <script>document.documentElement.classList.add('js')</script>
@@ -104,7 +109,7 @@ export function layout({ path, title, meta, body }) {
 <div class="banner" role="note">STAGING / TEST BUILD: not the live site. Hidden from search. Forms do not send.</div>
 <header class="site-head">
   <div class="w bar">
-    <a class="logo" href="/" aria-label="LoadLine Fitness home"><span class="mark" aria-hidden="true">LL</span>LOAD<b>LINE</b> FITNESS</a>
+    <a class="logo" href="/"><picture><source type="image/webp" media="(max-width: 959px)" srcset="/assets/brand/loadline-lockup-h44.webp 1x, /assets/brand/loadline-lockup-h88.webp 2x"><source type="image/webp" srcset="/assets/brand/loadline-lockup-h56.webp 1x, /assets/brand/loadline-lockup-h112.webp 2x"><source media="(max-width: 959px)" srcset="/assets/brand/loadline-lockup-h44.png 1x, /assets/brand/loadline-lockup-h88.png 2x"><img class="logo-img" src="/assets/brand/loadline-lockup-h56.png" srcset="/assets/brand/loadline-lockup-h56.png 1x, /assets/brand/loadline-lockup-h112.png 2x" width="158" height="56" alt="LoadLine Fitness"></picture><span class="sr-only"> home</span></a>
     <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-menu"><span class="open-ic">${ICONS.menu}</span><span class="close-ic">${ICONS.close}</span><span class="sr-only">Menu</span></button>
     <nav aria-label="Main"><ul class="menu" id="site-menu">${nav(path)}</ul></nav>
   </div>
