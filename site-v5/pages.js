@@ -194,7 +194,6 @@ ${CHECKIN}
     meta: 'Jesse Collins, founder and architect of LoadLine Fitness, an online coaching company.',
     body: hero(`<div class="founder hero-founder"><figure class="portrait">${photo('jesse', [320, 540], 540, 675, { alt: 'No Excuses Jesse', sizes: '(min-width: 768px) 280px, 70vw', eager: true })}</figure><div><h1>Jesse Collins</h1><p class="sub">Founder and architect of LoadLine Fitness.</p></div></div>`)
       + sec(`<p>Jesse Collins founded LoadLine Fitness, an online coaching company: digital programs plus an optional virtual coach. Jesse built LoadLine from years of training himself and coaching others. With a passion for long-term health, he built LoadLine on one principle: fitness should teach you to own your body, not rent it from a coach.</p>
-<p class="hold">[JESSE DECISION: credential line placeholder. Confirm "coaching others" is accurate before launch.]</p>
 <p>Jesse is also the first LoadLine client. He lives the standard every day. This is practice, not theory.</p>
 <p><strong>No Excuses Jesse.</strong> Jesse runs the free No Excuses Challenges for the Metabolic Reset with Jesse community. <em>${BYLINE}.</em></p>
 <p><strong>Online only.</strong> No gym, studio, or office. Everything happens by video, app, and message.</p>`),
