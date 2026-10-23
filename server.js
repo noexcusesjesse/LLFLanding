@@ -63,7 +63,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // STAGING: v5 site redo. Registered first so the new pages, redirects,
-// global noindex and the contact test stub win over the legacy routes.
+// redirects and new pages win over the legacy routes.
 mountSiteV5(app, __dirname);
 
 function sendHtml(res, filename) {
@@ -443,12 +443,12 @@ app.post('/api/leads', async (req, res) => {
           `[LoadLine] New ${type || 'Contact'} Lead: ${name}`,
           `
             <h2>New Lead Received</h2>
-            <p><strong>Name:</strong> ${name}</p>
-            <p><strong>Email:</strong> ${email}</p>
-            ${phone ? `<p><strong>Phone:</strong> ${phone}</p>` : ''}
-            <p><strong>Type:</strong> ${type || 'contact'}</p>
+            <p><strong>Name:</strong> ${escapeHtml(name)}</p>
+            <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+            ${phone ? `<p><strong>Phone:</strong> ${escapeHtml(phone)}</p>` : ''}
+            <p><strong>Type:</strong> ${escapeHtml(type || 'contact')}</p>
             <p><strong>Message:</strong></p>
-            <p>${message.replace(/\n/g, '<br>')}</p>
+            <p>${escapeHtml(message).replace(/\n/g, '<br>')}</p>
             <hr>
             <p>View in dashboard: <a href="${process.env.DASHBOARD_URL || 'https://loadlinefitness.com'}/admin">Lead #${leadId}</a></p>
           `

@@ -1,6 +1,6 @@
 // Page bodies for the v5 redo. Copy is taken word for word from
-// loadline-website/new-site-copy.md (FINAL v5). [REED]/[COUNSEL] flags render
-// as small badges so reviewers can see them on staging.
+// loadline-website/new-site-copy.md (FINAL v5). [REED]/[COUNSEL] badges
+// are hidden in the public build (reed/counsel render as empty strings).
 import { HERO_BG, HERO_PRELOAD, photo, ICONS, BYLINE, FB_GROUP, FF_AMAZON, NEC, PHONE, PHONE_HREF, btn, counsel, ext, hold, reed } from './layout.js';
 
 const media = (n) => `<div class="media">${photo(n, [640, 1024], 1024, 576, { sizes: '(min-width: 1180px) 1100px, 100vw' })}</div>`;
@@ -100,7 +100,7 @@ export const PAGES = {
 </ul>`)
       + sec(`<h2>NOMAD: independence, not leaving</h2><p>NOMAD means you can carry the LoadLine standard anywhere: at home, in a hotel, or in a park. It doesn't mean you leave LoadLine. The program stays with you. The standard travels.</p>
 <p><em>Load the standard. Then live it, wherever you are.</em></p>`, true)
-      + sec(`<h2>Pricing</h2><div class="c tier featured solo-tier">${ICONS.coach}<p class="price">$185/month.</p><p>Billed monthly until you cancel, with no long-term contract. <span class="flag">COUNSEL: auto-renewal disclosure and cancellation method next to the button</span></p>
+      + sec(`<h2>Pricing</h2><div class="c tier featured solo-tier">${ICONS.coach}<p class="price">$185/month.</p><p>Billed monthly until you cancel, with no long-term contract.</p>
 <div class="ctas">${btn('/contact', 'Book a Free Call')} ${btn('/solo', 'Compare with Solo ($85)', 'ghost')}</div></div>
 <p class="note"><strong>Community challenges:</strong> ${MEMBER_GATE('LoadLine 365')} <a href="/fasting-safety">Fasting Safety</a> ${reed}</p>`, false, 'pricing'),
   },
@@ -293,9 +293,8 @@ ${CHECKIN}
     title: 'Request a Free Call | LoadLine Fitness',
     meta: 'Request a free 30-minute video call or more information from LoadLine Fitness.',
     body: hero(`<h1>Request a Free Call or More Information</h1>
-<p class="sub">A free 30-minute video call about your goals, schedule, and training history, and which program fits. No commitment, no pressure. This is not a medical evaluation. ${reed}</p>
-<p class="hold">STAGING: "Book a Free Call" points here until a real scheduler link is supplied. This form posts to a test stub and sends nothing.</p>`)
-      + sec(`<form class="contact" id="contact-form" method="post" action="/api/test/contact" novalidate>
+<p class="sub">A free 30-minute video call about your goals, schedule, and training history, and which program fits. No commitment, no pressure. This is not a medical evaluation. ${reed}</p>`)
+      + sec(`<form class="contact" id="contact-form" method="post" action="/api/leads" novalidate>
 <div><label for="c-name">Name <span aria-hidden="true">*</span></label><input id="c-name" name="name" type="text" autocomplete="name" required aria-required="true"></div>
 <div><label for="c-email">Email <span aria-hidden="true">*</span></label><input id="c-email" name="email" type="email" autocomplete="email" required aria-required="true"></div>
 <div><label for="c-phone">Phone (optional)</label><input id="c-phone" name="phone" type="tel" autocomplete="tel"></div>
@@ -319,6 +318,7 @@ function legal(title, h1, outline, medical = false) {
   return {
     title: `${title} | LoadLine Fitness`,
     meta: `${title} for LoadLine Fitness.`,
+    noindex: true, // outline only until counsel signs off
     body: hero(`<h1>${h1}</h1><p class="hold">Draft pending counsel. Outline only; not the final text.</p> ${counsel}${medical ? ' ' + reed : ''}`)
       + sec(`<p><strong>Outline:</strong> ${outline.join(' ')}</p>`),
   };

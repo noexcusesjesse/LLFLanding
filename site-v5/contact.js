@@ -1,4 +1,4 @@
-// Staging contact form: posts JSON to the test stub. Nothing is emailed or stored.
+// Contact form: posts JSON to the production lead endpoint (POST /api/leads).
 (function () {
   var form = document.getElementById('contact-form');
   if (!form) return;
@@ -12,6 +12,7 @@
       return;
     }
     var data = {
+      type: 'contact',
       name: form.name.value.trim(),
       email: form.email.value.trim(),
       phone: form.phone.value.trim(),

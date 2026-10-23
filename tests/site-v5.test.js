@@ -11,23 +11,31 @@ after(() => server.close());
 
 const GATE = "To join a challenge fast, you must have finished Basic Training and your doctor must have cleared you for fasting.";
 
-describe('v5 staging site', () => {
-  test('every new page renders 200 with noindex header and meta', async () => {
-    for (const path of Object.keys(PAGES).concat(['/learn/barefoot-shoes'])) {
+describe('v5 site', () => {
+  test('public pages are indexable; legal outlines are noindex and out of the sitemap', async () => {
+    for (const path of Object.keys(PAGES).concat(['/learn/barefoot-shoes', '/ruck', '/ruck/privacy', '/plan-builder', '/tracker.html', '/privacy'])) {
       const r = await fetch(base + path);
       assert.equal(r.status, 200, path);
-      assert.match(r.headers.get('x-robots-tag') || '', /noindex/, path);
       const html = await r.text();
-      if (path !== '/learn/barefoot-shoes') assert.match(html, /<meta name="robots" content="noindex, nofollow">/, path);
+      const outline = Boolean(PAGES[path] && PAGES[path].noindex);
+      if (outline) {
+        assert.match(r.headers.get('x-robots-tag') || '', /noindex/, path);
+        assert.match(html, /<meta name="robots" content="noindex, nofollow">/, path);
+      } else {
+        assert.doesNotMatch(r.headers.get('x-robots-tag') || '', /noindex/, path);
+        if (PAGES[path]) assert.doesNotMatch(html, /name="robots" content="noindex/, path);
+      }
+      assert.doesNotMatch(html, /STAGING \/ TEST BUILD|class="flag"/, path);
     }
-  });
-  test('the whole build is noindex, including legacy routes, and robots.txt blocks all', async () => {
-    for (const path of ['/ruck', '/ruck/privacy', '/eating-window/', '/plan-builder', '/tracker.html', '/privacy']) {
-      const r = await fetch(base + path);
-      assert.equal(r.status, 200, path);
-      assert.match(r.headers.get('x-robots-tag') || '', /noindex/, path);
-    }
-    assert.match(await (await fetch(base + '/robots.txt')).text(), /Disallow: \/\n/);
+    assert.deepEqual(Object.keys(PAGES).filter((p) => PAGES[p].noindex), ['/terms', '/disclaimer', '/affiliate-disclosure']);
+    const sm = await (await fetch(base + '/sitemap.xml')).text();
+    assert.doesNotMatch(sm, /terms|disclaimer|affiliate-disclosure/);
+    const ew = await fetch(base + '/eating-window/');
+    assert.match(ew.headers.get('x-robots-tag') || '', /noindex/);
+    const robots = await (await fetch(base + '/robots.txt')).text();
+    assert.doesNotMatch(robots, /Disallow: \/\n/);
+    assert.match(robots, /Allow: \/\n/);
+    assert.match(robots, /Sitemap: https?:\/\/.+\/sitemap\.xml/);
   });
   test('old URLs 301 to the new map', async () => {
     for (const [from, to] of Object.entries(REDIRECTS)) {
@@ -39,14 +47,9 @@ describe('v5 staging site', () => {
   test('unknown URLs return a real 404', async () => {
     assert.equal((await fetch(base + '/no-such-page')).status, 404);
   });
-  test('contact stub validates and returns OK without email or database', async () => {
-    const post = (body) => fetch(base + '/api/test/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-    assert.equal((await post({ name: 'A' })).status, 400);
-    const ok = await post({ name: 'Test', email: 't@example.com', message: 'hi', age18: true, consent: true });
-    assert.equal(ok.status, 200);
-    assert.equal((await ok.json()).test, true);
-    const stub = readFileSync(new URL('../lib/site-v5.js', import.meta.url), 'utf8');
-    assert.doesNotMatch(stub, /pool|sendEmail|sendgrid/i);
+  test('contact form posts to the real lead endpoint and the stub is gone', async () => {
+    assert.match(PAGES['/contact'].body, /action="\/api\/leads"/);
+    assert.equal((await fetch(base + '/api/test/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' })).status, 404);
   });
   test('holds stay unlinked and member fasting lines link to /fasting-safety', () => {
     const all = JSON.stringify(PAGES);

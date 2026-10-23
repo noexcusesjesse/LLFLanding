@@ -1,5 +1,5 @@
 // Staging layout for the v5 site redo (new-site-copy.md FINAL v5).
-// Every page carries a robots noindex meta; lib/site-v5.js also sends the header.
+// Pages flagged noindex (legal outlines) carry a robots meta; lib/site-v5.js also sends the header.
 
 export const PHONE = '(866) 830-9123';
 export const PHONE_HREF = 'tel:+18668309123';
@@ -9,8 +9,9 @@ export const FB_GROUP = 'https://www.facebook.com/groups/metabolicresetwithjesse
 export const X_URL = 'https://x.com/LoadLineFitness';
 
 // Review flags from the copy doc, shown as small badges on staging only.
-export const reed = '<span class="flag" title="Medical review needed">REED</span>';
-export const counsel = '<span class="flag" title="Legal review needed">COUNSEL</span>';
+// Review badges are hidden in the public build.
+export const reed = '';
+export const counsel = '';
 export const hold = (what) => `<span class="hold" role="note"><strong>On hold:</strong> ${what}</span>`;
 export const ext = (href, text, rel = 'noopener') => `<a href="${href}" target="_blank" rel="${rel}">${text}<span class="sr-only"> (opens in a new tab)</span></a>`;
 export const btn = (href, text, cls = '') => `<a class="btn${cls ? ' ' + cls : ''}" href="${href}">${text}</a>`;
@@ -83,13 +84,13 @@ const FOOTER = `
   </div>
 </footer>`;
 
-export function layout({ path, title, meta, body, head = '' }) {
+export function layout({ path, title, meta, body, head = '', noindex = false }) {
   return `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, nofollow">
+${noindex ? '<meta name="robots" content="noindex, nofollow">' : ''}
 <title>${title}</title>
 <meta name="description" content="${meta}">
 <meta name="theme-color" content="#0B1F3A">
@@ -97,7 +98,7 @@ export function layout({ path, title, meta, body, head = '' }) {
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/brand/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/assets/brand/favicon-16.png">
 <link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
-<meta property="og:image" content="${process.env.PUBLIC_URL || ''}/assets/brand/og-default.png">
+<meta property="og:image" content="${process.env.PUBLIC_URL || 'https://www.loadlinefitness.com'}/assets/brand/og-default.png">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <link rel="preload" href="/site-v5/fonts/inter-latin-wght.woff2" as="font" type="font/woff2" crossorigin>${head}
 <link rel="stylesheet" href="/site-v5/site.css">
@@ -106,7 +107,7 @@ export function layout({ path, title, meta, body, head = '' }) {
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<div class="banner" role="note">STAGING / TEST BUILD: not the live site. Hidden from search. Forms do not send.</div>
+
 <header class="site-head">
   <div class="w bar">
     <a class="logo" href="/"><picture><source type="image/webp" media="(max-width: 959px)" srcset="/assets/brand/loadline-lockup-h44.webp 1x, /assets/brand/loadline-lockup-h88.webp 2x"><source type="image/webp" srcset="/assets/brand/loadline-lockup-h56.webp 1x, /assets/brand/loadline-lockup-h112.webp 2x"><source media="(max-width: 959px)" srcset="/assets/brand/loadline-lockup-h44.png 1x, /assets/brand/loadline-lockup-h88.png 2x"><img class="logo-img" src="/assets/brand/loadline-lockup-h56.png" srcset="/assets/brand/loadline-lockup-h56.png 1x, /assets/brand/loadline-lockup-h112.png 2x" width="158" height="56" alt="LoadLine Fitness"></picture><span class="sr-only"> home</span></a>
