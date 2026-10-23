@@ -53,7 +53,7 @@ export const NUTRITION_CHIPS = [
   'Stay hydrated all day',
 ];
 
-export const TRACKER_HABIT = 'Ate within my window.';
+export const TRACKER_HABIT = 'Built my plate.';
 
 export const NEXT_STEP = {
   title: 'Next step',

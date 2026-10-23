@@ -8,6 +8,7 @@ import { applySiteNav } from './partials/site-nav.js';
 import { escapeHtml, planBuilderLeadError, planBuilderLeadRecord } from './lib/plan-builder-lead.js';
 import { DELETION_REQUEST_CONFIRMATION, logRuckDeletionRequest, ruckDeletionRequestError, ruckDeletionRequestRecord, ruckInterestError, ruckInterestRecord, ruckNoticeHtml } from './lib/ruck-interest.js';
 import { noindexHeader } from './lib/noindex.js';
+import { mountSiteV5, notFound } from './lib/site-v5.js';
 import { age18ConfirmedError } from './lib/tracker-age.js';
 import pkg from 'pg';
 import axios from 'axios';
@@ -60,6 +61,10 @@ const sendEmail = async (to, subject, html) => {
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// STAGING: v5 site redo. Registered first so the new pages, redirects,
+// global noindex and the contact test stub win over the legacy routes.
+mountSiteV5(app, __dirname);
 
 function sendHtml(res, filename) {
   try {
@@ -739,10 +744,8 @@ app.get(['/papers/:slug', '/papers/:slug/'], (req, res, next) => {
   return res.redirect(301, '/paper.html?p=' + encodeURIComponent(slug) + (query ? '&' + query : ''));
 });
 
-// Unknown paths still land on the home page, with the shared nav filled in.
-app.get('*', (req, res) => {
-  sendHtml(res, 'index.html');
-});
+// Unknown paths get a real 404 (v5 redo; no soft-200 catch-all).
+app.get('*', notFound);
 
 // Start server
 async function start() {

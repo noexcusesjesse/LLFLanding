@@ -105,7 +105,6 @@ function drawRoutine(doc, plan, name, planDate, logo) {
     { value: plan.waterLabel, label: plan.waterCaption },
     { value: `${plan.sleepHours} hrs`, label: `Lights out ${plan.lightsOut}` },
   ], 98, PALE_GREEN);
-  text(doc, plan.eatingWindowLabel, 306, 166, 10, true, NAVY, { align: 'center' });
   plan.schedule.forEach((row, index) => {
     const y = 176 + index * 32;
     doc.setFillColor(...(index % 2 ? WHITE : LIGHT));

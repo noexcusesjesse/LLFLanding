@@ -186,17 +186,6 @@ function round5(totalMinutes) {
   return Math.round(totalMinutes / 5) * 5;
 }
 
-export function eatingWindow(startValue) {
-  const start = clockMinutes(startValue);
-  if (start == null) return null;
-  const end = norm(start + 10 * 60);
-  return {
-    start,
-    end,
-    label: `Eating window: ${formatTime(start)}-${formatTime(end)} (14:10)`,
-  };
-}
-
 export function waterOunces(weight) {
   const pounds = Number(weight);
   if (!Number.isFinite(pounds) || pounds <= 0) return 96;
@@ -372,8 +361,7 @@ export function buildPlan(input) {
   const goal = input.goal === 'build' ? 'build' : 'tone';
   const level = input.level === 'i' ? 'i' : 'b';
   const steps = [6000, 8000, 10000, 12000].includes(Number(input.steps)) ? Number(input.steps) : 6000;
-  const window = eatingWindow(input.eatStart || '');
-  const anchor = window ? window.end : norm(round5(bed - 150));
+  const anchor = norm(round5(bed - 150));
   const length = workEnd >= workStart ? workEnd - workStart : workEnd + 1440 - workStart;
   const midMorning = norm(round5(workStart + length * 0.19));
   const lunch = norm(round5(workStart + length * 0.62));
@@ -383,9 +371,7 @@ export function buildPlan(input) {
   const sleepHours = (((wake - bed) % 1440 + 1440) % 1440 / 60).toFixed(1).replace(/\.0$/, '');
   const water = waterOunces(input.weight);
   const heightInches = Number(input.heightFt) * 12 + Number(input.heightIn);
-  const dinnerDetail = window
-    ? `Lean protein, vegetables, fiber-rich carbs. ${window.label}.`
-    : 'Lean protein, vegetables, fiber-rich carbs.';
+  const dinnerDetail = 'Lean protein, vegetables, fiber-rich carbs.';
 
   const schedule = [
     [wake, 'Wake up & hydrate', '16 oz water, light stretching or deep breathing, set your intention', 'recover'],
@@ -459,7 +445,7 @@ export function buildPlan(input) {
     plan: {
       dayCount,
       subtitle: planSubtitle(dayCount),
-      goal: goal === 'build' ? 'Build strength' : 'Fat loss and toning',
+      goal: goal === 'build' ? 'Build strength' : 'Build a routine',
       goalId: goal,
       level,
       steps,
@@ -469,8 +455,6 @@ export function buildPlan(input) {
       waterCaption: 'Water per day (general guideline)',
       sleepHours,
       lightsOut: formatTime(bed),
-      eatingWindowLabel: window ? window.label : 'Eating window: optional',
-      eatingWindow: window,
       schedule,
       walks,
       walkMinutes: walks.reduce((sum, walk) => sum + walk.duration, 0),
@@ -480,7 +464,7 @@ export function buildPlan(input) {
       metrics,
       screening: SCREENING_LINE,
       sex,
-      nutrition: [...NUTRITION_CHIPS.slice(0, 4), window ? window.label : 'Eating window: optional', NUTRITION_CHIPS[4]],
+      nutrition: [...NUTRITION_CHIPS],
       plateTitle: PLATE_TITLE,
       ladder: STEP_LADDER.map(([count, text]) => ({
         steps: count,
