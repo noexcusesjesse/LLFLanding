@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { fileURLToPath, pathToFileURL } from 'url';
-import { dirname, join } from 'path';
+import { dirname, extname, join } from 'path';
 import { existsSync, readFileSync } from 'fs';
 import { applySiteNav } from './partials/site-nav.js';
 import { escapeHtml, planBuilderLeadError, planBuilderLeadRecord } from './lib/plan-builder-lead.js';
@@ -164,7 +164,14 @@ app.use((req, res, next) => {
   return sendHtml(res, name);
 });
 
-app.use(express.static(__dirname));
+// The bundled mime table doesn't know .avif; set it (and .webp) explicitly.
+const IMAGE_TYPES = { '.avif': 'image/avif', '.webp': 'image/webp' };
+app.use(express.static(__dirname, {
+  setHeaders(res, filePath) {
+    const type = IMAGE_TYPES[extname(filePath).toLowerCase()];
+    if (type) res.setHeader('Content-Type', type);
+  },
+}));
 
 // Initialize database
 async function initDB() {
