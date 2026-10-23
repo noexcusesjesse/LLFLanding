@@ -7,7 +7,6 @@ import {
   bmiCategory,
   buildPlan,
   downloadBlockReason,
-  eatingWindow,
   exercisesForDay,
   flowsOverlap,
   layoutFlow,
@@ -58,7 +57,6 @@ function sample(overrides = {}) {
     workStart: '08:00',
     workEnd: '16:30',
     bed: '22:00',
-    eatStart: '08:00',
     equipment: ['d', 'k', 'b', 'w'],
     ...overrides,
   };
@@ -117,20 +115,22 @@ describe('plan builder copy and age gate', () => {
     assert.equal(built.plateTitle, PLATE_TITLE);
     assert.equal(WALK_BREAK, 'Walk, stretch or take the stairs to break up sitting and reset your energy.');
     assert.ok(built.schedule.some((row) => row.detail === WALK_BREAK));
-    assert.equal(built.eatingWindowLabel, 'Eating window: 8:00 AM-6:00 PM (14:10)');
-    assert.match(built.schedule.find((row) => row.title === 'Healthy dinner').detail, /Eating window: 8:00 AM-6:00 PM \(14:10\)/);
     assert.equal(built.nutrition[3], 'Less added sugar.');
     assert.match(built.waterCaption, /general guideline/);
-    assert.equal(built.trackerRows[3], 'Ate within my window.');
+    assert.equal(built.trackerRows[3], 'Built my plate.');
     assert.equal(built.screening, SCREENING_LINE);
     assert.doesNotMatch(text, /fasting|kitchen|blood sugar and energy|Obese range|Gallagher|DEXA|visceral|\$\d|Solo/i);
   });
 
-  test('eating window is optional and ends 10 hours after the start', () => {
-    assert.equal(eatingWindow(''), null);
-    assert.equal(plan({ eatStart: '' }).eatingWindowLabel, 'Eating window: optional');
-    assert.equal(eatingWindow('20:00').label, 'Eating window: 8:00 PM-6:00 AM (14:10)');
-    assert.doesNotMatch(plan({ eatStart: '' }).schedule.find((row) => row.title === 'Healthy dinner').detail, /Kitchen|closes/i);
+  test('the eating-window field is gone and goals are routine or strength only', () => {
+    const built = plan({ eatStart: '08:00' });
+    assert.equal(built.eatingWindowLabel, undefined);
+    assert.doesNotMatch(JSON.stringify(built), /Eating window|14:10/);
+    assert.equal(built.goal, 'Build a routine');
+    assert.equal(plan({ goal: 'build' }).goal, 'Build strength');
+    const html = readFileSync(new URL('../plan-builder.html', import.meta.url), 'utf8');
+    assert.doesNotMatch(html, /eat-start|eat-preview|Fat loss/);
+    assert.doesNotMatch(readFileSync(new URL('../plan-builder.js', import.meta.url), 'utf8'), /eat-start|syncWindow|eatingWindow|eatStart/);
   });
 });
 
@@ -353,7 +353,7 @@ describe('pdf', () => {
     assert.match(output, /meal-timing change/);
     assert.match(output, /Call 911 for chest pain or pressure/);
     assert.match(output, /Screening estimate, not a diagnosis/);
-    assert.match(output, /Ate within my window/);
+    assert.match(output, /Built my plate/);
     assert.match(output, /Build more daily movement/);
     assert.match(output, /noexcuseschallenges\.com/);
     assert.match(output, /DUMBBELLS/);

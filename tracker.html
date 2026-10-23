@@ -88,7 +88,7 @@
     <div class="disclaimer">
       <h4>Important Disclaimer</h4>
       <p><strong>LoadLine Fitness provides fitness, movement, education, coaching, and accountability. This is not medical advice.</strong></p>
-      <p style="margin-top:8px;">This tracker is an educational and organizational tool. It does not diagnose, treat, or replace professional medical guidance. Supplement needs and doses can vary with medicines, kidney function, laboratory results, and medical conditions. Review any significant changes with your clinician or pharmacist.</p>
+      <p style="margin-top:8px;">This tracker is an educational and organizational tool. It does not diagnose, treat, or replace professional medical guidance.</p>
       <p style="margin-top:8px;">By using this tracker, you acknowledge that LoadLine Fitness is not a medical provider and you accept full responsibility for your own health decisions.</p>
     </div>
     <label><input type="checkbox" id="splashAccept" onchange="document.getElementById('btnStart').disabled=!this.checked"> I understand and accept these terms</label>
@@ -112,7 +112,6 @@
       <div class="form-group"><label>Starting Weight (lbs)</label><input type="number" id="profWeight" placeholder="200" step="0.1"></div>
       <div class="form-group"><label>Starting Waist (inches)</label><input type="number" id="profWaist" placeholder="38" step="0.1"></div>
     </div>
-    <div class="form-group"><label>Preferred TRE Window</label><select id="profTRE"><option value="14:10">14:10 (standard)</option><option value="16:8">16:8 (advanced)</option><option value="18:6">18:6 (aggressive)</option></select></div>
     <button class="btn-profile" onclick="saveProfile()">Save Profile and Start Tracking</button>
   </div>
 </div>
@@ -147,7 +146,6 @@
     <button class="tab" onclick="switchTab('stats')">Your Numbers</button>
     <button class="tab" onclick="switchTab('workout')">Workout</button>
     <button class="tab" onclick="switchTab('nutrition')">Nutrition</button>
-    <button class="tab" onclick="switchTab('supplements')">Supplements</button>
     <button class="tab" onclick="switchTab('steps')">Steps</button>
     <button class="tab" onclick="switchTab('primer')">Daily Primer</button>
     <button class="tab" onclick="switchTab('grocery')">Grocery List</button>
@@ -159,7 +157,6 @@
     <div class="section" id="sec-stats"></div>
     <div class="section" id="sec-workout"></div>
     <div class="section" id="sec-nutrition"></div>
-    <div class="section" id="sec-supplements"></div>
     <div class="section" id="sec-steps"></div>
     <div class="section" id="sec-primer"></div>
     <div class="section" id="sec-grocery"></div>

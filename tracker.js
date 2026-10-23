@@ -2,7 +2,7 @@
 const STORAGE = 'loadline_tracker_v1';
 let allData = JSON.parse(localStorage.getItem(STORAGE) || '{}');
 let currentDate = new Date();
-const TABS = ['dashboard','stats','workout','nutrition','supplements','steps','primer','grocery','challenges'];
+const TABS = ['dashboard','stats','workout','nutrition','steps','primer','grocery','challenges'];
 let authToken = localStorage.getItem('loadline_token') || null;
 let currentUser = JSON.parse(localStorage.getItem('loadline_user') || 'null');
 
@@ -134,8 +134,7 @@ function saveProfile() {
   const height = parseFloat(document.getElementById('profHeight').value) || 0;
   const weight = parseFloat(document.getElementById('profWeight').value) || 0;
   const waist = parseFloat(document.getElementById('profWaist').value) || 0;
-  const tre = document.getElementById('profTRE').value;
-  allData.profile = { name, gender, age, height, weight, waist, tre, created: new Date().toISOString() };
+  allData.profile = { name, gender, age, height, weight, waist, created: new Date().toISOString() };
   if (!allData.bodyLog) allData.bodyLog = [];
   allData.bodyLog.push({ date: dateKey(new Date()), weight, waist, notes: 'Baseline' });
   save();
@@ -153,7 +152,6 @@ function openEditProfile() {
     document.getElementById('profHeight').value = p.height;
     document.getElementById('profWeight').value = p.weight;
     document.getElementById('profWaist').value = p.waist;
-    document.getElementById('profTRE').value = p.tre || '14:10';
   }
   document.getElementById('profileSetup').classList.remove('hidden');
 }
@@ -213,7 +211,7 @@ function renderGuide() {
       <div class="guide-pillars">
         <div class="guide-pillar"><span class="pillar-num">1</span><div><strong>TRAIN</strong><br>Lift weights 3 to 4 days per week. Focus on compound movements. Push, pull, squat, hinge, carry.</div></div>
         <div class="guide-pillar"><span class="pillar-num">2</span><div><strong>MOVE</strong><br>Walk 8,000 to 10,000 steps daily. Non-negotiable. Walking is the most underrated fat loss tool you have.</div></div>
-        <div class="guide-pillar"><span class="pillar-num">3</span><div><strong>RECOVER</strong><br>Sleep 7 to 9 hours. Manage stress. Take your supplements. Recovery is where progress actually happens.</div></div>
+        <div class="guide-pillar"><span class="pillar-num">3</span><div><strong>RECOVER</strong><br>Sleep 7 to 9 hours. Manage stress. Recovery is where progress actually happens.</div></div>
         <div class="guide-pillar"><span class="pillar-num">4</span><div><strong>TRACK</strong><br>Log your meals, workouts, weight, and waist. What gets measured gets managed. Use this tracker daily.</div></div>
         <div class="guide-pillar"><span class="pillar-num">5</span><div><strong>REPEAT</strong><br>Consistency beats intensity. Show up every day. Small wins compound. Trust the process.</div></div>
       </div>
@@ -235,10 +233,6 @@ function renderGuide() {
         </div>
         <div class="guide-rule">
           <div class="rule-badge">Rule 3</div>
-          <div><strong>Time-Restricted Eating</strong><br>Pick a 10 to 12-hour eating window (for example, 8am to 7pm). This is not starvation. It is structure. It reduces late-night eating and improves insulin sensitivity.</div>
-        </div>
-        <div class="guide-rule">
-          <div class="rule-badge">Rule 4</div>
           <div><strong>Water</strong><br>Drink half your bodyweight in ounces daily. If you weigh 200 pounds, drink 100 ounces. Add electrolytes if you sweat heavily or train hard.</div>
         </div>
       </div>
@@ -297,8 +291,7 @@ function renderGuide() {
         <div class="guide-tab-item"><span class="tab-icon">DASH</span><div><strong>Dashboard</strong><br>Your daily snapshot. Compliance score, streak, and quick links to everything.</div></div>
         <div class="guide-tab-item"><span class="tab-icon">BODY</span><div><strong>Your Numbers</strong><br>Log weight and waist weekly. Watch your BMI and waist-to-height ratio trend down.</div></div>
         <div class="guide-tab-item"><span class="tab-icon">LIFT</span><div><strong>Workout</strong><br>Log each exercise, sets, and reps. Check off what you finish. Track progress over time.</div></div>
-        <div class="guide-tab-item"><span class="tab-icon">FUEL</span><div><strong>Nutrition</strong><br>Log meals, water, and sleep. Hit your protein target. Stay in your eating window.</div></div>
-        <div class="guide-tab-item"><span class="tab-icon">SUPP</span><div><strong>Supplements</strong><br>Check off your daily supplements as you take them. Never miss a dose again.</div></div>
+        <div class="guide-tab-item"><span class="tab-icon">FUEL</span><div><strong>Nutrition</strong><br>Log meals, water, and sleep. Hit your protein target.</div></div>
         <div class="guide-tab-item"><span class="tab-icon">STEP</span><div><strong>Steps</strong><br>Log your daily steps. Aim for 10,000. Walk after meals for bonus points.</div></div>
         <div class="guide-tab-item"><span class="tab-icon">PRIME</span><div><strong>Daily Primer</strong><br>Your morning checklist. Review your plan, set intentions, and start the day right.</div></div>
         <div class="guide-tab-item"><span class="tab-icon">LIST</span><div><strong>Grocery List</strong><br>Auto-generated from your meal plan. Check items off as you shop.</div></div>
@@ -312,7 +305,7 @@ function renderGuide() {
         <h3>The Bottom Line</h3>
       </div>
       <p style="font-size:1rem;line-height:1.7;color:var(--text);">
-        You do not need to be perfect. You need to be consistent. Track your food. Move your body. Sleep like it matters. Lift something heavy a few times a week. Drink your water. Take your supplements.<br><br>
+        You do not need to be perfect. You need to be consistent. Track your food. Move your body. Sleep like it matters. Lift something heavy a few times a week. Drink your water.<br><br>
         <strong style="color:white;">That is the Core program. It works if you work it.</strong><br><br>
         <span style="color:var(--green-light);font-weight:700;">Load the Standard. Live the Life.</span>
       </p>
@@ -349,7 +342,6 @@ function renderStats() {
   html += '<div><span style="font-size:0.75rem;color:var(--text2);display:block;">Gender</span><span style="font-weight:700;color:white;">' + (p.gender ? p.gender.charAt(0).toUpperCase() + p.gender.slice(1) : '--') + '</span></div>';
   html += '<div><span style="font-size:0.75rem;color:var(--text2);display:block;">Age</span><span style="font-weight:700;color:white;">' + (p.age || '--') + '</span></div>';
   html += '<div><span style="font-size:0.75rem;color:var(--text2);display:block;">Height</span><span style="font-weight:700;color:white;">' + (p.height ? p.height + '"' : '--') + '</span></div>';
-  html += '<div><span style="font-size:0.75rem;color:var(--text2);display:block;">TRE Window</span><span style="font-weight:700;color:white;">' + (p.tre || '14:10') + '</span></div>';
   html += '<div><span style="font-size:0.75rem;color:var(--text2);display:block;">Days Tracking</span><span style="font-weight:700;color:white;">' + log.length + '</span></div>';
   html += '</div></div>';
 
@@ -377,7 +369,7 @@ function renderStats() {
   html += '<div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg2);border-radius:6px;"><span>Cardiovascular (BP)</span><span style="color:var(--green-light);font-weight:700;">&lt; 120/80 mmHg</span></div>';
   html += '<div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg2);border-radius:6px;"><span>Lipid Load (Trig/HDL)</span><span style="color:var(--green-light);font-weight:700;">&lt; 2.0</span></div>';
   html += '<div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg2);border-radius:6px;"><span>Performance</span><span style="color:var(--green-light);font-weight:700;">8,000+ steps + 3x resistance/week</span></div>';
-  html += '<div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg2);border-radius:6px;"><span>Recovery</span><span style="color:var(--green-light);font-weight:700;">7-9 hrs sleep + TRE window</span></div>';
+  html += '<div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg2);border-radius:6px;"><span>Recovery</span><span style="color:var(--green-light);font-weight:700;">7-9 hrs sleep</span></div>';
   html += '</div></div>';
 
   el.innerHTML = html;
@@ -433,10 +425,6 @@ function renderDashboard() {
   total += 3;
   const mealsDone = (dd.meals ? ['day' + nd + '_meal0','day' + nd + '_meal1','day' + nd + '_meal2'].filter(k => dd.meals[k]).length : 0);
   done += mealsDone;
-  // Supplements
-  total += SUPPLEMENTS.length;
-  const suppsDone = SUPPLEMENTS.filter((_, i) => dd.supps && dd.supps['s' + i]).length;
-  done += suppsDone;
   // Steps
   total += 1;
   const steps = dd.steps || 0;
@@ -462,7 +450,7 @@ function renderDashboard() {
   for (let i = 0; i < 365; i++) {
     const dk = dateKey(checkDate);
     const d = allData[dk];
-    if (d && ((d.workout && Object.values(d.workout).some(v => v && v.done)) || (d.meals && Object.values(d.meals).some(v => v === true)) || (d.supps && Object.values(d.supps).some(v => v)))) {
+    if (d && ((d.workout && Object.values(d.workout).some(v => v && v.done)) || (d.meals && Object.values(d.meals).some(v => v === true)))) {
       streak++;
       checkDate.setDate(checkDate.getDate() - 1);
     } else if (i > 0) break;
@@ -477,7 +465,6 @@ function renderDashboard() {
   html += '<div class="dash-score"><div class="score-ring"><svg width="140" height="140"><circle cx="70" cy="70" r="58" stroke="var(--bg)" stroke-width="10" fill="none"/><circle cx="70" cy="70" r="58" stroke="var(--green-light)" stroke-width="10" fill="none" stroke-dasharray="' + circumference + '" stroke-dashoffset="' + dashOffset + '" stroke-linecap="round"/></svg><div class="score-text"><div class="score-num">' + score + '%</div><div class="score-label">Daily Score</div></div></div><div class="score-details">';
   html += '<div class="score-item"><div class="score-dot ' + (isWorkoutDay ? (workoutPct === 100 ? 'done' : workoutPct > 0 ? 'partial' : 'missed') : 'pending') + '"></div>Workout: ' + (isWorkoutDay ? workoutPct + '%' : 'Rest Day') + '</div>';
   html += '<div class="score-item"><div class="score-dot ' + (mealsDone === 3 ? 'done' : mealsDone > 0 ? 'partial' : 'missed') + '"></div>Nutrition: ' + mealsDone + '/3 meals</div>';
-  html += '<div class="score-item"><div class="score-dot ' + (suppsDone === SUPPLEMENTS.length ? 'done' : suppsDone > 0 ? 'partial' : 'missed') + '"></div>Supplements: ' + suppsDone + '/' + SUPPLEMENTS.length + '</div>';
   html += '<div class="score-item"><div class="score-dot ' + (steps >= 10000 ? 'done' : steps > 0 ? 'partial' : 'missed') + '"></div>Steps: ' + steps.toLocaleString() + '/10,000</div>';
   html += '<div class="score-item"><div class="score-dot ' + (primerDone === PRIMER.length ? 'done' : primerDone > 0 ? 'partial' : 'missed') + '"></div>Primer: ' + primerDone + '/' + PRIMER.length + '</div>';
   html += '</div></div>';
@@ -487,7 +474,6 @@ function renderDashboard() {
   html += '<div class="dash-card ' + (cw ? 'status-good' : '') + '" onclick="switchTab(\x27stats\x27)"><div class="dash-card-icon">BODY</div><div class="dash-card-title">Body Numbers</div><div class="dash-card-value">' + (cw ? cw + ' lbs' : '--') + '</div><div class="dash-card-sub">' + (bmi !== '--' ? 'BMI: ' + bmi : 'Log your weight') + '</div></div>';
   html += '<div class="dash-card ' + (isWorkoutDay ? (workoutPct > 0 ? 'status-good' : 'status-warn') : 'status-good') + '" onclick="switchTab(\x27workout\x27)"><div class="dash-card-icon">TRAIN</div><div class="dash-card-title">Workout</div><div class="dash-card-value">' + (isWorkoutDay ? (workoutPct + '%') : 'Rest Day') + '</div><div class="dash-card-sub">' + (isWorkoutDay ? (wkKey ? WORKOUTS[wkKey].day + ' Training' : '') : 'Active Recovery') + '</div><div class="dash-card-bar"><div class="fill" style="width:' + workoutPct + '%"></div></div></div>';
   html += '<div class="dash-card ' + (mealsDone === 3 ? 'status-good' : mealsDone > 0 ? 'status-warn' : '') + '" onclick="switchTab(\x27nutrition\x27)"><div class="dash-card-icon">FUEL</div><div class="dash-card-title">Nutrition</div><div class="dash-card-value">Day ' + nd + '</div><div class="dash-card-sub">' + mealsDone + '/3 meals logged</div><div class="dash-card-bar"><div class="fill" style="width:' + (mealsDone / 3 * 100) + '%"></div></div></div>';
-  html += '<div class="dash-card ' + (suppsDone === SUPPLEMENTS.length ? 'status-good' : suppsDone > 0 ? 'status-warn' : '') + '" onclick="switchTab(\x27supplements\x27)"><div class="dash-card-icon">RECOVER</div><div class="dash-card-title">Supplements</div><div class="dash-card-value">' + suppsDone + '/' + SUPPLEMENTS.length + '</div><div class="dash-card-sub">' + (suppsDone === SUPPLEMENTS.length ? 'All done' : (SUPPLEMENTS.length - suppsDone) + ' remaining') + '</div><div class="dash-card-bar"><div class="fill" style="width:' + (suppsDone / SUPPLEMENTS.length * 100) + '%"></div></div></div>';
   html += '<div class="dash-card ' + (steps >= 10000 ? 'status-good' : steps > 5000 ? 'status-warn' : '') + '" onclick="switchTab(\x27steps\x27)"><div class="dash-card-icon">MOVE</div><div class="dash-card-title">Steps</div><div class="dash-card-value">' + steps.toLocaleString() + '</div><div class="dash-card-sub">' + (steps >= 10000 ? 'Goal reached' : (10000 - steps).toLocaleString() + ' to go') + '</div><div class="dash-card-bar"><div class="fill" style="width:' + Math.min((steps / 10000) * 100, 100) + '%"></div></div></div>';
   html += '<div class="dash-card ' + (hasBodyLog ? 'status-good' : '') + '" onclick="switchTab(\x27stats\x27)"><div class="dash-card-icon">LOG</div><div class="dash-card-title">Body Log</div><div class="dash-card-value">' + (hasBodyLog ? 'Logged' : 'Pending') + '</div><div class="dash-card-sub">Weight + Waist</div></div>';
   html += '</div>';
@@ -515,7 +501,6 @@ function renderDashboard() {
   html += '<div class="dash-actions"><div class="dash-action-btn" onclick="switchTab(\x27guide\x27)"><span class="action-icon">GUIDE</span>Core Guide</div>';
   html += '<div class="dash-action-btn" onclick="switchTab(\x27workout\x27)"><span class="action-icon">TRAIN</span>Today\x27s Workout</div>';
   html += '<div class="dash-action-btn" onclick="switchTab(\x27nutrition\x27)"><span class="action-icon">FUEL</span>Meal Plan</div>';
-  html += '<div class="dash-action-btn" onclick="switchTab(\x27supplements\x27)"><span class="action-icon">RECOVER</span>Supplements</div>';
   html += '<div class="dash-action-btn" onclick="switchTab(\x27primer\x27)"><span class="action-icon">PRIME</span>Daily Primer</div>';
   html += '<div class="dash-action-btn" onclick="switchTab(\x27challenges\x27)"><span class="action-icon">\u2694\ufe0f</span>Challenges</div></div>';
 
@@ -654,18 +639,6 @@ const NUTRITION_PLAN = [
   ]}
 ];
 
-const SUPPLEMENTS = [
-  { time: 'On waking', name: 'Creatine: 3-5g', notes: 'Take with plain water. Fasted.', phase: 'FASTED' },
-  { time: 'Morning', name: 'Decaf green tea (optional)', notes: 'Unsweetened. Fasting-friendly.', phase: 'FASTED' },
-  { time: '~11:30 AM', name: 'Psyllium husk + water', notes: '30 min before Meal A. Separate from meds.', phase: 'Pre-Meal' },
-  { time: '12:00 PM', name: 'Resistant potato starch: 1 tsp', notes: 'Mix into cool/cold food. Do not cook.', phase: 'MEAL A' },
-  { time: '12:00 PM', name: "Bob's Red Mill Nutritional Yeast: 1 Tbsp", notes: 'Sprinkle on eggs, vegetables, bowls.', phase: 'MEAL A' },
-  { time: '12:00 PM', name: 'Multivitamin + D3/K2 + Fish Oil', notes: 'Take with food for absorption.', phase: 'MEAL A' },
-  { time: 'Eating window', name: 'Chia seeds: 2 Tbsp in water', notes: 'Keep inside eating window.', phase: 'EATING' },
-  { time: 'Meal B', name: 'Optional 2nd fish oil dose', notes: 'If regimen calls for it.', phase: 'EATING' },
-  { time: 'Evening', name: 'Magnesium glycinate', notes: '1-2 hours before bed.', phase: 'EVENING' }
-];
-
 const PRIMER = [
   { name: 'Standing Band Pull-Aparts', detail: '2 sets x 15 reps. Pull band to sternum, squeeze shoulder blades 1 second.' },
   { name: "Quadruped Cat-Cow to Child's Pose", detail: '8 slow cycles. Inhale extend, exhale round, sink hips to heels for 3s lat stretch.' },
@@ -752,20 +725,6 @@ function goNutDay(d) { currentDate.setDate(currentDate.getDate() + (d - ((dayOfY
 function toggleMeal(i) { const dd = getDayData(); const nd = ((dayOfYear(currentDate) - 1) % 14) + 1; if (!dd.meals) dd.meals = {}; const k = 'day' + nd + '_meal' + i; dd.meals[k] = !dd.meals[k]; save(); renderNutrition(); }
 function logMacro(t, v) { const dd = getDayData(); if (!dd.meals) dd.meals = {}; dd.meals[t] = v; save(); }
 
-function renderSupplements() {
-  const el = document.getElementById('sec-supplements');
-  const dd = getDayData();
-  if (!dd.supps) dd.supps = {};
-  const completed = SUPPLEMENTS.filter((_, i) => dd.supps['s' + i]).length;
-  let html = '<div class="card highlight" style="margin-bottom:20px;text-align:center;"><span style="font-size:1.5rem;font-weight:900;">' + completed + '/' + SUPPLEMENTS.length + '</span><span style="font-size:0.85rem;color:var(--text2);display:block;margin-top:4px;">supplements completed</span><div style="margin-top:8px;background:var(--bg3);border-radius:10px;height:12px;overflow:hidden;"><div style="height:100%;background:linear-gradient(90deg,var(--green),var(--green-light));border-radius:10px;width:' + (completed / SUPPLEMENTS.length * 100) + '%;transition:width 0.3s;"></div></div></div>';
-  SUPPLEMENTS.forEach((s, i) => {
-    const ck = dd.supps['s' + i];
-    html += '<div class="supplement-row"><div class="supplement-check ' + (ck ? 'done' : '') + '" onclick="toggleSupp(' + i + ')"></div><div class="supplement-time">' + s.time + '</div><div style="flex:1;"><div class="supplement-name">' + s.name + '</div><div class="supplement-notes">' + s.notes + ' <span style="color:var(--green);font-weight:700;font-size:0.7rem;">[' + s.phase + ']</span></div></div></div>';
-  });
-  html += '<div class="card" style="margin-top:20px;"><h3>' + (allData.profile ? allData.profile.tre : '14:10') + ' TRE Schedule</h3><p>Keep all calorie-containing supplements and foods inside the eating window. Creatine in plain water and unsweetened tea are fasting-compatible.</p></div>';
-  el.innerHTML = html;
-}
-function toggleSupp(i) { const dd = getDayData(); if (!dd.supps) dd.supps = {}; dd.supps['s' + i] = !dd.supps['s' + i]; save(); renderSupplements(); }
 
 function renderSteps() {
   const el = document.getElementById('sec-steps');
@@ -848,19 +807,6 @@ const CHALLENGES = [
     checkFn: 'steps'
   },
   {
-    id: 'supp_streak_14',
-    name: 'Supplement Streak',
-    description: 'Take all supplements every day for 14 consecutive days.',
-    category: 'recovery',
-    icon: '💊',
-    type: 'micro',
-    challengeType: 'micro',
-    goal: 14,
-    unit: 'days',
-    difficulty: 'Hard',
-    checkFn: 'supps'
-  },
-  {
     id: 'primer_perfect_21',
     name: 'Primer Perfect',
     description: 'Complete every daily primer exercise for 21 consecutive days.',
@@ -902,7 +848,7 @@ const CHALLENGES = [
   {
     id: 'transformation_30',
     name: '30-Day Transformation',
-    description: 'Achieve full daily compliance (workout + meals + supps + primer + 10K steps) for 30 days.',
+    description: 'Achieve full daily compliance (workout + meals + primer + 10K steps) for 30 days.',
     category: 'all',
     icon: '⭐',
     type: 'micro',
@@ -986,16 +932,13 @@ function checkDayCompliance(dd, dateObj) {
   const nd = ((dayOfYear(dateObj) - 1) % 14) + 1;
   const mealsOk = dd.meals && ['day' + nd + '_meal0','day' + nd + '_meal1','day' + nd + '_meal2'].every(k => dd.meals[k]);
 
-  // Supplements check
-  const suppsOk = dd.supps && SUPPLEMENTS.every((_, i) => dd.supps['s' + i]);
-
   // Primer check
   const primerOk = dd.primer && PRIMER.every((_, i) => dd.primer['p' + i]);
 
   // Steps check
   const stepsOk = (dd.steps || 0) >= 10000;
 
-  return { workoutOk, mealsOk, suppsOk, primerOk, stepsOk, full: workoutOk && mealsOk && suppsOk && primerOk && stepsOk };
+  return { workoutOk, mealsOk, primerOk, stepsOk, full: workoutOk && mealsOk && primerOk && stepsOk };
 }
 
 function checkChallengeDay(challenge, dk, dd, dateObj) {
@@ -1012,8 +955,6 @@ function checkChallengeDay(challenge, dk, dd, dateObj) {
     }
     case 'steps':
       return (dd.steps || 0) >= 10000;
-    case 'supps':
-      return dd.supps && SUPPLEMENTS.every((_, i) => dd.supps['s' + i]);
     case 'primer':
       return dd.primer && PRIMER.every((_, i) => dd.primer['p' + i]);
     case 'meals': {
@@ -1381,7 +1322,7 @@ function renderChallenges() {
 
   // Info card
   html += '<div class="card" style="margin-top:16px;"><h3>About Challenges</h3>';
-  html += '<p>Challenges track your consistency over time using your existing tracker data. Join a challenge and your progress updates automatically as you log workouts, meals, steps, supplements, and primer exercises. Complete the goal to earn a badge!</p>';
+  html += '<p>Challenges track your consistency over time using your existing tracker data. Join a challenge and your progress updates automatically as you log workouts, meals, steps, and primer exercises. Complete the goal to earn a badge!</p>';
   html += '<p style="margin-top:8px;"><strong>Streak challenges</strong> require consecutive qualifying days. <strong>Total challenges</strong> count cumulative progress.</p>';
   html += '</div>';
 
@@ -1408,7 +1349,7 @@ function filterChallenges(cat) {
 function renderAll() {
   const opts = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
   document.getElementById('dateLabel').textContent = currentDate.toLocaleDateString('en-US', opts);
-  renderDashboard(); renderStats(); renderWorkout(); renderNutrition(); renderSupplements(); renderSteps(); renderPrimer(); renderGrocery(); renderChallenges();
+  renderDashboard(); renderStats(); renderWorkout(); renderNutrition(); renderSteps(); renderPrimer(); renderGrocery(); renderChallenges();
 }
 
 // ===================== BACK TO TOP =====================

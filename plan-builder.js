@@ -11,7 +11,6 @@ import {
   buildPlan,
   clockMinutes,
   downloadBlockReason,
-  eatingWindow,
   formatTime,
   leadPayload,
   leadPayloadKeys,
@@ -45,7 +44,6 @@ function readBuilder() {
     workStart: $('work-start').value,
     workEnd: $('work-end').value,
     bed: $('bed').value,
-    eatStart: $('eat-start').value,
     equipment: readEquipment(),
   };
 }
@@ -65,12 +63,6 @@ function syncSubtitle() {
 
 function syncToday() {
   $('today').textContent = todayLabel().label;
-}
-
-function syncWindow() {
-  const preview = $('eat-preview');
-  const windowPlan = eatingWindow($('eat-start').value);
-  preview.textContent = windowPlan ? windowPlan.label : 'Eating window: optional';
 }
 
 let currentPlan = null;
@@ -106,7 +98,7 @@ function renderPlan(plan) {
     chip.append(element('strong', '', value), element('span', '', label));
     goals.append(chip);
   });
-  block.append(goals, element('p', 'plan-window', plan.eatingWindowLabel));
+  block.append(goals);
 
   block.append(element('h3', '', 'Body metrics'));
   if (plan.metrics.length) {
@@ -253,7 +245,6 @@ $('builder-form').addEventListener('submit', (event) => {
 });
 
 $('days').addEventListener('change', syncSubtitle);
-$('eat-start').addEventListener('input', syncWindow);
 $('ack').addEventListener('change', () => {
   ackAt = $('ack').checked ? localTimestamp(new Date()) : null;
 });
@@ -340,9 +331,7 @@ if (privacyPolicyLink) {
 
 syncToday();
 syncSubtitle();
-syncWindow();
 assertCopyLocks();
-$('eat-preview').textContent = eatingWindow($('eat-start').value)?.label || 'Eating window: optional';
 
 const sample = clockMinutes('08:00');
 if (sample == null || formatTime(sample) !== '8:00 AM') {

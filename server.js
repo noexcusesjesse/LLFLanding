@@ -8,6 +8,7 @@ import { applySiteNav } from './partials/site-nav.js';
 import { escapeHtml, planBuilderLeadError, planBuilderLeadRecord } from './lib/plan-builder-lead.js';
 import { DELETION_REQUEST_CONFIRMATION, logRuckDeletionRequest, ruckDeletionRequestError, ruckDeletionRequestRecord, ruckInterestError, ruckInterestRecord, ruckNoticeHtml } from './lib/ruck-interest.js';
 import { noindexHeader } from './lib/noindex.js';
+import { mountSiteV5, notFound } from './lib/site-v5.js';
 import { age18ConfirmedError } from './lib/tracker-age.js';
 import pkg from 'pg';
 import axios from 'axios';
@@ -60,6 +61,10 @@ const sendEmail = async (to, subject, html) => {
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// STAGING: v5 site redo. Registered first so the new pages, redirects,
+// redirects and new pages win over the legacy routes.
+mountSiteV5(app, __dirname);
 
 function sendHtml(res, filename) {
   try {
@@ -438,12 +443,12 @@ app.post('/api/leads', async (req, res) => {
           `[LoadLine] New ${type || 'Contact'} Lead: ${name}`,
           `
             <h2>New Lead Received</h2>
-            <p><strong>Name:</strong> ${name}</p>
-            <p><strong>Email:</strong> ${email}</p>
-            ${phone ? `<p><strong>Phone:</strong> ${phone}</p>` : ''}
-            <p><strong>Type:</strong> ${type || 'contact'}</p>
+            <p><strong>Name:</strong> ${escapeHtml(name)}</p>
+            <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+            ${phone ? `<p><strong>Phone:</strong> ${escapeHtml(phone)}</p>` : ''}
+            <p><strong>Type:</strong> ${escapeHtml(type || 'contact')}</p>
             <p><strong>Message:</strong></p>
-            <p>${message.replace(/\n/g, '<br>')}</p>
+            <p>${escapeHtml(message).replace(/\n/g, '<br>')}</p>
             <hr>
             <p>View in dashboard: <a href="${process.env.DASHBOARD_URL || 'https://loadlinefitness.com'}/admin">Lead #${leadId}</a></p>
           `
@@ -739,10 +744,8 @@ app.get(['/papers/:slug', '/papers/:slug/'], (req, res, next) => {
   return res.redirect(301, '/paper.html?p=' + encodeURIComponent(slug) + (query ? '&' + query : ''));
 });
 
-// Unknown paths still land on the home page, with the shared nav filled in.
-app.get('*', (req, res) => {
-  sendHtml(res, 'index.html');
-});
+// Unknown paths get a real 404 (v5 redo; no soft-200 catch-all).
+app.get('*', notFound);
 
 // Start server
 async function start() {
