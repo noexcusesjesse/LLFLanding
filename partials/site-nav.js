@@ -15,6 +15,7 @@ const LINKS = {
   papers: { href: '/papers.html', label: 'Papers' },
   apps: { href: '/apps', label: 'Apps' },
   plan: { href: '/plan-builder', label: 'Plan Builder' },
+  walkingout: { href: '/apps/walkingout/', label: 'WalkingOut Routine (Free)' },
   shop: { href: '/shop.html', label: 'Shop' },
   book: { href: '/#consultation', label: 'Book Now', cta: true },
 };
@@ -44,7 +45,8 @@ function section(label, ids, current) {
 export function renderSiteNav(current = '') {
   const about = ['story', 'jesse'];
   const program = ['system', 'pricing', 'faq', 'metabolic'];
-  const resources = ['books', 'papers', 'apps', 'plan'];
+  const resources = ['books', 'papers', 'apps'];
+  const tools = ['plan', 'walkingout'];
   return `<nav class="nav container" aria-label="Main navigation" data-site-nav>
       <a class="brand" href="/#top" aria-label="LoadLine Fitness home">
         <img src="/assets/loadline-fitness-logo.jpg" alt="LoadLine Fitness logo">
@@ -53,6 +55,7 @@ export function renderSiteNav(current = '') {
         ${group('nav-about', 'About', about, current)}
         ${group('nav-program', 'Program', program, current)}
         ${group('nav-resources', 'Resources', resources, current)}
+        ${group('nav-tools', 'Tools', tools, current)}
         ${link('shop', current)}
         ${link('book', current)}
       </div>
@@ -62,6 +65,7 @@ export function renderSiteNav(current = '') {
           ${section('About', about, current)}
           ${section('Program', program, current)}
           ${section('Resources', resources, current)}
+          ${section('Tools', tools, current)}
           ${section('Shop', ['shop'], current)}
           ${link('book', current)}
         </div>
