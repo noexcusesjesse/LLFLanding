@@ -1,6 +1,7 @@
 // Page bodies for the v5 redo. Copy is taken word for word from
 // loadline-website/new-site-copy.md (FINAL v5). [REED]/[COUNSEL] badges
 // are hidden in the public build (reed/counsel render as empty strings).
+import { renderDisclaimer } from './disclaimer.js';
 import { HERO_BG, HERO_PRELOAD, photo, ICONS, BYLINE, FB_GROUP, FF_AMAZON, NEC, PHONE, PHONE_HREF, btn, counsel, ext, hold, reed } from './layout.js';
 
 const media = (n) => `<div class="media">${photo(n, [640, 1024], 1024, 576, { sizes: '(min-width: 1180px) 1100px, 100vw' })}</div>`;
@@ -310,9 +311,22 @@ ${CHECKIN}
   },
 
   '/terms': legal('Terms', 'Terms', ['Membership billing, auto-renewal, how to cancel, refunds, and the age requirement.']),
-  '/disclaimer': legal('Disclaimer', 'Disclaimer', ['Fitness education only; not medical care; never prescribes, doses, or adjusts medication; physician clearance; assumption of risk; challenge fasting gates; challenge-fast exclusions (under 18, pregnant/nursing, eating-disorder history); 18+ rule; low-blood-sugar/911 line.'], true),
+  '/disclaimer': disclaimerPage(),
   '/affiliate-disclosure': legal('Affiliate Disclosure', 'Affiliate Disclosure', ['Amazon Associates, Printful, SiPhox.']),
 };
+
+// Full disclaimer copy (site-v5/content/disclaimer.md, verbatim). Stays noindex
+// until Section 9 has counsel-approved wording.
+function disclaimerPage() {
+  const d = renderDisclaimer();
+  return {
+    title: 'LoadLine Program Disclaimer and Consent | LoadLine Fitness',
+    meta: 'LoadLine Program Disclaimer and Consent for LoadLine Solo and LoadLine 365.',
+    noindex: true, // Section 9 pending counsel
+    body: hero(`<h1 class="dl-h1">${d.h1}</h1><p class="sub">${d.lead}</p>`)
+      + `<section class="sec"><div class="w"><article class="panel dl">${d.sections}</article></div></section>`,
+  };
+}
 
 function legal(title, h1, outline, medical = false) {
   return {
