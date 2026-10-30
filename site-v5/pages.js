@@ -47,7 +47,7 @@ export const PAGES = {
     body: hero(`<p class="eye">ONLINE PROGRAMS · LOADLINE FITNESS</p>
 <h1>Load the Standard. Live the Life.</h1>
 <p class="sub">We don't want to own your fitness. We want to teach you how to own it. Online programs you run from wherever you are, built to make you independent.</p>
-<div class="ctas">${btn('#programs', 'See the Programs', 'lg')} ${btn('/challenges', 'Join a Free Challenge', 'ghost lg')}</div>`, true, HERO_BG)
+<div class="ctas">${btn('#programs', 'See the Programs', 'lg')}</div>`, true, HERO_BG)
       + sec(`<div class="founder"><figure class="portrait">${JESSE('')}</figure><div><h2>This is not a gym. It's a mission.</h2>
 <p>I spent years watching the same cycle: people start strong, burn out, and walk away thinking they failed. They didn't fail. The system failed them.</p>
 <p>Traditional fitness is built on dependency: the next program, the next challenge, the next expert telling you what to do. That's a lease on your body, not ownership.</p>
@@ -62,16 +62,13 @@ export const PAGES = {
 <li>Before you start any LoadLine program (Solo or 365), confirm your doctor has cleared you for exercise. ${reed}</li>
 <li><strong>LoadLine never prescribes, doses, or adjusts medication.</strong> Your doctor handles anything medical. ${reed}</li>
 </ul><p><a href="/how-it-works">How it works</a></p>`, true)
-      + sec(`<h2>Free challenges</h2><p><strong>No Excuses Challenges</strong>: ${BYLINE}.</p>
-<p>Free community challenges with check-ins, streaks, and badges. <a href="/challenges">See current challenges</a></p>${media('challenges')}
-<div class="ctas">${ext(NEC, 'Join free at noexcuseschallenges.com')}</div>`)
       + sec(`<h2>Books</h2>
 <p><strong>Financially Fit</strong>: train your money like you train your body. ${ext(FF_AMAZON, 'Buy on Amazon<span class="sr-only">: Financially Fit</span>')}</p>
-<p><strong>NO EXCUSES</strong>: a real person's guide to metabolic health. <a href="/books">See the books</a></p>`, true)
-      + sec(`<h2>Free tools</h2><p>Plan Builder · WalkingOut Routine (Free) · Free Tracker → <a href="/tools">Explore tools</a></p>${media('tools')}`)
+<p><strong>NO EXCUSES</strong>: a real person's guide to metabolic health. <a href="/books">See the books</a></p>`)
+      + sec(`<h2>Free tools</h2><p>Plan Builder · WalkingOut Routine (Free) · Free Tracker → <a href="/tools">Explore tools</a></p>${media('tools')}`, true)
       + sec(`<h2>Start with a conversation.</h2>
 <p>Book a free 30-minute video call. We'll talk about your goals, your schedule, and which program fits. No commitment, no pressure. This is not a medical evaluation. ${reed}</p>
-<div class="ctas">${btn('/contact', 'Book a Free Call')} <span>Or call/text <a href="${PHONE_HREF}">${PHONE}</a></span></div>`, true),
+<div class="ctas">${btn('/contact', 'Book a Free Call')} <span>Or call/text <a href="${PHONE_HREF}">${PHONE}</a></span></div>`),
   },
 
   '/loadline-365': {

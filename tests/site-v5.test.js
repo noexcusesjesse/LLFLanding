@@ -21,7 +21,7 @@ const GATE = "To join a challenge fast, you must have finished Basic Training an
 
 describe('v5 site', () => {
   test('public pages are indexable; legal outlines are noindex and out of the sitemap', async () => {
-    for (const path of Object.keys(PAGES).concat(['/learn/barefoot-shoes', '/ruck', '/ruck/privacy', '/plan-builder', '/tracker.html', '/privacy'])) {
+    for (const path of Object.keys(PAGES).filter((p) => !REDIRECTS[p]).concat(['/learn/barefoot-shoes', '/ruck', '/ruck/privacy', '/plan-builder', '/tracker.html', '/privacy'])) {
       const r = await hget(path);
       assert.equal(r.status, 200, path);
       const html = await r.text();
@@ -60,6 +60,20 @@ describe('v5 site', () => {
       assert.equal(r.status, 301, from);
       assert.equal(r.headers.get('location'), to, from);
     }
+  });
+  test('challenges are off LoadLine: no nav item or on-site links, and the old URLs 301 to noexcuseschallenges.com', async () => {
+    for (const from of ['/challenges', '/challenges/', '/Challenges', '/challenges?x=1', '/challenges.html']) {
+      const r = await fetch(base + from, { redirect: 'manual' });
+      assert.equal(r.status, 301, from);
+      assert.match(r.headers.get('location'), /^https:\/\/noexcuseschallenges\.com\/?(\?x=1)?$/, from);
+    }
+    for (const path of Object.keys(PAGES).filter((p) => !REDIRECTS[p]).concat(['/apps', '/papers'])) {
+      const html = await (await hget(path)).text();
+      assert.doesNotMatch(html, /href="\/challenges/, path);
+      assert.doesNotMatch(html, />Challenges<\/a>/, path);
+    }
+    const sm = await (await fetch(base + '/sitemap.xml')).text();
+    assert.doesNotMatch(sm, /\/challenges/);
   });
   test('unknown URLs return a real 404', async () => {
     assert.equal((await fetch(base + '/no-such-page')).status, 404);

@@ -38,7 +38,6 @@ export const BYLINE = 'Run by No Excuses Jesse · Powered by LoadLine Fitness';
 const NAV = [
   { group: 'Programs', id: 'nav-programs', items: [['/loadline-365', 'LoadLine 365'], ['/solo', 'LoadLine Solo']] },
   ['/how-it-works', 'How It Works'],
-  ['/challenges', 'Challenges'],
   ['/books', 'Books'],
   { group: 'Learn', id: 'nav-learn', items: [['/learn', 'Papers'], ['/fasting-safety', 'Fasting Safety']] },
   ['/tools', 'Tools'],
@@ -68,7 +67,6 @@ const FOOTER = `
       <p>LoadLine Fitness · Load the Standard. Live the Life.</p>
       <p>Online only. No gym, no studio, no physical location.</p>
       <p>Call/text <a href="${PHONE_HREF}">${PHONE}</a> · X: ${ext(X_URL, '@LoadLineFitness')} · Community: ${ext(FB_GROUP, 'Metabolic Reset with Jesse (Facebook)')}</p>
-      <p>Challenges are Run by No Excuses Jesse · Powered by LoadLine Fitness.</p>
     </div>
     <nav aria-label="Footer">
       <ul class="foot-links">
