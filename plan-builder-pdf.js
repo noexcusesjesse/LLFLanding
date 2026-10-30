@@ -6,7 +6,6 @@
 import {
   DISCLAIMER,
   METRICS_READ,
-  NEXT_STEP,
   PDF_ACK,
   PLATE_COLUMNS,
   PLATE_TITLE,
@@ -290,12 +289,6 @@ function disclaimerItems(doc) {
     kind: 'ack',
     lines: ackLines,
     height: 28 + ackLines.length * 11 + 12,
-  });
-  const nextLines = doc.splitTextToSize(NEXT_STEP.body, 520);
-  items.push({
-    kind: 'next',
-    lines: nextLines,
-    height: 28 + nextLines.length * 11 + 12,
   });
   return items;
 }

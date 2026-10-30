@@ -2,7 +2,9 @@
 const STORAGE = 'loadline_tracker_v1';
 let allData = JSON.parse(localStorage.getItem(STORAGE) || '{}');
 let currentDate = new Date();
-const TABS = ['dashboard','stats','workout','nutrition','steps','primer','grocery','challenges'];
+// Challenges are hidden from the tracker (they live at noexcuseschallenges.com).
+// Saved challenge data in allData.challenges is left as is.
+const TABS = ['dashboard','stats','workout','nutrition','steps','primer','grocery'];
 let authToken = localStorage.getItem('loadline_token') || null;
 let currentUser = JSON.parse(localStorage.getItem('loadline_user') || 'null');
 
@@ -189,7 +191,6 @@ function switchTab(tab) {
   document.getElementById('sec-' + tab).classList.add('active');
   if (tab === 'stats') renderStats();
   if (tab === 'guide') renderGuide();
-  if (tab === 'challenges') renderChallenges();
 }
 
 // ===================== GUIDE =====================
@@ -295,7 +296,6 @@ function renderGuide() {
         <div class="guide-tab-item"><span class="tab-icon">STEP</span><div><strong>Steps</strong><br>Log your daily steps. Aim for 10,000. Walk after meals for bonus points.</div></div>
         <div class="guide-tab-item"><span class="tab-icon">PRIME</span><div><strong>Daily Primer</strong><br>Your morning checklist. Review your plan, set intentions, and start the day right.</div></div>
         <div class="guide-tab-item"><span class="tab-icon">LIST</span><div><strong>Grocery List</strong><br>Auto-generated from your meal plan. Check items off as you shop.</div></div>
-        <div class="guide-tab-item"><span class="tab-icon">GO</span><div><strong>Challenges</strong><br>Join challenges from the Metabolic Reset community. Earn badges and track progress.</div></div>
       </div>
     </div>
 
@@ -501,32 +501,8 @@ function renderDashboard() {
   html += '<div class="dash-actions"><div class="dash-action-btn" onclick="switchTab(\x27guide\x27)"><span class="action-icon">GUIDE</span>Core Guide</div>';
   html += '<div class="dash-action-btn" onclick="switchTab(\x27workout\x27)"><span class="action-icon">TRAIN</span>Today\x27s Workout</div>';
   html += '<div class="dash-action-btn" onclick="switchTab(\x27nutrition\x27)"><span class="action-icon">FUEL</span>Meal Plan</div>';
-  html += '<div class="dash-action-btn" onclick="switchTab(\x27primer\x27)"><span class="action-icon">PRIME</span>Daily Primer</div>';
-  html += '<div class="dash-action-btn" onclick="switchTab(\x27challenges\x27)"><span class="action-icon">\u2694\ufe0f</span>Challenges</div></div>';
+  html += '<div class="dash-action-btn" onclick="switchTab(\x27primer\x27)"><span class="action-icon">PRIME</span>Daily Primer</div></div>';
 
-  // Active Challenges Summary on Dashboard
-  (function() {
-    var cdDash = getChallengesData();
-    var activeChallengeIds = Object.keys(cdDash.active);
-    if (activeChallengeIds.length > 0) {
-      html += '<div class="dash-trend" style="margin-top:24px;"><h3>\u2694\ufe0f Active Challenges</h3>';
-      activeChallengeIds.forEach(function(id) {
-        var challenge = CHALLENGES.find(function(c) { return c.id === id; });
-        var active = cdDash.active[id];
-        if (!challenge) return;
-        recalcChallengeProgress(id);
-        var pct = Math.min(Math.round((active.progress / challenge.goal) * 100), 100);
-        var statusLabel = active.completed ? '\u2705 Complete!' : pct + '%';
-        html += '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">';
-        html += '<div style="font-size:1.4rem;">' + challenge.icon + '</div>';
-        html += '<div style="flex:1;"><div style="font-weight:700;color:white;font-size:0.9rem;">' + challenge.name + '</div>';
-        html += '<div style="margin-top:6px;background:var(--bg);border-radius:6px;height:8px;overflow:hidden;"><div style="height:100%;background:linear-gradient(90deg,var(--green),var(--green-light));border-radius:6px;width:' + pct + '%;transition:width 0.3s;"></div></div></div>';
-        html += '<div style="font-weight:700;color:var(--green-light);font-size:0.85rem;min-width:80px;text-align:right;">' + statusLabel + '</div>';
-        html += '</div>';
-      });
-      html += '</div>';
-    }
-  })();
 
   el.innerHTML = html;
 }
@@ -1349,7 +1325,7 @@ function filterChallenges(cat) {
 function renderAll() {
   const opts = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
   document.getElementById('dateLabel').textContent = currentDate.toLocaleDateString('en-US', opts);
-  renderDashboard(); renderStats(); renderWorkout(); renderNutrition(); renderSteps(); renderPrimer(); renderGrocery(); renderChallenges();
+  renderDashboard(); renderStats(); renderWorkout(); renderNutrition(); renderSteps(); renderPrimer(); renderGrocery();
 }
 
 // ===================== BACK TO TOP =====================
