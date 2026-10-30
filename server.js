@@ -9,6 +9,7 @@ import { escapeHtml, planBuilderLeadError, planBuilderLeadRecord } from './lib/p
 import { DELETION_REQUEST_CONFIRMATION, logRuckDeletionRequest, ruckDeletionRequestError, ruckDeletionRequestRecord, ruckInterestError, ruckInterestRecord, ruckNoticeHtml } from './lib/ruck-interest.js';
 import { noindexHeader } from './lib/noindex.js';
 import { mountSiteV5, notFound } from './lib/site-v5.js';
+import { clientPortalProxy } from './lib/client-portal-proxy.js';
 import { age18ConfirmedError } from './lib/tracker-age.js';
 import pkg from 'pg';
 import axios from 'axios';
@@ -56,6 +57,10 @@ const sendEmail = async (to, subject, html) => {
     return false;
   }
 };
+
+// Client file portal at /clients (separate Railway app). Must come before
+// cors()/body parsers so uploads and form posts stream through untouched.
+app.use(clientPortalProxy());
 
 // Middleware
 app.use(cors());
