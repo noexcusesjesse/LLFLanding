@@ -4,7 +4,6 @@
 export const PHONE = '(866) 830-9123';
 export const PHONE_HREF = 'tel:+18668309123';
 export const FF_AMAZON = 'https://link.amazon/B03BV1u75';
-export const NEC = 'https://noexcuseschallenges.com';
 export const FB_GROUP = 'https://www.facebook.com/groups/metabolicresetwithjesse';
 export const X_URL = 'https://x.com/LoadLineFitness';
 
@@ -33,14 +32,11 @@ export const ICONS = {
   close: svg('<path d="M6 6l12 12M18 6L6 18"/>'),
 };
 
-export const BYLINE = 'Run by No Excuses Jesse · Powered by LoadLine Fitness';
-
 const NAV = [
   { group: 'Programs', id: 'nav-programs', items: [['/loadline-365', 'LoadLine 365'], ['/solo', 'LoadLine Solo']] },
   ['/how-it-works', 'How It Works'],
-  ['/challenges', 'Challenges'],
   ['/books', 'Books'],
-  { group: 'Learn', id: 'nav-learn', items: [['/learn', 'Papers'], ['/fasting-safety', 'Fasting Safety']] },
+  ['/learn', 'Learn'],
   ['/tools', 'Tools'],
   ['/shop', 'Shop'],
 ];
@@ -68,7 +64,6 @@ const FOOTER = `
       <p>LoadLine Fitness · Load the Standard. Live the Life.</p>
       <p>Online only. No gym, no studio, no physical location.</p>
       <p>Call/text <a href="${PHONE_HREF}">${PHONE}</a> · X: ${ext(X_URL, '@LoadLineFitness')} · Community: ${ext(FB_GROUP, 'Metabolic Reset with Jesse (Facebook)')}</p>
-      <p>Challenges are Run by No Excuses Jesse · Powered by LoadLine Fitness.</p>
     </div>
     <nav aria-label="Footer">
       <ul class="foot-links">

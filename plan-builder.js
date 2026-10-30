@@ -2,7 +2,6 @@ import {
   ACK_CHECKBOX,
   AGE_CHECKBOX,
   MARKETING_LABEL,
-  NEXT_STEP,
   PLATE_COLUMNS,
   PRIVACY_NOTE,
 } from './plan-builder-copy.js';
@@ -319,7 +318,6 @@ function assertCopyLocks() {
   if (!visible('ack-label').includes(ACK_CHECKBOX)) throw new Error('Disclaimer checkbox copy drifted.');
   if (!visible('marketing-label').includes(MARKETING_LABEL)) throw new Error('Marketing checkbox copy drifted.');
   if (visible('privacy-note') !== PRIVACY_NOTE) throw new Error('Privacy note drifted.');
-  if ($('next-step-link').getAttribute('href') !== NEXT_STEP.url) throw new Error('Next step link drifted.');
 }
 
 const privacyPolicyLink = document.querySelector('#marketing-label a[href="/privacy"]');

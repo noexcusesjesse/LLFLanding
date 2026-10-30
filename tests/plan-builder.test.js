@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { describe, test } from 'node:test';
 import vm from 'node:vm';
-import { DISCLAIMER, NEXT_STEP, PDF_ACK, PLATE_TITLE, SCREENING_LINE, WALK_BREAK } from '../plan-builder-copy.js';
+import { DISCLAIMER, PDF_ACK, PLATE_TITLE, SCREENING_LINE, WALK_BREAK } from '../plan-builder-copy.js';
 import {
   bmiCategory,
   buildPlan,
@@ -320,7 +320,7 @@ describe('page source', () => {
     assert.match(read('plan-builder.html'), /<a href="\/privacy">Privacy Policy<\/a>/);
     assert.doesNotMatch(read('plan-builder.html'), /TODO: No privacy policy page exists/);
     assert.doesNotMatch(read('plan-builder-copy.js'), /TODO: No privacy policy page exists/);
-    assert.equal(html.includes('https://noexcuseschallenges.com'), true);
+    assert.doesNotMatch(html, /noexcuseschallenges|No Excuses Challenge|free challenge/i);
     assert.match(read('plan-builder.js'), /addEventListener\('change', syncSubtitle\)/);
     assert.doesNotMatch(sources, /toISOString|localStorage|claude\.use/);
   });
@@ -355,7 +355,7 @@ describe('pdf', () => {
     assert.match(output, /Screening estimate, not a diagnosis/);
     assert.match(output, /Built my plate/);
     assert.match(output, /Build more daily movement/);
-    assert.match(output, /noexcuseschallenges\.com/);
+    assert.doesNotMatch(output, /noexcuseschallenges|No Excuses Challenge|free challenge/i);
     assert.match(output, /DUMBBELLS/);
     assert.doesNotMatch(output, /Signature:/);
     assert.doesNotMatch(output, /fasting|LoadLine Solo|\$85|Kitchen closes|Obese range/i);

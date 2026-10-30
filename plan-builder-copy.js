@@ -55,12 +55,6 @@ export const NUTRITION_CHIPS = [
 
 export const TRACKER_HABIT = 'Built my plate.';
 
-export const NEXT_STEP = {
-  title: 'Next step',
-  body: 'This plan is free. When you want a next step, join a free challenge at No Excuses Challenges: https://noexcuseschallenges.com',
-  url: 'https://noexcuseschallenges.com',
-};
-
 export const PDF_ACK = 'I have read and understand this disclaimer. I will consult my physician before starting, and I take responsibility for exercising safely. Your acknowledgment is the checkbox on the plan builder page. This PDF does not ask for a signature.';
 
 export const DISCLAIMER = [

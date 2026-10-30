@@ -1,7 +1,7 @@
 // Page bodies for the v5 redo. Copy is taken word for word from
 // loadline-website/new-site-copy.md (FINAL v5). [REED]/[COUNSEL] badges
 // are hidden in the public build (reed/counsel render as empty strings).
-import { HERO_BG, HERO_PRELOAD, photo, ICONS, BYLINE, FB_GROUP, FF_AMAZON, NEC, PHONE, PHONE_HREF, btn, counsel, ext, hold, reed } from './layout.js';
+import { HERO_BG, HERO_PRELOAD, photo, ICONS, FB_GROUP, FF_AMAZON, PHONE, PHONE_HREF, btn, counsel, ext, hold, reed } from './layout.js';
 
 const media = (n) => `<div class="media">${photo(n, [640, 1024], 1024, 576, { sizes: '(min-width: 1180px) 1100px, 100vw' })}</div>`;
 const JESSE = (cls) => photo('jesse', [320, 540], 540, 675, { alt: 'No Excuses Jesse', cls, sizes: '(min-width: 768px) 280px, 70vw' });
@@ -11,8 +11,6 @@ const grid = (inner, alt = false, id = '') => `<section class="sec${alt ? ' alt'
 const SHAPES = `<svg class="hero-art" aria-hidden="true" focusable="false" viewBox="0 0 600 600"><defs><linearGradient id="hg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E0B15A" stop-opacity=".55"/><stop offset="1" stop-color="#E0B15A" stop-opacity="0"/></linearGradient></defs><circle cx="420" cy="180" r="170" fill="none" stroke="url(#hg)" stroke-width="2"/><circle cx="420" cy="180" r="110" fill="none" stroke="url(#hg)" stroke-width="1.5"/><path d="M60 520 L300 300 L380 380 L560 200" fill="none" stroke="url(#hg)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const hero = (inner, big = false, bg = '') => `<section class="hero${big ? ' hero-xl' : ''}${bg ? ' has-bg' : ''}">${bg || SHAPES}<div class="w hero-in">${inner}</div></section>`;
 
-const MEMBER_GATE = (program) => `${program} include${program.includes(' and ') ? '' : 's'} no fasting. Members can join any free No Excuses Challenge. To join a challenge fast, you must have finished Basic Training and your doctor must have cleared you for fasting. Clearance for exercise doesn't count. A 24-hour fast also needs your doctor's OK for that fast, and anything over 24 hours needs all three boxes of the doctor-cleared check-in.`;
-
 const FORMULA = `<div class="g g5">
   <div class="c">${ICONS.dumbbell}<h3>Train</h3><p>Strength and skill work that makes you more capable, not more dependent.</p></div>
   <div class="c">${ICONS.walk}<h3>Move</h3><p>Daily movement that fits a life. Walking, mobility, and work you'll actually repeat.</p></div>
@@ -20,21 +18,6 @@ const FORMULA = `<div class="g g5">
   <div class="c">${ICONS.chart}<h3>Track</h3><p>Simple accountability so the next session is honest.</p></div>
   <div class="c">${ICONS.repeat}<h3>Repeat</h3><p>Consistency is the product. You win the year by returning, not by a dramatic first week.</p></div>
 </div>`;
-
-const CHECKIN = `<p><strong>The doctor-cleared check-in (all three boxes, required for anything over 24 hours):</strong></p>
-<ul class="checks">
-  <li>I am 18 or older.</li>
-  <li>I have completed a 24-hour fast without problems. (Any 24-hour fast you've done counts.)</li>
-  <li>My doctor has told me this specific fast is OK for me.</li>
-</ul>
-<p><small>(Source: Quarterly_Fast_2027_Menu_Model_Safety_and_Timer_Copy_v2.0, matching noexcuseschallenges.com.)</small> ${reed}</p>`;
-
-const WHO_NOT = `<h2>Who should not join a challenge fast ${reed} ${counsel}</h2>
-<p>Challenges are for adults 18 and older.</p>
-<p>Do not join a challenge fast if you are under 18, pregnant or nursing, or have a current or past eating disorder. If you have diabetes or low blood sugar, take any prescription medication (especially glucose-lowering or blood-pressure medication), or have heart or kidney conditions, don't fast unless your doctor has cleared you for this specific fast. LoadLine never adjusts medication around a fast.</p>`;
-
-const LOW_SUGAR = `<div class="warn" role="note"><h2>Low blood sugar and emergencies ${reed}</h2>
-<p>Low blood sugar can look like shakiness, sweating, a pounding heart, confusion, or feeling faint. If that happens, stop the fast and eat or drink something with sugar now. Call 911 for chest pain or pressure, fainting, confusion that doesn't clear, seizure, a racing or irregular heartbeat, or severe shortness of breath.</p></div>`;
 
 const yes = '<span aria-hidden="true">✓</span><span class="sr-only">Included</span>';
 const no = (extra = '') => `<span aria-hidden="true">✗</span><span class="sr-only">Not included</span>${extra}`;
@@ -47,7 +30,7 @@ export const PAGES = {
     body: hero(`<p class="eye">ONLINE PROGRAMS · LOADLINE FITNESS</p>
 <h1>Load the Standard. Live the Life.</h1>
 <p class="sub">We don't want to own your fitness. We want to teach you how to own it. Online programs you run from wherever you are, built to make you independent.</p>
-<div class="ctas">${btn('#programs', 'See the Programs', 'lg')} ${btn('/challenges', 'Join a Free Challenge', 'ghost lg')}</div>`, true, HERO_BG)
+<div class="ctas">${btn('#programs', 'See the Programs', 'lg')}</div>`, true, HERO_BG)
       + sec(`<div class="founder"><figure class="portrait">${JESSE('')}</figure><div><h2>This is not a gym. It's a mission.</h2>
 <p>I spent years watching the same cycle: people start strong, burn out, and walk away thinking they failed. They didn't fail. The system failed them.</p>
 <p>Traditional fitness is built on dependency: the next program, the next challenge, the next expert telling you what to do. That's a lease on your body, not ownership.</p>
@@ -62,16 +45,13 @@ export const PAGES = {
 <li>Before you start any LoadLine program (Solo or 365), confirm your doctor has cleared you for exercise. ${reed}</li>
 <li><strong>LoadLine never prescribes, doses, or adjusts medication.</strong> Your doctor handles anything medical. ${reed}</li>
 </ul><p><a href="/how-it-works">How it works</a></p>`, true)
-      + sec(`<h2>Free challenges</h2><p><strong>No Excuses Challenges</strong>: ${BYLINE}.</p>
-<p>Free community challenges with check-ins, streaks, and badges. <a href="/challenges">See current challenges</a></p>${media('challenges')}
-<div class="ctas">${ext(NEC, 'Join free at noexcuseschallenges.com')}</div>`)
       + sec(`<h2>Books</h2>
 <p><strong>Financially Fit</strong>: train your money like you train your body. ${ext(FF_AMAZON, 'Buy on Amazon<span class="sr-only">: Financially Fit</span>')}</p>
-<p><strong>NO EXCUSES</strong>: a real person's guide to metabolic health. <a href="/books">See the books</a></p>`, true)
-      + sec(`<h2>Free tools</h2><p>Plan Builder · WalkingOut Routine (Free) · Free Tracker → <a href="/tools">Explore tools</a></p>${media('tools')}`)
+<p><strong>NO EXCUSES</strong>: a real person's guide to metabolic health. <a href="/books">See the books</a></p>`)
+      + sec(`<h2>Free tools</h2><p>Plan Builder · WalkingOut Routine (Free) · Free Tracker → <a href="/tools">Explore tools</a></p>${media('tools')}`, true)
       + sec(`<h2>Start with a conversation.</h2>
 <p>Book a free 30-minute video call. We'll talk about your goals, your schedule, and which program fits. No commitment, no pressure. This is not a medical evaluation. ${reed}</p>
-<div class="ctas">${btn('/contact', 'Book a Free Call')} <span>Or call/text <a href="${PHONE_HREF}">${PHONE}</a></span></div>`, true),
+<div class="ctas">${btn('/contact', 'Book a Free Call')} <span>Or call/text <a href="${PHONE_HREF}">${PHONE}</a></span></div>`),
   },
 
   '/loadline-365': {
@@ -103,7 +83,7 @@ export const PAGES = {
 <p><em>Load the standard. Then live it, wherever you are.</em></p>`, true)
       + sec(`<h2>Pricing</h2><div class="c tier featured solo-tier">${ICONS.screen}<p class="price">$185/month.</p><p>Billed monthly until you cancel, with no long-term contract.</p>
 <div class="ctas">${btn('/contact', 'Book a Free Call')} ${btn('/solo', 'Compare with Solo ($85)', 'ghost')}</div></div>
-<p class="note"><strong>Community challenges:</strong> ${MEMBER_GATE('LoadLine 365')} <a href="/fasting-safety">Fasting Safety</a> ${reed}</p>`, false, 'pricing'),
+<p class="note"><strong>Fasting:</strong> LoadLine 365 includes no fasting. ${reed}</p>`, false, 'pricing'),
   },
 
   '/solo': {
@@ -131,7 +111,7 @@ export const PAGES = {
 </tbody></table></div>`)
       + sec(`<h2>Pricing</h2><div class="c tier featured solo-tier">${ICONS.home}<p class="price">$85/month.</p><p>Billed monthly until you cancel. ${counsel}</p>
 <div class="ctas">${btn('/contact', 'Book a Free Call')} ${btn('/loadline-365', 'See LoadLine 365', 'ghost')}</div></div>
-<p class="note"><strong>Community challenges:</strong> ${MEMBER_GATE('LoadLine Solo')} <a href="/fasting-safety">Fasting Safety</a> ${reed}</p>`, true),
+<p class="note"><strong>Fasting:</strong> LoadLine Solo includes no fasting. ${reed}</p>`, true),
   },
 
   '/how-it-works': {
@@ -147,56 +127,12 @@ export const PAGES = {
 <div class="ctas">${btn('/#programs', 'See the Programs')}</div>`),
   },
 
-  '/challenges': {
-    title: 'No Excuses Challenges | LoadLine Fitness',
-    meta: 'Free community challenges, Run by No Excuses Jesse · Powered by LoadLine Fitness.',
-    body: hero(`<h1>No Excuses Challenges</h1><p><strong>${BYLINE}</strong></p>
-<p class="sub">Free community challenges for the Metabolic Reset with Jesse group. Join, check in, and keep your word to yourself.</p>
-<div class="ctas"><a class="btn" href="${NEC}" target="_blank" rel="noopener">Join Free at noexcuseschallenges.com<span class="sr-only"> (opens in a new tab)</span></a></div>`)
-      + `<div class="w media-top">${photo('challenges', [640, 1024], 1024, 576, { sizes: '(min-width: 1180px) 1100px, 100vw' })}</div>`
-      + sec(`<h2>How it works</h2><ol><li>Create a free account.</li><li>Pick a current challenge.</li><li>Check in once a day, earn badges, and chat with the group.</li></ol>`)
-      + sec(`<h2>2027 Quarterly Fasts ${reed}</h2><p>We fast together once a quarter. Every fast starts at <strong>7:00 PM Arizona time on a Thursday</strong>.</p>
-<div class="tbl"><table><caption class="sr-only">2027 quarterly fast dates and optional ceilings</caption><thead><tr><th scope="col">Quarter</th><th scope="col">Start</th><th scope="col">Optional ceiling</th></tr></thead><tbody>
-<tr><th scope="row">Q1</th><td>Thu, Jan 14, 2027</td><td>24 hours</td></tr>
-<tr><th scope="row">Q2</th><td>Thu, Apr 8, 2027</td><td>28 hours</td></tr>
-<tr><th scope="row">Q3</th><td>Thu, Jul 8, 2027</td><td>32 hours</td></tr>
-<tr><th scope="row">Q4</th><td>Thu, Oct 14, 2027</td><td>36 hours</td></tr>
-</tbody></table></div>
-<p>12, 16, or 20 hours: talk to your doctor before you fast. <strong>24 hours</strong> requires your doctor's OK. <strong>Anything over 24 hours</strong> (28h, 32h, or 36h, where the quarter's ceiling allows) requires all three boxes of the doctor-cleared check-in. The ceiling is an option, not a dare. A 12-hour window done right counts the same as anything longer. Any early stop counts as complete. ${reed}</p>
-${CHECKIN}
-<p class="note"><strong>In Basic Training?</strong> Skip all challenge fasts, at every length. Fasting is not part of Basic Training. ${reed}</p>
-<p class="note"><strong>Enrolled in LoadLine Solo or LoadLine 365?</strong> ${MEMBER_GATE('LoadLine Solo and LoadLine 365')} <a href="/fasting-safety">Fasting Safety</a> ${reed}</p>`, true)
-      + sec(WHO_NOT)
-      + sec(`${LOW_SUGAR}<p><em>General wellness and education. Not medical advice. Talk with your doctor before you change how you eat, fast, or exercise.</em> ${reed} ${counsel}</p>`, true),
-  },
-
-  '/fasting-safety': {
-    title: 'Fasting Safety | No Excuses Challenges | LoadLine Fitness',
-    meta: 'Fasting in No Excuses Challenges: education, not a program. Doctor gates by window length, exclusions, and low-blood-sugar warning signs.',
-    body: hero(`<h1>Fasting in No Excuses Challenges: education, not a program</h1><p>${reed} ${counsel}</p>
-<p class="sub">Fasting at LoadLine happens only in the free community challenges (${BYLINE}). It is <strong>not part of LoadLine 365 or LoadLine Solo</strong>.</p>`)
-      + sec(`<ul>
-<li><strong>12, 16, or 20 hours</strong>: talk to your doctor before you fast.</li>
-<li><strong>24 hours</strong>: confirm your doctor has told you a 24-hour fast is OK for you.</li>
-<li><strong>28, 32, or 36 hours</strong> (only in quarters whose ceiling allows it): all three boxes in the doctor-cleared check-in are required.</li>
-</ul>
-${CHECKIN}
-<ul>
-<li><strong>In Basic Training?</strong> Skip all challenge fasts, at every length. Fasting is not part of Basic Training.</li>
-<li><strong>Enrolled in LoadLine Solo or LoadLine 365?</strong> ${MEMBER_GATE('LoadLine Solo and LoadLine 365')} ${reed}</li>
-<li>LoadLine does not supervise your fast and never adjusts medication around it. If you take any medication, talk to your doctor before any fast.</li>
-</ul>`)
-      + sec(WHO_NOT, true)
-      + sec(`${LOW_SUGAR}<p>Any early stop counts as complete. Longer fasts don't guarantee any result. There are no prizes for hours.</p>`),
-  },
-
   '/about': {
     title: 'About Jesse Collins | LoadLine Fitness',
     meta: 'Jesse Collins, founder and architect of LoadLine Fitness, an online fitness company.',
     body: hero(`<div class="founder hero-founder"><figure class="portrait">${photo('jesse', [320, 540], 540, 675, { alt: 'No Excuses Jesse', sizes: '(min-width: 768px) 280px, 70vw', eager: true })}</figure><div><h1>Jesse Collins</h1><p class="sub">Founder and architect of LoadLine Fitness.</p></div></div>`)
       + sec(`<p>Jesse Collins founded LoadLine Fitness, an online fitness company: digital programs, plus the option to have Jesse in your corner as your gym best friend. Jesse built LoadLine from years of training himself and training alongside others. With a passion for long-term health, he built LoadLine on one principle: fitness should teach you to own your body, not rent it from someone else.</p>
 <p>Jesse is also the first LoadLine client. He lives the standard every day. This is practice, not theory.</p>
-<p><strong>No Excuses Jesse.</strong> Jesse runs the free No Excuses Challenges for the Metabolic Reset with Jesse community. <em>${BYLINE}.</em></p>
 <p><strong>Online only.</strong> No gym, studio, or office. Everything happens by video, app, and message.</p>`),
   },
 
@@ -242,7 +178,7 @@ ${CHECKIN}
       + grid(`<div class="g">
 <div class="c">${ICONS.clipboard}<h2><a href="/plan-builder">Plan Builder</a></h2><p>A free daily routine, a walking plan (6,000–12,000 steps), and a 3- or 4-day workout as a PDF. Ages 18+. Goal options: "Build a routine" · "Build strength". ${reed}</p></div>
 <div class="c">${ICONS.walk}<h2><a href="/apps/walkingout/">WalkingOut Routine (Free)</a></h2><p>Walks built around your day. Saved on your device.</p></div>
-<div class="c">${ICONS.chart}<h2><a href="/tracker.html">Free Tracker (LoadLine Core)</a></h2><p>Log workouts, steps, water, sleep, meals, and daily check-ins. Saved on your device. Free for book readers and challenge members. Paid member tools are in LoadLine OS. ${reed}</p></div>
+<div class="c">${ICONS.chart}<h2><a href="/tracker.html">Free Tracker (LoadLine Core)</a></h2><p>Log workouts, steps, water, sleep, meals, and daily check-ins. Saved on your device. Free for everyone. Paid member tools are in LoadLine OS. ${reed}</p></div>
 </div>
 <p><em>Education only. Not medical advice.</em></p>`),
   },
@@ -271,13 +207,12 @@ ${CHECKIN}
 
   '/faq': {
     title: 'FAQ | LoadLine Fitness',
-    meta: 'Answers about LoadLine Fitness programs, NOMAD, doctor clearance, medication, billing, equipment, and free challenges.',
+    meta: 'Answers about LoadLine Fitness programs, NOMAD, doctor clearance, medication, billing, and equipment.',
     body: hero(`<h1>FAQ</h1>`)
       + sec(`<div class="faq">
 <details><summary>Is LoadLine in person?${ICONS.chev}</summary><div class="ans">No. LoadLine Fitness is online only, with no gym, studio, or office.</div></details>
 <details><summary>What programs do you offer?${ICONS.chev}</summary><div class="ans">Two memberships, both starting with 14 days of Basic Training: LoadLine Solo ($85/month, self-guided) and LoadLine 365 ($185/month, with Jesse as your gym best friend and accountability partner).</div></details>
 <details><summary>Is fasting part of the programs?${ICONS.chev}</summary><div class="ans">No. LoadLine Solo and LoadLine 365 include no fasting. ${reed}</div></details>
-<details><summary>Can members join the community challenges?${ICONS.chev}</summary><div class="ans">Yes. ${MEMBER_GATE('LoadLine Solo and LoadLine 365')} <a href="/fasting-safety">Fasting Safety</a> ${reed}</div></details>
 <details><summary>What is NOMAD?${ICONS.chev}</summary><div class="ans">The final stage of LoadLine 365. You can carry the standard anywhere without being owned by a program or by anyone else. It doesn't mean leaving LoadLine.</div></details>
 <details><summary>Do I need to be fit to start?${ICONS.chev}</summary><div class="ans">No. Basic Training teaches the system first, and the training scales to your level.</div></details>
 <details><summary>Do I need my doctor's OK?${ICONS.chev}</summary><div class="ans">Yes. Before you start any LoadLine program (Solo or 365), confirm your doctor has cleared you for exercise. ${reed}</div></details>
@@ -285,7 +220,6 @@ ${CHECKIN}
 <details><summary>What if I miss a day?${ICONS.chev}</summary><div class="ans">Missing a day is normal. We use a 7-day rolling average. The standard is about returning.</div></details>
 <details><summary>Is it a contract?${ICONS.chev}</summary><div class="ans">No long-term contract. Monthly billing continues until you cancel. ${counsel}</div></details>
 <details><summary>What equipment do I need?${ICONS.chev}</summary><div class="ans">Bands, adjustable dumbbells, a bench, and a safe place to walk. See the <a href="/shop">Shop</a>.</div></details>
-<details><summary>Are challenges free?${ICONS.chev}</summary><div class="ans">Yes. ${BYLINE}.</div></details>
 </div>`),
   },
 
@@ -310,7 +244,7 @@ ${CHECKIN}
   },
 
   '/terms': legal('Terms', 'Terms', ['Membership billing, auto-renewal, how to cancel, refunds, and the age requirement.']),
-  '/disclaimer': legal('Disclaimer', 'Disclaimer', ['Fitness education only; not medical care; never prescribes, doses, or adjusts medication; physician clearance; assumption of risk; challenge fasting gates; challenge-fast exclusions (under 18, pregnant/nursing, eating-disorder history); 18+ rule; low-blood-sugar/911 line.'], true),
+  '/disclaimer': legal('Disclaimer', 'Disclaimer', ['Fitness education only; not medical care; never prescribes, doses, or adjusts medication; physician clearance; assumption of risk; 18+ rule; low-blood-sugar/911 line.'], true),
   '/affiliate-disclosure': legal('Affiliate Disclosure', 'Affiliate Disclosure', ['Amazon Associates, Printful, SiPhox.']),
 };
 

@@ -17,11 +17,10 @@ const hget = (path, host = 'www.loadlinefitness.com') => new Promise((resolve, r
     res.on('end', () => resolve({ status: res.statusCode, headers: { get: (k) => res.headers[k.toLowerCase()] }, text: async () => body }));
   }).on('error', reject);
 });
-const GATE = "To join a challenge fast, you must have finished Basic Training and your doctor must have cleared you for fasting.";
 
 describe('v5 site', () => {
   test('public pages are indexable; legal outlines are noindex and out of the sitemap', async () => {
-    for (const path of Object.keys(PAGES).concat(['/learn/barefoot-shoes', '/ruck', '/ruck/privacy', '/plan-builder', '/tracker.html', '/privacy'])) {
+    for (const path of Object.keys(PAGES).filter((p) => !REDIRECTS[p]).concat(['/learn/barefoot-shoes', '/ruck', '/ruck/privacy', '/plan-builder', '/tracker.html', '/privacy'])) {
       const r = await hget(path);
       assert.equal(r.status, 200, path);
       const html = await r.text();
@@ -61,6 +60,23 @@ describe('v5 site', () => {
       assert.equal(r.headers.get('location'), to, from);
     }
   });
+  test('challenges are off LoadLine: no nav item or on-site links, and the old URLs 301 to noexcuseschallenges.com', async () => {
+    for (const from of ['/challenges', '/challenges/', '/Challenges', '/challenges?x=1', '/challenges.html', '/fasting-safety', '/fasting-safety/']) {
+      const r = await fetch(base + from, { redirect: 'manual' });
+      assert.equal(r.status, 301, from);
+      assert.match(r.headers.get('location'), /^https:\/\/noexcuseschallenges\.com\/?(\?x=1)?$/, from);
+    }
+    for (const path of Object.keys(PAGES).filter((p) => !REDIRECTS[p]).concat(['/apps', '/papers'])) {
+      const html = await (await hget(path)).text();
+      assert.doesNotMatch(html, /href="\/challenges/, path);
+      assert.doesNotMatch(html, />Challenges<\/a>/, path);
+      assert.doesNotMatch(html, /href="\/fasting-safety/, path);
+    }
+    const sm = await (await fetch(base + '/sitemap.xml')).text();
+    assert.doesNotMatch(sm, /\/challenges|fasting-safety/);
+    assert.equal(PAGES['/challenges'], undefined);
+    assert.equal(PAGES['/fasting-safety'], undefined);
+  });
   test('unknown URLs return a real 404', async () => {
     assert.equal((await fetch(base + '/no-such-page')).status, 404);
   });
@@ -68,13 +84,13 @@ describe('v5 site', () => {
     assert.match(PAGES['/contact'].body, /action="\/api\/leads"/);
     assert.equal((await fetch(base + '/api/test/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' })).status, 404);
   });
-  test('holds stay unlinked and member fasting lines link to /fasting-safety', () => {
+  test('holds stay unlinked and member fasting lines say the programs include no fasting', () => {
     const all = JSON.stringify(PAGES);
     assert.doesNotMatch(all, /amzn\.to\/4dJO698/);
     assert.doesNotMatch(all, /losing-weight-vs-losing-fat\.pdf|added-sugar-fact-check\.pdf/);
-    for (const p of ['/solo', '/loadline-365', '/faq', '/challenges']) {
-      assert.ok(PAGES[p].body.includes(GATE), p);
-      assert.match(PAGES[p].body, /href="\/fasting-safety"/, p);
+    for (const p of ['/solo', '/loadline-365', '/faq']) {
+      assert.match(PAGES[p].body, /includes? no fasting/, p);
+      assert.doesNotMatch(PAGES[p].body, /fasting-safety|No Excuses Challenge|community challenge|challenge fast/i, p);
     }
     assert.doesNotMatch(PAGES['/'].body, /fast/i);
     assert.doesNotMatch(all, /Reset Program|Boot Camp|most popular|72/i);
