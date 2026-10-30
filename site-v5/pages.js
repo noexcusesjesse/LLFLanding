@@ -41,20 +41,20 @@ const no = (extra = '') => `<span aria-hidden="true">✗</span><span class="sr-o
 
 export const PAGES = {
   '/': {
-    title: 'LoadLine Fitness | Online Coaching. Load the Standard.',
-    meta: 'LoadLine Fitness is online coaching that teaches you to own your fitness. LoadLine 365 ($185/mo) and LoadLine Solo ($85/mo).',
+    title: 'LoadLine Fitness | Online Fitness Programs. Load the Standard.',
+    meta: 'LoadLine Fitness is an online fitness program that teaches you to own your fitness. LoadLine 365 ($185/mo) and LoadLine Solo ($85/mo).',
     head: HERO_PRELOAD,
-    body: hero(`<p class="eye">ONLINE COACHING · LOADLINE FITNESS</p>
+    body: hero(`<p class="eye">ONLINE PROGRAMS · LOADLINE FITNESS</p>
 <h1>Load the Standard. Live the Life.</h1>
-<p class="sub">We don't want to own your fitness. We want to teach you how to own it. Online coaching from wherever you are, built to make you independent.</p>
+<p class="sub">We don't want to own your fitness. We want to teach you how to own it. Online programs you run from wherever you are, built to make you independent.</p>
 <div class="ctas">${btn('#programs', 'See the Programs', 'lg')} ${btn('/challenges', 'Join a Free Challenge', 'ghost lg')}</div>`, true, HERO_BG)
       + sec(`<div class="founder"><figure class="portrait">${JESSE('')}</figure><div><h2>This is not a gym. It's a mission.</h2>
 <p>I spent years watching the same cycle: people start strong, burn out, and walk away thinking they failed. They didn't fail. The system failed them.</p>
-<p>Traditional fitness is built on dependency: the next program, the next challenge, the next coach telling you what to do. That's a lease on your body, not ownership.</p>
+<p>Traditional fitness is built on dependency: the next program, the next challenge, the next expert telling you what to do. That's a lease on your body, not ownership.</p>
 <p>LoadLine teaches you to understand fitness, not just follow it, so the standard is something you carry for life.</p>
 <p>— Jesse Collins, founder · <a href="/about">Read My Story</a></p></div></div>`)
       + grid(`<h2>Programs</h2>${media('program')}<div class="g tiers">
-<div class="c tier featured">${ICONS.coach}<h3>LoadLine 365</h3><p class="price">$185/month</p><p>Digital program with a virtual coach. Basic Training, then LoadLine 30, 60, 90, 180, and 365. The year ends at NOMAD status.</p><a href="/loadline-365">Learn more<span class="sr-only"> about LoadLine 365</span></a></div>
+<div class="c tier featured">${ICONS.screen}<h3>LoadLine 365</h3><p class="price">$185/month</p><p>Digital program plus Jesse as your gym best friend: an accountability partner who tells you the truth. Basic Training, then LoadLine 30, 60, 90, 180, and 365. The year ends at NOMAD status.</p><a href="/loadline-365">Learn more<span class="sr-only"> about LoadLine 365</span></a></div>
 <div class="c tier">${ICONS.home}<h3>LoadLine Solo</h3><p class="price">$85/month</p><p>The self-guided digital program you run at home, starting with Basic Training.</p><a href="/solo">Learn more<span class="sr-only"> about LoadLine Solo</span></a></div>
 </div>`, true, 'programs')
       + grid(`<h2>The formula: Train. Move. Recover. Track. Repeat.</h2>${FORMULA}`)
@@ -75,9 +75,9 @@ export const PAGES = {
   },
 
   '/loadline-365': {
-    title: 'LoadLine 365 | Virtual Coaching Year | $185/mo',
-    meta: 'LoadLine 365: a 12-month digital program with a virtual coach. Basic Training, then LoadLine 30, 60, 90, 180, 365, and NOMAD. $185/month.',
-    body: hero(`<p class="eye">DIGITAL PROGRAM + VIRTUAL COACH</p><h1>LoadLine 365</h1>
+    title: 'LoadLine 365 | A Year With Your Gym Best Friend | $185/mo',
+    meta: 'LoadLine 365: a 12-month digital program with Jesse as your gym best friend and accountability partner. Basic Training, then LoadLine 30, 60, 90, 180, 365, and NOMAD. $185/month.',
+    body: hero(`<p class="eye">DIGITAL PROGRAM + GYM BEST FRIEND</p><h1>LoadLine 365</h1>
 <p class="sub">One year. One standard. One path to independence. $185/month.</p>
 <div class="ctas">${btn('/contact', 'Book a Free Call')} ${btn('/solo', 'Compare with Solo', 'ghost')}</div>`)
       + sec(`<h2>Why a year</h2><p>Most programs sell you 30 days or 12 weeks. Then the accountability ends and you're back where you started. LoadLine 365 is a 12-month curriculum built around one goal: teaching you to run the standard yourself.</p>
@@ -93,14 +93,15 @@ export const PAGES = {
 </ol>`, true)
       + sec(`<h2>What's included</h2><ul>
 <li>Basic Training onboarding</li>
-<li>Coaching from Jesse Collins: form checks, progress reviews, and accountability. Coaching covers training and habits only and never touches medication. ${reed}</li>
+<li>Jesse Collins as your gym best friend: an accountability partner, mentor, and motivator who tells you the truth without sugarcoating. Form checks, progress reviews, and accountability cover training and habits only and never touch medication. ${reed}</li>
+<li>Check-ins handled by Jesse, who aims to reply within 1 business day</li>
 <li>LoadLine OS member tools (dashboard, plate tools, roadmap)</li>
 <li>The 12-month curriculum, with a skill checkpoint each quarter (for example, a timed incline walk or a banded-row test). These measure fitness skills, not health outcomes. ${reed}</li>
 <li>Habit and measurement tracking with a 7-day rolling average, so one day never defines a week</li>
 </ul>`)
       + sec(`<h2>NOMAD: independence, not leaving</h2><p>NOMAD means you can carry the LoadLine standard anywhere: at home, in a hotel, or in a park. It doesn't mean you leave LoadLine. The program stays with you. The standard travels.</p>
 <p><em>Load the standard. Then live it, wherever you are.</em></p>`, true)
-      + sec(`<h2>Pricing</h2><div class="c tier featured solo-tier">${ICONS.coach}<p class="price">$185/month.</p><p>Billed monthly until you cancel, with no long-term contract.</p>
+      + sec(`<h2>Pricing</h2><div class="c tier featured solo-tier">${ICONS.screen}<p class="price">$185/month.</p><p>Billed monthly until you cancel, with no long-term contract.</p>
 <div class="ctas">${btn('/contact', 'Book a Free Call')} ${btn('/solo', 'Compare with Solo ($85)', 'ghost')}</div></div>
 <p class="note"><strong>Community challenges:</strong> ${MEMBER_GATE('LoadLine 365')} <a href="/fasting-safety">Fasting Safety</a> ${reed}</p>`, false, 'pricing'),
   },
@@ -110,7 +111,7 @@ export const PAGES = {
     meta: 'LoadLine Solo: the LoadLine standard, self-guided, at home, starting with Basic Training. $85/month.',
     body: hero(`<h1>LoadLine Solo</h1><p class="sub">The LoadLine standard, self-guided, at home. $85/month.</p>
 <div class="ctas">${btn('/contact', 'Book a Free Call')} ${btn('#included', "See What's Included", 'ghost')}</div>`)
-      + sec(`<h2>Who it's for</h2><p>People who don't need a coach standing over them. You want the system, the curriculum, and the tracking, and you want to run it yourself.</p>
+      + sec(`<h2>Who it's for</h2><p>People who don't need someone standing over them. You want the system, the curriculum, and the tracking, and you want to run it yourself.</p>
 <p><em>You do the work. We give you the system.</em></p>`)
       + sec(`<h2>What's included</h2><ul>
 <li>LoadLine OS member tools</li>
@@ -124,7 +125,7 @@ export const PAGES = {
 <tr><th scope="row">Digital curriculum</th><td>${yes}</td><td>${yes}</td></tr>
 <tr><th scope="row">LoadLine OS tools</th><td>${yes}</td><td>${yes}</td></tr>
 <tr><th scope="row">Basic Training onboarding</th><td>${yes}</td><td>${yes}</td></tr>
-<tr><th scope="row">Virtual coaching with Jesse</th><td>${no()}</td><td>${yes}</td></tr>
+<tr><th scope="row">Jesse as your gym best friend</th><td>${no()}</td><td>${yes}</td></tr>
 <tr><th scope="row">Weekly Sunday reviews</th><td>${no()}</td><td>${yes}</td></tr>
 <tr><th scope="row">Path to NOMAD</th><td>${no(' (self-guided)')}</td><td>${yes}</td></tr>
 </tbody></table></div>`)
@@ -140,8 +141,8 @@ export const PAGES = {
       + grid(`<h2>The formula</h2>${FORMULA}`)
       + sec(`<h2>The 7-day trend, not the day</h2><p>Your scale number moves day to day with water, food, and heat. That's normal. LoadLine looks at a 7-day rolling average, so one day never defines a week. Missing a day is normal. Missing a week is a pattern. The standard is about returning. ${reed}</p>`, true)
       + sec(`<h2>What we track and what we don't</h2><p>You log habits: training sessions, steps, sleep, water, meals, and any measurements you choose. Labs and health numbers belong to your doctor. LoadLine doesn't interpret lab results. ${reed}</p>`)
-      + sec(`<h2>Coaching boundaries</h2><p><strong>Coaches do:</strong> teach the formula, check your form, review your logs, and hold you accountable.</p>
-<p><strong>Coaches never:</strong> prescribe, dose, or adjust medication, diagnose, or interpret labs. ${reed} ${counsel}</p>`, true)
+      + sec(`<h2>Clear boundaries</h2><p><strong>In LoadLine 365, Jesse does:</strong> teach the formula, check your form, review your logs, and hold you accountable, with the truth and no sugarcoating.</p>
+<p><strong>LoadLine never:</strong> prescribes, doses, or adjusts medication, diagnoses, or interprets labs. ${reed} ${counsel}</p>`, true)
       + sec(`<h2>Doctor clearance</h2><p>Before you start any LoadLine program (Solo or 365), confirm your doctor has cleared you for exercise. ${reed}</p>
 <div class="ctas">${btn('/#programs', 'See the Programs')}</div>`),
   },
@@ -191,9 +192,9 @@ ${CHECKIN}
 
   '/about': {
     title: 'About Jesse Collins | LoadLine Fitness',
-    meta: 'Jesse Collins, founder and architect of LoadLine Fitness, an online coaching company.',
+    meta: 'Jesse Collins, founder and architect of LoadLine Fitness, an online fitness company.',
     body: hero(`<div class="founder hero-founder"><figure class="portrait">${photo('jesse', [320, 540], 540, 675, { alt: 'No Excuses Jesse', sizes: '(min-width: 768px) 280px, 70vw', eager: true })}</figure><div><h1>Jesse Collins</h1><p class="sub">Founder and architect of LoadLine Fitness.</p></div></div>`)
-      + sec(`<p>Jesse Collins founded LoadLine Fitness, an online coaching company: digital programs plus an optional virtual coach. Jesse built LoadLine from years of training himself and coaching others. With a passion for long-term health, he built LoadLine on one principle: fitness should teach you to own your body, not rent it from a coach.</p>
+      + sec(`<p>Jesse Collins founded LoadLine Fitness, an online fitness company: digital programs, plus the option to have Jesse in your corner as your gym best friend. Jesse built LoadLine from years of training himself and training alongside others. With a passion for long-term health, he built LoadLine on one principle: fitness should teach you to own your body, not rent it from someone else.</p>
 <p>Jesse is also the first LoadLine client. He lives the standard every day. This is practice, not theory.</p>
 <p><strong>No Excuses Jesse.</strong> Jesse runs the free No Excuses Challenges for the Metabolic Reset with Jesse community. <em>${BYLINE}.</em></p>
 <p><strong>Online only.</strong> No gym, studio, or office. Everything happens by video, app, and message.</p>`),
@@ -275,10 +276,10 @@ ${CHECKIN}
     body: hero(`<h1>FAQ</h1>`)
       + sec(`<div class="faq">
 <details><summary>Is LoadLine in person?${ICONS.chev}</summary><div class="ans">No. LoadLine Fitness is online only, with no gym, studio, or office.</div></details>
-<details><summary>What programs do you offer?${ICONS.chev}</summary><div class="ans">Two memberships, both starting with 14 days of Basic Training: LoadLine Solo ($85/month, self-guided) and LoadLine 365 ($185/month, with a virtual coach).</div></details>
+<details><summary>What programs do you offer?${ICONS.chev}</summary><div class="ans">Two memberships, both starting with 14 days of Basic Training: LoadLine Solo ($85/month, self-guided) and LoadLine 365 ($185/month, with Jesse as your gym best friend and accountability partner).</div></details>
 <details><summary>Is fasting part of the programs?${ICONS.chev}</summary><div class="ans">No. LoadLine Solo and LoadLine 365 include no fasting. ${reed}</div></details>
 <details><summary>Can members join the community challenges?${ICONS.chev}</summary><div class="ans">Yes. ${MEMBER_GATE('LoadLine Solo and LoadLine 365')} <a href="/fasting-safety">Fasting Safety</a> ${reed}</div></details>
-<details><summary>What is NOMAD?${ICONS.chev}</summary><div class="ans">The final stage of LoadLine 365. You can carry the standard anywhere without being owned by a coach or a program. It doesn't mean leaving LoadLine.</div></details>
+<details><summary>What is NOMAD?${ICONS.chev}</summary><div class="ans">The final stage of LoadLine 365. You can carry the standard anywhere without being owned by a program or by anyone else. It doesn't mean leaving LoadLine.</div></details>
 <details><summary>Do I need to be fit to start?${ICONS.chev}</summary><div class="ans">No. Basic Training teaches the system first, and the training scales to your level.</div></details>
 <details><summary>Do I need my doctor's OK?${ICONS.chev}</summary><div class="ans">Yes. Before you start any LoadLine program (Solo or 365), confirm your doctor has cleared you for exercise. ${reed}</div></details>
 <details><summary>Will you adjust my medication?${ICONS.chev}</summary><div class="ans">Never. LoadLine never prescribes, doses, or adjusts medication. ${reed}</div></details>

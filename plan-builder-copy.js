@@ -94,7 +94,7 @@ export const DISCLAIMER = [
   },
   {
     title: 'Limitation of liability',
-    body: 'By using this plan you choose to participate at your own risk. To the fullest extent allowed by law, LoadLine Fitness and its owners, coaches, and affiliates are not responsible for any injury, loss, or damage that results from using this plan.',
+    body: 'By using this plan you choose to participate at your own risk. To the fullest extent allowed by law, LoadLine Fitness and its owners, staff, and affiliates are not responsible for any injury, loss, or damage that results from using this plan.',
   },
 ];
 

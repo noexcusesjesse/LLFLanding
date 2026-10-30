@@ -82,4 +82,17 @@ describe('v5 site', () => {
   test('Book a Free Call goes to the contact form', () => {
     for (const p of Object.values(PAGES)) for (const m of p.body.matchAll(/href="([^"]+)"[^>]*>Book a Free Call/g)) assert.equal(m[1], '/contact');
   });
+  test('no coach wording on shipped pages; LoadLine 365 uses the gym best friend framing', async () => {
+    const paths = Object.keys(PAGES).concat(['/learn/barefoot-shoes', '/papers', '/apps', '/plan-builder', '/privacy', '/tracker.html', '/apps/walkingout/help/', '/ruck', '/ruck/privacy', '/sitemap.xml']);
+    for (const path of paths) {
+      const html = await (await hget(path)).text();
+      assert.doesNotMatch(html, /coach/i, path);
+    }
+    const p365 = PAGES['/loadline-365'];
+    assert.match(p365.body, /gym best friend/);
+    assert.match(p365.body, /accountability partner, mentor, and motivator who tells you the truth without sugarcoating/);
+    assert.match(p365.body, /Check-ins handled by Jesse, who aims to reply within 1 business day/);
+    assert.match(PAGES['/faq'].body, /\$185\/month, with Jesse as your gym best friend/);
+    assert.doesNotMatch(p365.title + p365.meta + p365.body, /\u2014/);
+  });
 });

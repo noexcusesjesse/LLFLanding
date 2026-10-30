@@ -6,7 +6,7 @@
 
 const LINKS = {
   story: { href: '/#my-story', label: 'My Story' },
-  coach: { href: '/#about-coach', label: 'The Coach' },
+  jesse: { href: '/#about-jesse', label: 'About Jesse' },
   system: { href: '/#system', label: 'The System' },
   pricing: { href: '/#pricing', label: 'Pricing' },
   faq: { href: '/#faq', label: 'FAQ' },
@@ -42,7 +42,7 @@ function section(label, ids, current) {
 }
 
 export function renderSiteNav(current = '') {
-  const about = ['story', 'coach'];
+  const about = ['story', 'jesse'];
   const program = ['system', 'pricing', 'faq', 'metabolic'];
   const resources = ['books', 'papers', 'apps', 'plan'];
   return `<nav class="nav container" aria-label="Main navigation" data-site-nav>

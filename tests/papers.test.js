@@ -38,8 +38,8 @@ describe('barefoot shoes paper', () => {
     assert.match(page, /href="https:\/\/amzn\.to\/4k5Ohzy" target="_blank" rel="sponsored noopener noreferrer"/);
   });
 
-  test('the coach line links to the consultation CTA', () => {
-    assert.match(page, /href="\/#consultation">Talk to a LoadLine virtual coach and get started today\./);
+  test('the gym best friend line links to the consultation CTA', () => {
+    assert.match(page, /href="\/#consultation">Talk with Jesse, your LoadLine gym best friend, and get started today\./);
   });
 
   test('the papers index lists it first and the server serves the article with the nav', () => {
