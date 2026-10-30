@@ -68,7 +68,7 @@ export const PAGES = {
       + sec(`<h2>Books</h2>
 <p><strong>Financially Fit</strong>: train your money like you train your body. ${ext(FF_AMAZON, 'Buy on Amazon<span class="sr-only">: Financially Fit</span>')}</p>
 <p><strong>NO EXCUSES</strong>: a real person's guide to metabolic health. <a href="/books">See the books</a></p>`, true)
-      + sec(`<h2>Free tools</h2><p>Plan Builder · Walkingout · WalkQuest · Free Tracker → <a href="/tools">Explore tools</a></p>${media('tools')}`)
+      + sec(`<h2>Free tools</h2><p>Plan Builder · WalkingOut Routine (Free) · Free Tracker → <a href="/tools">Explore tools</a></p>${media('tools')}`)
       + sec(`<h2>Start with a conversation.</h2>
 <p>Book a free 30-minute video call. We'll talk about your goals, your schedule, and which program fits. No commitment, no pressure. This is not a medical evaluation. ${reed}</p>
 <div class="ctas">${btn('/contact', 'Book a Free Call')} <span>Or call/text <a href="${PHONE_HREF}">${PHONE}</a></span></div>`, true),
@@ -236,13 +236,12 @@ ${CHECKIN}
 
   '/tools': {
     title: 'Free Tools | LoadLine Fitness',
-    meta: 'Free LoadLine tools: Plan Builder, Walkingout, WalkQuest, and the Free Tracker.',
+    meta: 'Free LoadLine tools: Plan Builder, WalkingOut Routine (Free), and the Free Tracker.',
     body: hero(`<h1>Free Tools</h1>`)
       + `<div class="w media-top">${photo('tools', [640, 1024], 1024, 576, { sizes: '(min-width: 1180px) 1100px, 100vw' })}</div>`
       + grid(`<div class="g">
 <div class="c">${ICONS.clipboard}<h2><a href="/plan-builder">Plan Builder</a></h2><p>A free daily routine, a walking plan (6,000–12,000 steps), and a 3- or 4-day workout as a PDF. Ages 18+. Goal options: "Build a routine" · "Build strength". ${reed}</p></div>
-<div class="c">${ICONS.walk}<h2><a href="/apps/walkingout/">Walkingout</a></h2><p>Walks built around your day. Saved on your device.</p></div>
-<div class="c">${ICONS.map}<h2><a href="/apps/walkquest/">WalkQuest</a></h2><p>Turn everyday walks into a journey across a map.</p></div>
+<div class="c">${ICONS.walk}<h2><a href="/apps/walkingout/">WalkingOut Routine (Free)</a></h2><p>Walks built around your day. Saved on your device.</p></div>
 <div class="c">${ICONS.chart}<h2><a href="/tracker.html">Free Tracker (LoadLine Core)</a></h2><p>Log workouts, steps, water, sleep, meals, and daily check-ins. Saved on your device. Free for book readers and challenge members. Paid member tools are in LoadLine OS. ${reed}</p></div>
 </div>
 <p><em>Education only. Not medical advice.</em></p>`),

@@ -129,17 +129,28 @@ app.get(/^\/papers\/([a-z0-9]+(?:-[a-z0-9]+)*)(?:\.html)?\/?$/, (req, res, next)
   sendHtml(res, `papers/${slug}.html`);
 });
 
-// WalkQuest is a static app, same as Walkingout. Canonical URL keeps the
-// trailing slash. Express treats /apps/walkquest and /apps/walkquest/ as the
-// same route unless we look at the original path, so the slash form must fall
-// through to the static file instead of redirecting to itself.
-app.get(['/apps/walkquest', '/apps/walkquest/index.html'], (req, res, next) => {
-  const [path, query] = req.originalUrl.split('?');
-  if (path === '/apps/walkquest/') return next();
-  if (path === '/apps/walkquest' || path === '/apps/walkquest/index.html') {
-    return res.redirect(301, '/apps/walkquest/' + (query ? '?' + query : ''));
-  }
-  return next();
+// WalkQuest was retired. Old links and bookmarks go to WalkingOut Routine
+// (Free) with a permanent redirect. The one exception is the old service
+// worker script: browsers re-check it, and a redirect there would leave the
+// cached app installed. Serve a worker that clears the WalkQuest cache and
+// unregisters itself instead.
+const WALKQUEST_RETIRED_SW = `self.addEventListener('install', () => self.skipWaiting());
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys()
+      .then((keys) => Promise.all(keys.filter((key) => key.startsWith('walkquest-')).map((key) => caches.delete(key))))
+      .then(() => self.registration.unregister())
+      .then(() => self.clients.matchAll({ type: 'window' }))
+      .then((clients) => clients.forEach((client) => client.navigate('/apps/walkingout/'))),
+  );
+});
+`;
+app.get('/apps/walkquest/sw.js', (req, res) => {
+  res.set('Cache-Control', 'no-cache');
+  res.type('application/javascript').send(WALKQUEST_RETIRED_SW);
+});
+app.all(['/apps/walkquest', /^\/apps\/walkquest\/.*/], (req, res) => {
+  res.redirect(301, '/apps/walkingout/');
 });
 
 // Eating Window is a static PWA, hidden from search. Canonical URL keeps the

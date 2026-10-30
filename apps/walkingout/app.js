@@ -186,7 +186,7 @@ function body() {
 
 function emptyView() {
   return `<main id="routine" class="center-empty">
-    <p class="kicker">Walkingout</p>
+    <p class="kicker">WalkingOut Routine (Free)</p>
     <h1 class="display-xl">No routine yet</h1>
     <p>Tell us when you're up, working, and eating. We'll slot the walks in.</p>
     ${btn(`${icon('plus')} Set up your routine`, 'open-setup', 'primary')}
@@ -536,7 +536,7 @@ function summaryBar(plan) {
 function reminderBanner() {
   if (!store.book.reminders.isOn) return '';
   if (typeof Notification === 'undefined') {
-    return `<p class="banner">This browser can't show system reminders. The timeline is here whenever the page is open. Installing Walkingout keeps the icon handy, and reminders still need the page open.</p>`;
+    return `<p class="banner">This browser can't show system reminders. The timeline is here whenever the page is open. Installing WalkingOut Routine (Free) keeps the icon handy, and reminders still need the page open.</p>`;
   }
   if (Notification.permission === 'granted') {
     return `<p class="banner">A heads-up fires 5 minutes before each walk <strong>while this page is open</strong>. Browsers can't schedule reminders after you leave.</p>`;
@@ -720,7 +720,7 @@ function remindersSheet() {
     !prefs.mutedSlots.includes(slot),
   )).join('');
   return dialog(`
-    <div class="sheet-head"><div><h2 class="display-lg">Reminders</h2><p class="fine">Walkingout</p></div>${closeButton()}</div>
+    <div class="sheet-head"><div><h2 class="display-lg">Reminders</h2><p class="fine">WalkingOut Routine (Free)</p></div>${closeButton()}</div>
     <div class="stack" style="margin-top:14px">
       ${reminderBanner()}
       ${toggleBox('Walk reminders', '', 'remindersOn', 'reminders', prefs.isOn)}
