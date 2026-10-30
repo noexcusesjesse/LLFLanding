@@ -35,7 +35,6 @@ export const ICONS = {
 const NAV = [
   { group: 'Programs', id: 'nav-programs', items: [['/loadline-365', 'LoadLine 365'], ['/solo', 'LoadLine Solo']] },
   ['/how-it-works', 'How It Works'],
-  ['/books', 'Books'],
   ['/learn', 'Learn'],
   ['/tools', 'Tools'],
   ['/shop', 'Shop'],

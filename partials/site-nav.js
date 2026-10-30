@@ -45,7 +45,7 @@ function section(label, ids, current) {
 export function renderSiteNav(current = '') {
   const about = ['story', 'jesse'];
   const program = ['system', 'pricing', 'faq', 'metabolic'];
-  const resources = ['books', 'papers', 'apps'];
+  const resources = ['papers', 'apps'];
   const tools = ['plan', 'walkingout'];
   return `<nav class="nav container" aria-label="Main navigation" data-site-nav>
       <a class="brand" href="/#top" aria-label="LoadLine Fitness home">

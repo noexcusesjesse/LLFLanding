@@ -77,6 +77,19 @@ describe('v5 site', () => {
     assert.equal(PAGES['/challenges'], undefined);
     assert.equal(PAGES['/fasting-safety'], undefined);
   });
+  test('books are off the LoadLine nav and /books 301s to noexcusesbooks.com', async () => {
+    for (const from of ['/books', '/books/', '/Books', '/books.html', '/books?x=1']) {
+      const r = await fetch(base + from, { redirect: 'manual' });
+      assert.equal(r.status, 301, from);
+      assert.match(r.headers.get('location'), /^https:\/\/noexcusesbooks\.com\/?(\?x=1)?$/, from);
+    }
+    for (const path of ['/', '/about', '/faq', '/apps', '/papers', '/plan-builder']) {
+      const html = await (await hget(path)).text();
+      const navs = (html.match(/<nav[\s\S]*?<\/nav>/g) || []).join('');
+      assert.doesNotMatch(navs, /books/i, path);
+    }
+    assert.doesNotMatch(await (await fetch(base + '/sitemap.xml')).text(), /\/books/);
+  });
   test('unknown URLs return a real 404', async () => {
     assert.equal((await fetch(base + '/no-such-page')).status, 404);
   });
