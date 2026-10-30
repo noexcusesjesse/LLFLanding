@@ -24,7 +24,7 @@ export const ICONS = {
   moon: svg('<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>'),
   chart: svg('<path d="M4 20V4M4 20h16M8 16l4-5 3 3 5-6"/>'),
   repeat: svg('<path d="M17 2l3 3-3 3M4 11V9a4 4 0 0 1 4-4h12M7 22l-3-3 3-3M20 13v2a4 4 0 0 1-4 4H4"/>'),
-  coach: svg('<rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4M10 9.5l4 2-4 2z"/>'),
+  screen: svg('<rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4M10 9.5l4 2-4 2z"/>'),
   home: svg('<path d="M3 11l9-7 9 7M5 10v10h14V10M10 20v-5h4v5"/>'),
   clipboard: svg('<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9zM9 12h6M9 16h4"/>'),
   map: svg('<path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14"/>'),
@@ -66,7 +66,7 @@ const FOOTER = `
     <div>
       <p class="logo-foot"><picture><source type="image/webp" srcset="/assets/brand/loadline-lockup-h64.webp 1x, /assets/brand/loadline-lockup-h128.webp 2x"><img class="foot-img" src="/assets/brand/loadline-lockup-h64.png" srcset="/assets/brand/loadline-lockup-h64.png 1x, /assets/brand/loadline-lockup-h128.png 2x" width="180" height="64" alt="LoadLine Fitness"></picture></p>
       <p>LoadLine Fitness · Load the Standard. Live the Life.</p>
-      <p>Online coaching. No gym, no studio, no physical location.</p>
+      <p>Online only. No gym, no studio, no physical location.</p>
       <p>Call/text <a href="${PHONE_HREF}">${PHONE}</a> · X: ${ext(X_URL, '@LoadLineFitness')} · Community: ${ext(FB_GROUP, 'Metabolic Reset with Jesse (Facebook)')}</p>
       <p>Challenges are Run by No Excuses Jesse · Powered by LoadLine Fitness.</p>
     </div>
@@ -79,7 +79,7 @@ const FOOTER = `
     </nav>
   </div>
   <div class="w">
-    <p class="disc">Disclaimer: LoadLine Fitness provides fitness, movement, education, coaching, and accountability. It is not medical care. LoadLine never prescribes, doses, or adjusts medication. Talk with your doctor before you change how you eat or exercise. In an emergency, call 911. ${reed} ${counsel}</p>
+    <p class="disc">Disclaimer: LoadLine Fitness provides fitness, movement, education, and accountability. It is not medical care. LoadLine never prescribes, doses, or adjusts medication. Talk with your doctor before you change how you eat or exercise. In an emergency, call 911. ${reed} ${counsel}</p>
     <p>© 2026 LoadLine Fitness. All rights reserved.</p>
   </div>
 </footer>`;
