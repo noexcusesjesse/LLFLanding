@@ -1,6 +1,6 @@
 # LoadLine Program Disclaimer and Consent
 
-**Effective date:** November 1, 2026 · Version 2.2
+**Effective date:** November 2, 2026 · Version 2.3
 
 ## 1. Who This Covers
 
@@ -55,7 +55,7 @@ Do not join a challenge fast if you are under 18, pregnant or nursing, or have a
 
 ## 7. Assumption of Risk
 
-Physical activity, including walking, bodyweight exercise, and resistance-band exercise, carries a risk of injury, including muscle strains, joint pain, falls, and in rare cases serious heart events. Changing how you eat can also affect how you feel. You choose how and when to take part, you agree to stop if something feels wrong, and **you take part at your own risk.**
+Physical activity, including walking, bodyweight exercise, and resistance-band exercise, carries a risk of injury, including muscle strains, joint pain, falls, and in rare cases serious heart events. Changing how you eat can also affect how you feel. You choose how and when to take part, and you agree to stop if something feels wrong. If you have chest pain or pressure, fainting, severe shortness of breath, or sudden dizziness, stop right away and call 911. **You take part at your own risk.**
 
 You are responsible for using safe equipment (for example, a sturdy chair rated for your weight and a secure door anchor) and a safe place to move. You are also responsible for listening to your body, going at your own pace, and checking with your doctor if you are unsure whether an activity is right for you.
 
@@ -67,11 +67,13 @@ LoadLine 365 collects the health information on your Intake Questionnaire and yo
 
 To the fullest extent allowed by law, LoadLine Fitness and its owner, team members, and contractors are not responsible for any injury, illness, loss, or damage that results from your use of LoadLine Solo, LoadLine 365, or any LoadLine materials. This includes direct, indirect, incidental, and consequential damages.
 
+This does not limit liability for our gross negligence or willful misconduct.
+
 If the law where you live does not allow some of these limits, they apply only to the extent that law allows. Nothing on this page takes away any right you have that cannot be waived under the law that applies to you.
 
 ## 10. Changes
 
-We may update this disclaimer from time to time. When we do, we will post the updated version on this page with a new effective date. Changes apply from the effective date shown. If you keep using LoadLine Solo or LoadLine 365 after an update is posted, you accept the updated version.
+We may update this disclaimer from time to time. We will post the updated version on this page with a new effective date. If we make a material change, we will tell you by email or in the program and ask you to review and accept the updated version before you continue. Until you accept, the version you last agreed to still applies. Any update applies only going forward, not to anything that happened before its effective date.
 
 ## 11. Contact
 

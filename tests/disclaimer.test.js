@@ -28,14 +28,18 @@ describe('/disclaimer', () => {
   test('effective date and Sections 7, 9, 10 are final copy, with no review notes', async () => {
     const html = await (await fetch(base + '/disclaimer')).text();
     const body = text(html);
-    assert.ok(body.includes('Effective date: November 1, 2026 · Version 2.2'));
+    assert.ok(body.includes('Effective date: November 2, 2026 · Version 2.3'));
+    assert.ok(!body.includes('Version 2.2'));
     const s9 = text(html.slice(html.indexOf('9. Limitation of Liability'), html.indexOf('10. Changes')));
     assert.ok(s9.includes('To the fullest extent allowed by law, LoadLine Fitness'));
     assert.ok(s9.includes('they apply only to the extent that law allows'));
+    assert.ok(s9.includes('This does not limit liability for our gross negligence or willful misconduct.'));
+    assert.ok(s9.indexOf('consequential damages.') < s9.indexOf('This does not limit liability') && s9.indexOf('This does not limit liability') < s9.indexOf('If the law where you live'));
     const s10 = text(html.slice(html.indexOf('10. Changes'), html.indexOf('11. Contact')));
-    assert.ok(s10.includes('we will post the updated version on this page with a new effective date'));
+    assert.ok(s10.includes('We may update this disclaimer from time to time. We will post the updated version on this page with a new effective date. If we make a material change, we will tell you by email or in the program and ask you to review and accept the updated version before you continue. Until you accept, the version you last agreed to still applies. Any update applies only going forward, not to anything that happened before its effective date.'));
+    assert.doesNotMatch(s10, /keep using|Changes apply from the effective date shown/);
     const s7 = text(html.slice(html.indexOf('7. Assumption of Risk'), html.indexOf('8. Your Information')));
-    assert.ok(s7.includes('you take part at your own risk.'));
+    assert.ok(s7.includes('You choose how and when to take part, and you agree to stop if something feels wrong. If you have chest pain or pressure, fainting, severe shortness of breath, or sudden dizziness, stop right away and call 911. You take part at your own risk.'));
     const main = html.slice(html.indexOf('<main'), html.indexOf('</main>'));
     assert.ok(main.length > 0);
     assert.doesNotMatch(text(main), /counsel|attorney|pending|being finalized|draft|coach|& Wellness|\[JESSE|\u2014/i);
