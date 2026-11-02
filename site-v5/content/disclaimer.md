@@ -51,7 +51,7 @@ Fasting happens only in the free No Excuses Challenges (Run by No Excuses Jesse,
 - **24 hours:** needs your doctor's OK for that fast.
 - **Over 24 hours:** needs all three boxes of the doctor-cleared check-in. **36 hours is the maximum.** There is no 72-hour fast.
 
-Do not join a challenge fast if you are under 18, pregnant or nursing, or have a current or past eating disorder. If you have diabetes or low blood sugar, take prescription medicine (especially for blood sugar or blood pressure), or have heart or kidney conditions, don't fast unless your doctor has cleared you for that specific fast. LoadLine never prescribes, doses, or adjusts medicine around a fast. If you feel shaky, sweaty, confused, or faint, stop the fast. Call 911 for chest pain or pressure, fainting, confusion that doesn't clear, seizure, a racing or irregular heartbeat, or severe shortness of breath. Full rules: [Fasting Safety](/fasting-safety).
+Do not join a challenge fast if you are under 18, pregnant or nursing, or have a current or past eating disorder. If you have diabetes or low blood sugar, take prescription medicine (especially for blood sugar or blood pressure), or have heart or kidney conditions, don't fast unless your doctor has cleared you for that specific fast. LoadLine never prescribes, doses, or adjusts medicine around a fast. If you feel shaky, sweaty, confused, or faint, stop the fast. Call 911 for chest pain or pressure, fainting, confusion that doesn't clear, seizure, a racing or irregular heartbeat, or severe shortness of breath.
 
 ## 7. Assumption of Risk
 

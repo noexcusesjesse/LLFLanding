@@ -59,14 +59,14 @@ describe('/fasting-safety', () => {
     const html = await (await fetch(base + '/fasting-safety')).text();
     assert.doesNotMatch(html, /\u2014|&mdash;|coach|&amp; Wellness|& Wellness/i);
   });
-  test('disclaimer Section 6 keeps its original opening, has no Reset Program line, and its Fasting Safety link goes to /fasting-safety', async () => {
+  test('disclaimer Section 6 keeps its original opening, has no Reset Program line, and has no Fasting Safety link or full rules sentence', async () => {
     const html = await (await fetch(base + '/disclaimer')).text();
     const s6 = html.slice(html.indexOf('6. Fasting'), html.indexOf('7. Assumption of Risk'));
     // Opening paragraph is the original (main) wording, ending at "Clearance for exercise doesn't count."
     assert.ok(s6.includes("<p>Fasting happens only in the free No Excuses Challenges (Run by No Excuses Jesse, Powered by LoadLine Fitness). They are education, not part of either program, and LoadLine does not supervise any fast. A LoadLine Solo or LoadLine 365 member may join a challenge fast only after finishing Basic Training, and only if their doctor has cleared them for fasting. Clearance for exercise doesn't count.</p>"));
     assert.doesNotMatch(text(s6), /Reset Program|physician-gated|The Ninety/i);
-    const links = [...s6.matchAll(/<a href="([^"]+)">Fasting Safety<\/a>/g)].map((m) => m[1]);
-    assert.deepEqual(links, ['/fasting-safety']);
+    assert.doesNotMatch(s6, /<a\b|fasting-safety|Fasting Safety|Full rules/i);
+    assert.ok(text(s6).includes('Call 911 for chest pain or pressure, fainting, confusion that doesn\'t clear, seizure, a racing or irregular heartbeat, or severe shortness of breath. '), 'Section 6 ends at the 911 list');
     assert.doesNotMatch(s6, /\u2014/);
   });
 });
