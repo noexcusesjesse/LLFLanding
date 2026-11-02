@@ -114,13 +114,12 @@ describe('v5 site', () => {
       assert.doesNotMatch(PAGES[p].body, /fasting-safety|No Excuses Challenge|community challenge|challenge fast/i, p);
     }
     assert.doesNotMatch(PAGES['/'].body, /fast/i);
-    // The disclaimer's only "72" is the safety line ruling a 72-hour fast out, and it never
-    // mentions the Reset Program. /fasting-safety Section 4 still documents the Reset
-    // Program fasts (removal pending) but has no 72.
-    const { '/disclaimer': dl, '/fasting-safety': fs, ...rest } = PAGES;
+    // The disclaimer's only "72" is the safety line ruling a 72-hour fast out. No page,
+    // the disclaimer and /fasting-safety included, mentions the Reset Program or The Ninety.
+    const { '/disclaimer': dl, ...rest } = PAGES;
     assert.doesNotMatch(JSON.stringify(rest), /Reset Program|Boot Camp|most popular|72/i);
     assert.doesNotMatch(JSON.stringify(dl).replace('There is no 72-hour fast.', ''), /Reset Program|Boot Camp|most popular|72/i);
-    assert.doesNotMatch(JSON.stringify(fs), /Boot Camp|most popular|72/i);
+    for (const [p, pg] of Object.entries(PAGES)) assert.doesNotMatch(pg.body + pg.title + pg.meta, /Reset Program|Ninety|reset-program/i, p);
   });
   test('Book a Free Call goes to the contact form', () => {
     for (const p of Object.values(PAGES)) for (const m of p.body.matchAll(/href="([^"]+)"[^>]*>Book a Free Call/g)) assert.equal(m[1], '/contact');

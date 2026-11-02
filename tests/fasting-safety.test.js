@@ -16,8 +16,8 @@ const lines = (md) => md.split(/\n{2,}/).map((b) => b.trim()).filter((b) => b &&
 
 describe('/fasting-safety', () => {
   test('content file is the approved copy, byte for byte', () => {
-    // sha256 of the approved fasting-safety.md. Change only with new approved copy.
-    assert.equal(createHash('sha256').update(FASTING_SAFETY_MD).digest('hex'), 'a68f4df9ba71132286a6af0082c0cca43f15f13dec766db531e80c145a754ca1');
+    // sha256 of the approved fasting-safety.md (v0.3, challenges only, Reed approved). Change only with new approved copy.
+    assert.equal(createHash('sha256').update(FASTING_SAFETY_MD).digest('hex'), 'eba25be883697ecee1f9af534f49e45335fcbbf4a9315bfffb1658c5ff63ff5b');
   });
   test('page renders every line of the markdown exactly, in order, and nothing else in the article', async () => {
     const r = await fetch(base + '/fasting-safety');
@@ -34,7 +34,8 @@ describe('/fasting-safety', () => {
     assert.equal(main.trim(), want.join(' '));
     assert.match(html, /<h1 class="dl-h1">Fasting Safety<\/h1>/);
     assert.match(html, /<a href="https:\/\/noexcuseschallenges\.com">noexcuseschallenges\.com<\/a>/);
-    assert.equal((html.match(/<section class="dl-sec/g) || []).length, 9);
+    assert.equal((html.match(/<section class="dl-sec/g) || []).length, 8);
+    assert.deepEqual([...html.matchAll(/<h2[^>]*>([^<]+)<\/h2>/g)].map((m) => m[1]).filter((h) => /^\d+\./.test(h)), ['1. Where fasting happens', '2. Doctor checks by fast length (challenges)', '3. LoadLine members and challenge fasts', '4. Who should not fast', '5. Medicine', '6. Low blood sugar warning signs', '7. When to call 911', '8. Stopping early']);
   });
   test('is a same-site page, noindex, out of the sitemap, not redirected', async () => {
     assert.equal(REDIRECTS['/fasting-safety'], undefined);
@@ -44,6 +45,14 @@ describe('/fasting-safety', () => {
     assert.match(await r.text(), /<meta name="robots" content="noindex, nofollow">/);
     assert.equal(PAGES['/fasting-safety'].noindex, true);
     assert.doesNotMatch(await (await fetch(base + '/sitemap.xml')).text(), /fasting-safety/);
+  });
+  test('challenges only: no Reset Program, Reset, or Ninety anywhere in the copy or the page', async () => {
+    assert.doesNotMatch(FASTING_SAFETY_MD, /reset|ninety/i);
+    const html = await (await fetch(base + '/fasting-safety')).text();
+    const main = html.slice(html.indexOf('<main'), html.indexOf('</main>'));
+    assert.doesNotMatch(main, /reset|ninety/i);
+    assert.ok(text(main).includes('Fasting happens only in the free No Excuses Challenges (Run by No Excuses Jesse, Powered by LoadLine Fitness). They are education, not a program, and LoadLine does not supervise any fast.'));
+    assert.ok(text(main).includes('Every fast on this page is for adults 18 and older.'));
   });
   test('copy has no em-dashes, coach wording, or & Wellness', async () => {
     assert.doesNotMatch(FASTING_SAFETY_MD, /\u2014|coach|& Wellness/i);
