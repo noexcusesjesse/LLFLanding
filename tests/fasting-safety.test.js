@@ -50,12 +50,14 @@ describe('/fasting-safety', () => {
     const html = await (await fetch(base + '/fasting-safety')).text();
     assert.doesNotMatch(html, /\u2014|&mdash;|coach|&amp; Wellness|& Wellness/i);
   });
-  test('disclaimer Section 6 carries the Reset Program line and both Fasting Safety links go to /fasting-safety', async () => {
+  test('disclaimer Section 6 keeps its original opening, has no Reset Program line, and its Fasting Safety link goes to /fasting-safety', async () => {
     const html = await (await fetch(base + '/disclaimer')).text();
     const s6 = html.slice(html.indexOf('6. Fasting'), html.indexOf('7. Assumption of Risk'));
-    assert.ok(text(s6).includes("Clearance for exercise doesn't count. The No Excuses Reset Program also includes physician-gated 24-hour and 36-hour fasts, never in Basic Training or The Ninety. See Fasting Safety."));
+    // Opening paragraph is the original (main) wording, ending at "Clearance for exercise doesn't count."
+    assert.ok(s6.includes("<p>Fasting happens only in the free No Excuses Challenges (Run by No Excuses Jesse, Powered by LoadLine Fitness). They are education, not part of either program, and LoadLine does not supervise any fast. A LoadLine Solo or LoadLine 365 member may join a challenge fast only after finishing Basic Training, and only if their doctor has cleared them for fasting. Clearance for exercise doesn't count.</p>"));
+    assert.doesNotMatch(text(s6), /Reset Program|physician-gated|The Ninety/i);
     const links = [...s6.matchAll(/<a href="([^"]+)">Fasting Safety<\/a>/g)].map((m) => m[1]);
-    assert.deepEqual(links, ['/fasting-safety', '/fasting-safety']);
+    assert.deepEqual(links, ['/fasting-safety']);
     assert.doesNotMatch(s6, /\u2014/);
   });
 });

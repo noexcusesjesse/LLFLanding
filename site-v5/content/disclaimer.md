@@ -45,7 +45,7 @@ LoadLine is not an emergency service. Do not use LoadLine messages, check-ins, o
 
 LoadLine Solo and LoadLine 365 do not use fasting. There are no fasting days or fasting windows in either program, and fasting is not part of Basic Training.
 
-Fasting happens only in the free No Excuses Challenges (Run by No Excuses Jesse, Powered by LoadLine Fitness). They are education, not part of either program, and LoadLine does not supervise any fast. A LoadLine Solo or LoadLine 365 member may join a challenge fast only after finishing Basic Training, and only if their doctor has cleared them for fasting. Clearance for exercise doesn't count. The No Excuses Reset Program also includes physician-gated 24-hour and 36-hour fasts, never in Basic Training or The Ninety. See [Fasting Safety](/fasting-safety).
+Fasting happens only in the free No Excuses Challenges (Run by No Excuses Jesse, Powered by LoadLine Fitness). They are education, not part of either program, and LoadLine does not supervise any fast. A LoadLine Solo or LoadLine 365 member may join a challenge fast only after finishing Basic Training, and only if their doctor has cleared them for fasting. Clearance for exercise doesn't count.
 
 - **12, 16, or 20 hours:** the open challenge windows. Talk to your doctor before you fast.
 - **24 hours:** needs your doctor's OK for that fast.
