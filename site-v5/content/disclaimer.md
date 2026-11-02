@@ -45,13 +45,13 @@ LoadLine is not an emergency service. Do not use LoadLine messages, check-ins, o
 
 LoadLine Solo and LoadLine 365 do not use fasting. There are no fasting days or fasting windows in either program, and fasting is not part of Basic Training.
 
-Fasting happens only in the free No Excuses Challenges (Run by No Excuses Jesse, Powered by LoadLine Fitness). They are education, not part of either program, and LoadLine does not supervise any fast. A LoadLine Solo or LoadLine 365 member may join a challenge fast only after finishing Basic Training, and only if their doctor has cleared them for fasting. Clearance for exercise doesn't count.
+Fasting happens only in the free No Excuses Challenges (Run by No Excuses Jesse, Powered by LoadLine Fitness). They are education, not part of either program, and LoadLine does not supervise any fast. A LoadLine Solo or LoadLine 365 member may join a challenge fast only after finishing Basic Training, and only if their doctor has cleared them for fasting. Clearance for exercise doesn't count. The No Excuses Reset Program also includes physician-gated 24-hour and 36-hour fasts, never in Basic Training or The Ninety. See [Fasting Safety](/fasting-safety).
 
 - **12, 16, or 20 hours:** the open challenge windows. Talk to your doctor before you fast.
 - **24 hours:** needs your doctor's OK for that fast.
 - **Over 24 hours:** needs all three boxes of the doctor-cleared check-in. **36 hours is the maximum.** There is no 72-hour fast.
 
-Do not join a challenge fast if you are under 18, pregnant or nursing, or have a current or past eating disorder. If you have diabetes or low blood sugar, take prescription medicine (especially for blood sugar or blood pressure), or have heart or kidney conditions, don't fast unless your doctor has cleared you for that specific fast. LoadLine never prescribes, doses, or adjusts medicine around a fast. If you feel shaky, sweaty, confused, or faint, stop the fast. Call 911 for chest pain or pressure, fainting, confusion that doesn't clear, seizure, a racing or irregular heartbeat, or severe shortness of breath. Full rules: [Fasting Safety](https://www.loadlinefitness.com/fasting-safety).
+Do not join a challenge fast if you are under 18, pregnant or nursing, or have a current or past eating disorder. If you have diabetes or low blood sugar, take prescription medicine (especially for blood sugar or blood pressure), or have heart or kidney conditions, don't fast unless your doctor has cleared you for that specific fast. LoadLine never prescribes, doses, or adjusts medicine around a fast. If you feel shaky, sweaty, confused, or faint, stop the fast. Call 911 for chest pain or pressure, fainting, confusion that doesn't clear, seizure, a racing or irregular heartbeat, or severe shortness of breath. Full rules: [Fasting Safety](/fasting-safety).
 
 ## 7. Assumption of Risk
 
