@@ -34,9 +34,9 @@ describe('v5 site', () => {
       }
       assert.doesNotMatch(html, /STAGING \/ TEST BUILD|class="flag"/, path);
     }
-    assert.deepEqual(Object.keys(PAGES).filter((p) => PAGES[p].noindex), ['/terms', '/disclaimer', '/affiliate-disclosure']);
+    assert.deepEqual(Object.keys(PAGES).filter((p) => PAGES[p].noindex), ['/terms', '/disclaimer', '/fasting-safety', '/affiliate-disclosure']);
     const sm = await (await fetch(base + '/sitemap.xml')).text();
-    assert.doesNotMatch(sm, /terms|disclaimer|affiliate-disclosure/);
+    assert.doesNotMatch(sm, /terms|disclaimer|fasting-safety|affiliate-disclosure/);
     const ew = await hget('/eating-window/');
     assert.match(ew.headers.get('x-robots-tag') || '', /noindex/);
     const robots = await (await fetch(base + '/robots.txt')).text();
@@ -61,7 +61,7 @@ describe('v5 site', () => {
     }
   });
   test('challenges are off LoadLine: no nav item or on-site links, and the old URLs 301 to noexcuseschallenges.com', async () => {
-    for (const from of ['/challenges', '/challenges/', '/Challenges', '/challenges?x=1', '/challenges.html', '/fasting-safety', '/fasting-safety/']) {
+    for (const from of ['/challenges', '/challenges/', '/Challenges', '/challenges?x=1', '/challenges.html']) {
       const r = await fetch(base + from, { redirect: 'manual' });
       assert.equal(r.status, 301, from);
       assert.match(r.headers.get('location'), /^https:\/\/noexcuseschallenges\.com\/?(\?x=1)?$/, from);
@@ -70,12 +70,20 @@ describe('v5 site', () => {
       const html = await (await hget(path)).text();
       assert.doesNotMatch(html, /href="\/challenges/, path);
       assert.doesNotMatch(html, />Challenges<\/a>/, path);
-      assert.doesNotMatch(html, /href="\/fasting-safety/, path);
+      // Only the disclaimer (Section 6) links to the Fasting Safety page.
+      if (path !== '/disclaimer') assert.doesNotMatch(html, /href="\/fasting-safety/, path);
     }
     const sm = await (await fetch(base + '/sitemap.xml')).text();
     assert.doesNotMatch(sm, /\/challenges|fasting-safety/);
     assert.equal(PAGES['/challenges'], undefined);
-    assert.equal(PAGES['/fasting-safety'], undefined);
+    // /fasting-safety is a real same-site page again (noindex), not a redirect.
+    assert.equal(REDIRECTS['/fasting-safety'], undefined);
+    assert.equal((await fetch(base + '/fasting-safety', { redirect: 'manual' })).status, 200);
+    const slash = await fetch(base + '/fasting-safety/', { redirect: 'manual' });
+    assert.equal(slash.status, 301);
+    assert.equal(slash.headers.get('location'), '/fasting-safety');
+    assert.equal(PAGES['/fasting-safety'].noindex, true);
+    assert.doesNotMatch(await (await hget('/disclaimer')).text(), /loadlinefitness\.com\/fasting-safety|noexcuseschallenges\.com[^"]*fasting/);
   });
   test('books are off the LoadLine nav and /books 301s to noexcusesbooks.com', async () => {
     for (const from of ['/books', '/books/', '/Books', '/books.html', '/books?x=1']) {
@@ -106,10 +114,12 @@ describe('v5 site', () => {
       assert.doesNotMatch(PAGES[p].body, /fasting-safety|No Excuses Challenge|community challenge|challenge fast/i, p);
     }
     assert.doesNotMatch(PAGES['/'].body, /fast/i);
-    // The disclaimer's only "72" is the safety line ruling a 72-hour fast out.
+    // The disclaimer's only "72" is the safety line ruling a 72-hour fast out. No page,
+    // the disclaimer and /fasting-safety included, mentions the Reset Program or The Ninety.
     const { '/disclaimer': dl, ...rest } = PAGES;
     assert.doesNotMatch(JSON.stringify(rest), /Reset Program|Boot Camp|most popular|72/i);
     assert.doesNotMatch(JSON.stringify(dl).replace('There is no 72-hour fast.', ''), /Reset Program|Boot Camp|most popular|72/i);
+    for (const [p, pg] of Object.entries(PAGES)) assert.doesNotMatch(pg.body + pg.title + pg.meta, /Reset Program|Ninety|reset-program/i, p);
   });
   test('Book a Free Call goes to the contact form', () => {
     for (const p of Object.values(PAGES)) for (const m of p.body.matchAll(/href="([^"]+)"[^>]*>Book a Free Call/g)) assert.equal(m[1], '/contact');

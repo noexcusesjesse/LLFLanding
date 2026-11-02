@@ -1,7 +1,7 @@
 // Page bodies for the v5 redo. Copy is taken word for word from
 // loadline-website/new-site-copy.md (FINAL v5). [REED]/[COUNSEL] badges
 // are hidden in the public build (reed/counsel render as empty strings).
-import { renderDisclaimer } from './disclaimer.js';
+import { renderDisclaimer, FASTING_SAFETY_MD } from './disclaimer.js';
 import { HERO_BG, HERO_PRELOAD, photo, ICONS, FB_GROUP, FF_AMAZON, PHONE, PHONE_HREF, btn, counsel, ext, hold, reed } from './layout.js';
 
 const media = (n) => `<div class="media">${photo(n, [640, 1024], 1024, 576, { sizes: '(min-width: 1180px) 1100px, 100vw' })}</div>`;
@@ -246,6 +246,7 @@ export const PAGES = {
 
   '/terms': legal('Terms', 'Terms', ['Membership billing, auto-renewal, how to cancel, refunds, and the age requirement.']),
   '/disclaimer': disclaimerPage(),
+  '/fasting-safety': fastingSafetyPage(),
   '/affiliate-disclosure': legal('Affiliate Disclosure', 'Affiliate Disclosure', ['Amazon Associates, Printful, SiPhox.']),
 };
 
@@ -256,6 +257,19 @@ function disclaimerPage() {
   return {
     title: 'LoadLine Program Disclaimer and Consent | LoadLine Fitness',
     meta: 'LoadLine Program Disclaimer and Consent for LoadLine Solo and LoadLine 365.',
+    noindex: true,
+    body: hero(`<h1 class="dl-h1">${d.h1}</h1><p class="sub">${d.lead}</p>`)
+      + `<section class="sec"><div class="w"><article class="panel dl">${d.sections}</article></div></section>`,
+  };
+}
+
+// Fasting Safety copy (site-v5/content/fasting-safety.md, verbatim). Linked from
+// disclaimer Section 6. Kept noindex and out of the sitemap, like /disclaimer.
+function fastingSafetyPage() {
+  const d = renderDisclaimer(FASTING_SAFETY_MD, /^\*\*General wellness and education\./);
+  return {
+    title: 'Fasting Safety | LoadLine Fitness',
+    meta: 'Fasting safety: where fasting happens, doctor checks by fast length, who should not fast, low blood sugar warning signs, and when to call 911.',
     noindex: true,
     body: hero(`<h1 class="dl-h1">${d.h1}</h1><p class="sub">${d.lead}</p>`)
       + `<section class="sec"><div class="w"><article class="panel dl">${d.sections}</article></div></section>`,

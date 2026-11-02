@@ -4,6 +4,8 @@
 import { readFileSync } from 'node:fs';
 
 export const DISCLAIMER_MD = readFileSync(new URL('./content/disclaimer.md', import.meta.url), 'utf8');
+// Fasting Safety (/fasting-safety). Copy lives verbatim in site-v5/content/fasting-safety.md.
+export const FASTING_SAFETY_MD = readFileSync(new URL('./content/fasting-safety.md', import.meta.url), 'utf8');
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const slug = (s) => s.toLowerCase().replace(/^\d+\.\s*/, (m) => `s${m.trim().replace('.', '')}-`).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -18,7 +20,8 @@ function inline(src) {
 }
 
 // Returns { h1, lead, sections } where sections is HTML for the body.
-export function renderDisclaimer(md = DISCLAIMER_MD) {
+// leadRe picks the block right after the h1 that becomes the hero subline.
+export function renderDisclaimer(md = DISCLAIMER_MD, leadRe = /^\*\*Effective date:\*\*/) {
   const blocks = md.replace(/\r\n/g, '\n').replace(/<!--[\s\S]*?-->/g, '').trim().split(/\n{2,}/);
   let h1 = '';
   let lead = '';
@@ -28,7 +31,7 @@ export function renderDisclaimer(md = DISCLAIMER_MD) {
   for (const raw of blocks) {
     const b = raw.trim();
     if (b.startsWith('# ')) { h1 = inline(b.slice(2)); continue; }
-    if (!h1 || (!lead && /^\*\*Effective date:\*\*/.test(b))) { lead = inline(b); continue; }
+    if (!h1 || (!lead && !out.length && leadRe.test(b))) { lead = inline(b); continue; }
     if (b.startsWith('## ')) {
       close();
       const t = b.slice(3);
