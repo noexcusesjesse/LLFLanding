@@ -1,8 +1,6 @@
 // LoadLine Program Disclaimer and Consent (/disclaimer).
 // Copy lives verbatim in site-v5/content/disclaimer.md; this file only turns
 // that markdown into the v5 page markup. Do not edit copy here.
-// A paragraph of the form [COUNSEL: ...] renders as a visible
-// "Pending attorney wording" callout so unreviewed sections can't be missed.
 import { readFileSync } from 'node:fs';
 
 export const DISCLAIMER_MD = readFileSync(new URL('./content/disclaimer.md', import.meta.url), 'utf8');
@@ -19,15 +17,9 @@ function inline(src) {
   return s;
 }
 
-const COUNSEL_RE = /^\[COUNSEL:\s*([\s\S]*)\]$/;
-export const counselBox = (note) => `<div class="pending" role="note" aria-label="Pending attorney wording">
-<p class="pending-label"><svg class="ic" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9.5 17h-19z"/><path d="M12 10v4M12 17.5v.01"/></svg>Pending attorney wording</p>
-<p class="pending-note">[COUNSEL: ${inline(note)}]</p>
-</div>`;
-
 // Returns { h1, lead, sections } where sections is HTML for the body.
 export function renderDisclaimer(md = DISCLAIMER_MD) {
-  const blocks = md.replace(/\r\n/g, '\n').trim().split(/\n{2,}/);
+  const blocks = md.replace(/\r\n/g, '\n').replace(/<!--[\s\S]*?-->/g, '').trim().split(/\n{2,}/);
   let h1 = '';
   let lead = '';
   const out = [];
@@ -56,8 +48,6 @@ export function renderDisclaimer(md = DISCLAIMER_MD) {
       out.push(`<ul>${lines.map((l) => `<li>${inline(l.slice(2))}</li>`).join('')}</ul>`);
       continue;
     }
-    const m = b.match(COUNSEL_RE);
-    if (m) { out.push(counselBox(m[1])); continue; }
     if (!open) { out.push(`<p class="dl-foot">${inline(b)}</p>`); continue; }
     out.push(`<p>${inline(lines.join(' '))}</p>`);
   }

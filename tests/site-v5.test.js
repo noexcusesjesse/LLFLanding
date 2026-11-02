@@ -106,7 +106,10 @@ describe('v5 site', () => {
       assert.doesNotMatch(PAGES[p].body, /fasting-safety|No Excuses Challenge|community challenge|challenge fast/i, p);
     }
     assert.doesNotMatch(PAGES['/'].body, /fast/i);
-    assert.doesNotMatch(all, /Reset Program|Boot Camp|most popular|72/i);
+    // The disclaimer's only "72" is the safety line ruling a 72-hour fast out.
+    const { '/disclaimer': dl, ...rest } = PAGES;
+    assert.doesNotMatch(JSON.stringify(rest), /Reset Program|Boot Camp|most popular|72/i);
+    assert.doesNotMatch(JSON.stringify(dl).replace('There is no 72-hour fast.', ''), /Reset Program|Boot Camp|most popular|72/i);
   });
   test('Book a Free Call goes to the contact form', () => {
     for (const p of Object.values(PAGES)) for (const m of p.body.matchAll(/href="([^"]+)"[^>]*>Book a Free Call/g)) assert.equal(m[1], '/contact');

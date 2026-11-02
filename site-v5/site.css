@@ -197,9 +197,4 @@ footer{margin-top:clamp(48px,7vw,88px);background:var(--bg2);border-top:1px soli
 .dl-checks li{padding-left:34px;margin:.75em 0}
 .dl-checks li:before{top:.2em;width:20px;height:20px}
 .dl-foot{border-top:1px solid var(--line2);padding-top:24px;margin:8px 0 0;color:var(--mut);font-size:var(--fs-s)}
-.pending{border:2px dashed var(--gold);background:repeating-linear-gradient(135deg,rgba(224,177,90,.10) 0 12px,rgba(224,177,90,.04) 12px 24px);border-radius:12px;padding:18px 20px;margin:4px 0 1em}
-.pending-label{display:flex;align-items:center;gap:10px;margin:0 0 .5em;color:var(--gold2);font-weight:750;text-transform:uppercase;letter-spacing:.08em;font-size:.875rem}
-.pending-label .ic{width:22px;height:22px;flex:none}
-.pending-note{margin:0;color:var(--ink);font-size:1rem;line-height:1.6;overflow-wrap:anywhere}
-@media (max-width:639px){.panel.dl{padding:22px 18px}.dl-sec{padding:22px 0}.pending{padding:16px}}
-@media print{.pending{border-color:#000;background:none}}
+@media (max-width:639px){.panel.dl{padding:22px 18px}.dl-sec{padding:22px 0}

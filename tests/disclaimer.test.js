@@ -25,11 +25,27 @@ describe('/disclaimer', () => {
     }
     assert.doesNotMatch(html, /Outline only; not the final text/);
   });
-  test('Section 9 [COUNSEL] placeholder is a visible callout, not hidden', async () => {
+  test('effective date and Sections 7, 9, 10 are final copy, with no review notes', async () => {
     const html = await (await fetch(base + '/disclaimer')).text();
-    const s9 = html.slice(html.indexOf('9. Limitation of Liability'), html.indexOf('10. Changes'));
-    assert.match(s9, /class="pending" role="note"/);
-    assert.match(s9, /Pending attorney wording/);
-    assert.match(s9, /\[COUNSEL: Limitation of liability and release language\./);
+    const body = text(html);
+    assert.ok(body.includes('Effective date: November 1, 2026 · Version 2.2'));
+    const s9 = text(html.slice(html.indexOf('9. Limitation of Liability'), html.indexOf('10. Changes')));
+    assert.ok(s9.includes('To the fullest extent allowed by law, LoadLine Fitness'));
+    assert.ok(s9.includes('they apply only to the extent that law allows'));
+    const s10 = text(html.slice(html.indexOf('10. Changes'), html.indexOf('11. Contact')));
+    assert.ok(s10.includes('we will post the updated version on this page with a new effective date'));
+    const s7 = text(html.slice(html.indexOf('7. Assumption of Risk'), html.indexOf('8. Your Information')));
+    assert.ok(s7.includes('you take part at your own risk.'));
+    const main = html.slice(html.indexOf('<main'), html.indexOf('</main>'));
+    assert.ok(main.length > 0);
+    assert.doesNotMatch(text(main), /counsel|attorney|pending|being finalized|draft|coach|& Wellness|\[JESSE|\u2014/i);
+    assert.doesNotMatch(main, /<!--|class="pending"/);
+  });
+  test('does not link the unpublished /intake-privacy page and stays out of the sitemap', async () => {
+    const html = await (await fetch(base + '/disclaimer')).text();
+    assert.doesNotMatch(html, /href="[^"]*intake-privacy/);
+    assert.ok(text(html).includes('LoadLine Intake Privacy Notice'));
+    const sm = await (await fetch(base + '/sitemap.xml')).text();
+    assert.doesNotMatch(sm, /\/disclaimer</);
   });
 });

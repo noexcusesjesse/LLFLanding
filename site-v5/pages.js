@@ -249,14 +249,14 @@ export const PAGES = {
   '/affiliate-disclosure': legal('Affiliate Disclosure', 'Affiliate Disclosure', ['Amazon Associates, Printful, SiPhox.']),
 };
 
-// Full disclaimer copy (site-v5/content/disclaimer.md, verbatim). Stays noindex
-// until Section 9 has counsel-approved wording.
+// Full disclaimer copy (site-v5/content/disclaimer.md, verbatim). Kept noindex
+// and out of the sitemap.
 function disclaimerPage() {
   const d = renderDisclaimer();
   return {
     title: 'LoadLine Program Disclaimer and Consent | LoadLine Fitness',
     meta: 'LoadLine Program Disclaimer and Consent for LoadLine Solo and LoadLine 365.',
-    noindex: true, // Section 9 pending counsel
+    noindex: true,
     body: hero(`<h1 class="dl-h1">${d.h1}</h1><p class="sub">${d.lead}</p>`)
       + `<section class="sec"><div class="w"><article class="panel dl">${d.sections}</article></div></section>`,
   };
