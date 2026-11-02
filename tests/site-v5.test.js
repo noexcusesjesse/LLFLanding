@@ -70,8 +70,8 @@ describe('v5 site', () => {
       const html = await (await hget(path)).text();
       assert.doesNotMatch(html, /href="\/challenges/, path);
       assert.doesNotMatch(html, />Challenges<\/a>/, path);
-      // Only the disclaimer (Section 6) links to the Fasting Safety page.
-      if (path !== '/disclaimer') assert.doesNotMatch(html, /href="\/fasting-safety/, path);
+      // No page links to the Fasting Safety page (the disclaimer Section 6 link was removed).
+      assert.doesNotMatch(html, /href="\/fasting-safety/, path);
     }
     const sm = await (await fetch(base + '/sitemap.xml')).text();
     assert.doesNotMatch(sm, /\/challenges|fasting-safety/);
